@@ -25,6 +25,15 @@ export default function Page() {
         </div>
       </Panel>
 
+
+      <Panel title="It is an issue - half the code is missing and imports are missing">
+        <Callout tone="warn" title="Missing code">
+          <p>
+           Missing imports and code 
+          </p>
+        </Callout>
+      </Panel>
+
       <Panel title="The three primitives">
         <dl className="space-y-2 text-sm">
           {[

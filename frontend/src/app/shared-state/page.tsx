@@ -31,6 +31,18 @@ export default function Page() {
         </div>
       </Panel>
 
+      <Panel title="ISSUES - LIST">
+        <Callout tone="warn" title="Missing tools/imports">
+          <p>
+           <ul>
+            <li>set_notes is missing - it was self defined</li>
+            <li>_inject_preferences is also missing, it was self defined</li>
+           </ul>
+           
+          </p>
+        </Callout>
+      </Panel>      
+
       <Panel title="The demo">
         <SourceCode file="frontend/src/app/shared-state/demo-chat/page.tsx" />
       </Panel>
