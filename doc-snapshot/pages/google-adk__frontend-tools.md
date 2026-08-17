@@ -1,0 +1,133 @@
+# Frontend Tools
+
+> Let your agent interact with and update your application's UI.
+
+
+<!-- interactive demo: frontend-tools -->
+
+
+## What is this?
+
+Frontend tools let your agent define and invoke client-side functions that run entirely in the user's browser. Because the handler executes on the frontend, it has direct access to component state, browser APIs, and any third-party UI library the page already uses. That's how an agent can "reach into" the app: update React state, trigger animations, read `localStorage`, pop a toast, or steer the user's view.
+
+This page covers the "agent drives the UI" shape of frontend tools. The same primitive also powers Generative UI and Human-in-the-loop; see those pages for interaction patterns.
+
+## When should I use this?
+
+Use frontend tools when your agent needs to:
+
+- Read or modify React component state
+- Access browser APIs like `localStorage`, `sessionStorage`, or cookies
+- Trigger UI updates, animations, or transitions
+- Show alerts, toasts, or notifications
+- Interact with third-party frontend libraries
+- Perform anything that requires the user's immediate browser context
+
+## How it works in code
+
+<Steps>
+  <Step>
+    ### Install the ADK + AG-UI bridge
+
+    ```bash
+    pip install ag-ui-adk
+    ```
+
+  </Step>
+  <Step>
+    ### Add `AGUIToolset()` to your agent
+
+    `AGUIToolset()` is the tool that exposes CopilotKit's frontend-tool
+    channel to the model — drop it into your `LlmAgent`'s `tools=` list and
+    frontend tools become available on every turn. Pair it with
+    `stop_on_terminal_text` as the `after_model_callback` so CopilotKit's UI
+    knows when the agent has finished its turn.
+
+    
+~~~~python title="hitl_in_chat_agent.py"
+from google.adk.agents import LlmAgent
+from ag_ui_adk import AGUIToolset
+
+from agents.shared_chat import get_model, stop_on_terminal_text
+
+# CopilotKit wires into ADK via the `AGUIToolset()` tool: pass it in the
+# `tools=` list of your `LlmAgent` to expose CopilotKit's frontend-tool
+# channel to the model. `stop_on_terminal_text` is a small ADK callback
+# that lets CopilotKit's UI know when the agent has finished its turn.
+_INSTRUCTION = (
+    "You are a planning assistant. When the user asks you to plan something, "
+    "always call generate_task_steps with the proposed list of steps (each "
+    "with description + status='enabled'). The frontend will render the "
+    "steps inline and the user will confirm or reject — your job is to plan "
+    "and call the tool, then summarise the user's decision once they "
+    "respond."
+)
+
+hitl_in_chat_agent = LlmAgent(
+    name="HitlInChatAgent",
+    model=get_model(),
+    instruction=_INSTRUCTION,
+    tools=[AGUIToolset()],
+    after_model_callback=stop_on_terminal_text,
+)
+~~~~
+
+
+  </Step>
+</Steps>
+
+Register a frontend tool with `useFrontendTool`. Give it a name, a Zod schema for parameters, and a handler. The agent can then call it like any other tool and your frontend runs it in the browser.
+
+```typescript
+// src/app/demos/frontend-tools/page.tsx
+import React, { useState } from "react";
+import {
+  CopilotKit,
+  CopilotSidebar,
+  useFrontendTool,
+} from "@copilotkit/react-core/v2";
+import { z } from "zod";
+import { Background, DEFAULT_BACKGROUND } from "./background";
+import { useFrontendToolsSuggestions } from "./suggestions";
+
+export default function FrontendToolsDemo() {
+  return (
+    <CopilotKit runtimeUrl="/api/copilotkit" agent="frontend_tools">
+      <Chat />
+    </CopilotKit>
+  );
+}
+
+function Chat() {
+  const [background, setBackground] = useState<string>(DEFAULT_BACKGROUND);
+
+  useFrontendTool({
+    name: "change_background",
+    description:
+      "Change the page background. Accepts any valid CSS background value — colors, linear or radial gradients, etc.",
+    parameters: z.object({
+      background: z
+        .string()
+        .describe("The CSS background value. Prefer gradients."),
+    }),
+    handler: async ({ background }) => {
+      setBackground(background);
+      return { status: "success" };
+    },
+  });
+```
+
+The handler receives the parsed, type-safe parameters and can do anything
+the browser can: update state, call an API, touch the DOM. Its return value
+is sent back to the agent as the tool result so the model can reason about
+what happened.
+
+```typescript
+// src/app/demos/frontend-tools/page.tsx
+    handler: async ({ background }) => {
+      setBackground(background);
+      return { status: "success" };
+    },
+```
+
+<IntegrationGrid path="frontend-tools" />
