@@ -2,6 +2,10 @@ import Link from "next/link";
 
 import { KeyValue, Panel } from "@/components/ui";
 import { DOCS_ROOT } from "@/lib/nav-config";
+import { DocDriftPanel } from "@/components/doc-drift-panel";
+
+/** Dynamic: the doc-sync readouts below read the snapshot off disk. */
+export const dynamic = "force-dynamic";
 
 export default function Page() {
   return (
@@ -50,6 +54,9 @@ export default function Page() {
           />
         </div>
       </Panel>
+
+
+      <DocDriftPanel />
 
       <Panel title="How a message travels">
         <ol className="space-y-2 text-sm text-slate-700 dark:text-slate-300">

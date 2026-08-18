@@ -1,0 +1,505 @@
+{
+  "schema": 1,
+  "docsRoot": "https://docs.copilotkit.ai/google-adk",
+  "syncedAt": "2026-08-17T13:33:01.475Z",
+  "pages": {
+    "/google-adk": {
+      "file": "google-adk.md",
+      "sha256": "da8fb1632b045c385f5b889ab0b02d9f92a0a72f5b915f765fbdbd8a1b865a88",
+      "bytes": 13846,
+      "lines": 416,
+      "routes": [
+        "/",
+        "/doc-sync"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:02 GMT"
+    },
+    "/google-adk/agent-config": {
+      "file": "google-adk__agent-config.md",
+      "sha256": "145abd14a3147c7736b1119c03c42ead8e1b9864bb0bafa54775a8f8e830bddd",
+      "bytes": 5698,
+      "lines": 165,
+      "routes": [
+        "/agent-config"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:02 GMT"
+    },
+    "/google-adk/backend/copilot-runtime": {
+      "file": "google-adk__backend__copilot-runtime.md",
+      "sha256": "2fbf468d4a1bf8617cbd03d6fd047a6c059f2653fc43fdf4bf0edeb45ed713fc",
+      "bytes": 11546,
+      "lines": 266,
+      "routes": [
+        "/backend/copilot-runtime"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:02 GMT"
+    },
+    "/google-adk/custom-look-and-feel/css": {
+      "file": "google-adk__custom-look-and-feel__css.md",
+      "sha256": "0b95aba4b6b2208ba433563873c044e71802fab9bbdb71bb0d43ef89f5462cd5",
+      "bytes": 10194,
+      "lines": 301,
+      "routes": [
+        "/custom-look-and-feel/css"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:02 GMT"
+    },
+    "/google-adk/custom-look-and-feel/headless-ui": {
+      "file": "google-adk__custom-look-and-feel__headless-ui.md",
+      "sha256": "cb7c8c9d675cd303e3db032ef13a6e8885653048928d032ffde100943082e09d",
+      "bytes": 13631,
+      "lines": 363,
+      "routes": [
+        "/custom-look-and-feel/headless-ui"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:02 GMT"
+    },
+    "/google-adk/custom-look-and-feel/reasoning-messages": {
+      "file": "google-adk__custom-look-and-feel__reasoning-messages.md",
+      "sha256": "dd6ab86845cadd57cfbe7b383473badf058951fb7334bac24e8de1e2cda9b740",
+      "bytes": 7269,
+      "lines": 261,
+      "routes": [
+        "/custom-look-and-feel/reasoning-messages"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:02 GMT"
+    },
+    "/google-adk/custom-look-and-feel/slots": {
+      "file": "google-adk__custom-look-and-feel__slots.md",
+      "sha256": "eb4d3b13128ef9fcf2d58e0224e3a32bf7d14afc8250cf9ea9e9729846cd8e95",
+      "bytes": 6867,
+      "lines": 235,
+      "routes": [
+        "/custom-look-and-feel/slots"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:02 GMT"
+    },
+    "/google-adk/frontend-tools": {
+      "file": "google-adk__frontend-tools.md",
+      "sha256": "c802534b6b0cca1aeaa5951ab660d8fca3772bfbc28b0547ab3e8fac0c5a83e0",
+      "bytes": 4486,
+      "lines": 134,
+      "routes": [
+        "/frontend-tools"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:02 GMT"
+    },
+    "/google-adk/generative-ui/a2ui/dynamic-schema": {
+      "file": "google-adk__generative-ui__a2ui__dynamic-schema.md",
+      "sha256": "0fe51c0e39a90c0e1382df2ffcc44d9267bda5e51c5e88ea1696eb6b34e1900e",
+      "bytes": 22954,
+      "lines": 688,
+      "routes": [
+        "/generative-ui/a2ui/dynamic-schema"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:02 GMT"
+    },
+    "/google-adk/generative-ui/a2ui/fixed-schema": {
+      "file": "google-adk__generative-ui__a2ui__fixed-schema.md",
+      "sha256": "b161f15060d16ed3e4ed1a6e2ee00cdf2879f3166433fde2c26c77ba452fcbc0",
+      "bytes": 24704,
+      "lines": 741,
+      "routes": [
+        "/generative-ui/a2ui/fixed-schema"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:02 GMT"
+    },
+    "/google-adk/generative-ui/reasoning": {
+      "file": "google-adk__generative-ui__reasoning.md",
+      "sha256": "6717c7ea6c98144d0bfa2c033d239087b3c646844d7be06f000d8ae0817c12c8",
+      "bytes": 5668,
+      "lines": 180,
+      "routes": [
+        "/generative-ui/reasoning"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:02 GMT"
+    },
+    "/google-adk/generative-ui/state-rendering": {
+      "file": "google-adk__generative-ui__state-rendering.md",
+      "sha256": "c228c3b4316f71ce2a218c3cb20ebfb242776f80e315c026913cdd32ee45b355",
+      "bytes": 3916,
+      "lines": 108,
+      "routes": [
+        "/generative-ui/state-rendering"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:02 GMT"
+    },
+    "/google-adk/generative-ui/tool-based": {
+      "file": "google-adk__generative-ui__tool-based.md",
+      "sha256": "2515d16d6c1bbddbb68219f9b133b63913c49d22c46bc59e3d3a018944850c5f",
+      "bytes": 3980,
+      "lines": 115,
+      "routes": [
+        "/generative-ui/tool-based"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:03 GMT"
+    },
+    "/google-adk/generative-ui/tool-rendering": {
+      "file": "google-adk__generative-ui__tool-rendering.md",
+      "sha256": "1eb3c2d9b06179d93f2a9e80d915957e0665b976bbdd145a228397cfdeddaaae",
+      "bytes": 10049,
+      "lines": 355,
+      "routes": [
+        "/generative-ui/tool-rendering"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:03 GMT"
+    },
+    "/google-adk/human-in-the-loop": {
+      "file": "google-adk__human-in-the-loop.md",
+      "sha256": "c8064d80a5e0d16ce9ac33fddeda497b876d0e7862252c852e08273c41aa4afe",
+      "bytes": 7890,
+      "lines": 236,
+      "routes": [
+        "/human-in-the-loop"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:03 GMT"
+    },
+    "/google-adk/inspector": {
+      "file": "google-adk__inspector.md",
+      "sha256": "a02af29cb48b3d7e549fa35e75f4dcce16b0cbc4c239ba5085492059ed7e9dd6",
+      "bytes": 5908,
+      "lines": 129,
+      "routes": [
+        "/inspector"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:03 GMT"
+    },
+    "/google-adk/multi-agent/subagents": {
+      "file": "google-adk__multi-agent__subagents.md",
+      "sha256": "edc9185e4733ea24753fc2d8d9850590b163ca48d95df06b4add160720a9d893",
+      "bytes": 35087,
+      "lines": 951,
+      "routes": [
+        "/multi-agent/subagents"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:03 GMT"
+    },
+    "/google-adk/multimodal-attachments": {
+      "file": "google-adk__multimodal-attachments.md",
+      "sha256": "7237dfd40119e56ee3057445eaf61f34ef8328b32acd750c95f2857d9defc1ae",
+      "bytes": 6144,
+      "lines": 176,
+      "routes": [
+        "/multimodal-attachments"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:03 GMT"
+    },
+    "/google-adk/prebuilt-components/chat": {
+      "file": "google-adk__prebuilt-components__chat.md",
+      "sha256": "e6626070c6b4fffb3177647f436662d81dbc13095f46d39f7a9eedfa7889743e",
+      "bytes": 2867,
+      "lines": 77,
+      "routes": [
+        "/prebuilt-components/chat"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:03 GMT"
+    },
+    "/google-adk/prebuilt-components/chat-controls": {
+      "file": "google-adk__prebuilt-components__chat-controls.md",
+      "sha256": "00f39e624256d5a1e530945f93353bba74da554529b2341530928f8bd0cb5bc8",
+      "bytes": 3841,
+      "lines": 101,
+      "routes": [
+        "/prebuilt-components/chat-controls"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:04 GMT"
+    },
+    "/google-adk/prebuilt-components/popup": {
+      "file": "google-adk__prebuilt-components__popup.md",
+      "sha256": "4425cc7e18aee7a9bc3650710525ea3d45ac0a8f93f922178a3feff187faa545",
+      "bytes": 2447,
+      "lines": 70,
+      "routes": [
+        "/prebuilt-components/popup"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:04 GMT"
+    },
+    "/google-adk/prebuilt-components/sidebar": {
+      "file": "google-adk__prebuilt-components__sidebar.md",
+      "sha256": "aa6f6227b5e8a9770929a4f786dc2d5c16e1aab07a4c30d6255185d32ba9311f",
+      "bytes": 2498,
+      "lines": 70,
+      "routes": [
+        "/prebuilt-components/sidebar"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:04 GMT"
+    },
+    "/google-adk/programmatic-control": {
+      "file": "google-adk__programmatic-control.md",
+      "sha256": "82333c2764a4f398706c815e7ae469dc33f94838e77484e22088942e704bd7b0",
+      "bytes": 13573,
+      "lines": 393,
+      "routes": [
+        "/programmatic-control"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:04 GMT"
+    },
+    "/google-adk/quickstart": {
+      "file": "google-adk__quickstart.md",
+      "sha256": "da8fb1632b045c385f5b889ab0b02d9f92a0a72f5b915f765fbdbd8a1b865a88",
+      "bytes": 13846,
+      "lines": 416,
+      "routes": [
+        "/quickstart"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:05 GMT"
+    },
+    "/google-adk/shared-state": {
+      "file": "google-adk__shared-state.md",
+      "sha256": "1d8724c9aa44bc314fd23106d2b89b70567c5a0d7b33c092d8718a1de3934641",
+      "bytes": 9665,
+      "lines": 273,
+      "routes": [
+        "/shared-state"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:05 GMT"
+    },
+    "/google-adk/shared-state/agent-readonly": {
+      "file": "google-adk__shared-state__agent-readonly.md",
+      "sha256": "cd5eedc59b87a54000a75a9831886e41c8aeab3b4af068b597080c42a0059988",
+      "bytes": 5138,
+      "lines": 160,
+      "routes": [
+        "/shared-state/agent-readonly"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:05 GMT"
+    },
+    "/google-adk/shared-state/in-app-agent-read": {
+      "file": "google-adk__shared-state__in-app-agent-read.md",
+      "sha256": "996465fa5c97d9325d8e66e25015bad60e0ea062a7d363a60b65813e513eafb7",
+      "bytes": 5779,
+      "lines": 182,
+      "routes": [
+        "/shared-state/in-app-agent-read"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:05 GMT"
+    },
+    "/google-adk/shared-state/in-app-agent-write": {
+      "file": "google-adk__shared-state__in-app-agent-write.md",
+      "sha256": "fa0a6646faded558297ba000decdd331d9739843d2999aabdb24ef40bad56737",
+      "bytes": 6060,
+      "lines": 190,
+      "routes": [
+        "/shared-state/in-app-agent-write"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:05 GMT"
+    },
+    "/google-adk/shared-state/predictive-state-updates": {
+      "file": "google-adk__shared-state__predictive-state-updates.md",
+      "sha256": "fa35f03b3593fac538d79ebff4a0c4551ca1f6e3a881d17ecb0d6c91c1d339d0",
+      "bytes": 7588,
+      "lines": 208,
+      "routes": [
+        "/shared-state/predictive-state-updates"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:05 GMT"
+    },
+    "/google-adk/shared-state/rendering-in-app": {
+      "file": "google-adk__shared-state__rendering-in-app.md",
+      "sha256": "5cdfc29a9a3123970f601034cf31de777babd18fedab7b153a8c7f592b42064a",
+      "bytes": 4185,
+      "lines": 115,
+      "routes": [
+        "/shared-state/rendering-in-app"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:05 GMT"
+    },
+    "/google-adk/shared-state/streaming": {
+      "file": "google-adk__shared-state__streaming.md",
+      "sha256": "8e28779c30a69beafd12644de2bc92550c2cb0d2726287fd50e2a27ce1d10137",
+      "bytes": 7435,
+      "lines": 215,
+      "routes": [
+        "/shared-state/streaming"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:05 GMT"
+    },
+    "/google-adk/shared-state/workflow-execution": {
+      "file": "google-adk__shared-state__workflow-execution.md",
+      "sha256": "efbb86abce0ba7a4ed2a108fd42103d93ec752e5cbff4a0f10eb9e426bbb852c",
+      "bytes": 7953,
+      "lines": 231,
+      "routes": [
+        "/shared-state/workflow-execution"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:05 GMT"
+    },
+    "/google-adk/voice": {
+      "file": "google-adk__voice.md",
+      "sha256": "856ddb313be133f0277ead56d01ac751525430ccb1d4a39e7d26aa8a2a5de2f8",
+      "bytes": 10046,
+      "lines": 233,
+      "routes": [
+        "/voice"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 13:33:05 GMT"
+    }
+  },
+  "sitemap": {
+    "fetchedAt": "2026-08-17T13:33:01.475Z",
+    "urlsUnderRoot": 127,
+    "knownUnmapped": [
+      "https://docs.copilotkit.ai/google-adk/agent-spec",
+      "https://docs.copilotkit.ai/google-adk/agent-spec/human-in-the-loop",
+      "https://docs.copilotkit.ai/google-adk/agent-spec/langgraph",
+      "https://docs.copilotkit.ai/google-adk/agent-spec/quickstart",
+      "https://docs.copilotkit.ai/google-adk/agent-spec/wayflow",
+      "https://docs.copilotkit.ai/google-adk/agentic-chat-ui",
+      "https://docs.copilotkit.ai/google-adk/agentic-protocols",
+      "https://docs.copilotkit.ai/google-adk/agentic-protocols/a2a",
+      "https://docs.copilotkit.ai/google-adk/agentic-protocols/ag-ui",
+      "https://docs.copilotkit.ai/google-adk/agentic-protocols/ag-ui-middleware",
+      "https://docs.copilotkit.ai/google-adk/agentic-protocols/mcp",
+      "https://docs.copilotkit.ai/google-adk/auth",
+      "https://docs.copilotkit.ai/google-adk/backend/ag-ui",
+      "https://docs.copilotkit.ai/google-adk/backend/agent-runner",
+      "https://docs.copilotkit.ai/google-adk/backend/custom-agent",
+      "https://docs.copilotkit.ai/google-adk/backend/runtime-endpoints",
+      "https://docs.copilotkit.ai/google-adk/backend/self-managed-agents",
+      "https://docs.copilotkit.ai/google-adk/build-with-agents",
+      "https://docs.copilotkit.ai/google-adk/built-in-agent",
+      "https://docs.copilotkit.ai/google-adk/cli",
+      "https://docs.copilotkit.ai/google-adk/concepts/architecture",
+      "https://docs.copilotkit.ai/google-adk/concepts/generative-ui-overview",
+      "https://docs.copilotkit.ai/google-adk/concepts/oss-vs-enterprise",
+      "https://docs.copilotkit.ai/google-adk/concepts/which-hook",
+      "https://docs.copilotkit.ai/google-adk/contributing/code-contributions",
+      "https://docs.copilotkit.ai/google-adk/contributing/code-contributions/package-linking",
+      "https://docs.copilotkit.ai/google-adk/contributing/docs-contributions",
+      "https://docs.copilotkit.ai/google-adk/cookbook",
+      "https://docs.copilotkit.ai/google-adk/cookbook/angular-adk-agentic-app",
+      "https://docs.copilotkit.ai/google-adk/cookbook/arcade",
+      "https://docs.copilotkit.ai/google-adk/cookbook/daytona",
+      "https://docs.copilotkit.ai/google-adk/cookbook/openbox-governed-copilotkit",
+      "https://docs.copilotkit.ai/google-adk/cookbook/oracle-agent-spec-memory",
+      "https://docs.copilotkit.ai/google-adk/deepagents",
+      "https://docs.copilotkit.ai/google-adk/deploy/agentcore",
+      "https://docs.copilotkit.ai/google-adk/examples",
+      "https://docs.copilotkit.ai/google-adk/faq",
+      "https://docs.copilotkit.ai/google-adk/generative-ui",
+      "https://docs.copilotkit.ai/google-adk/generative-ui/a2ui",
+      "https://docs.copilotkit.ai/google-adk/generative-ui/display",
+      "https://docs.copilotkit.ai/google-adk/generative-ui/hashbrown",
+      "https://docs.copilotkit.ai/google-adk/generative-ui/interactive",
+      "https://docs.copilotkit.ai/google-adk/generative-ui/json-render",
+      "https://docs.copilotkit.ai/google-adk/generative-ui/mcp-apps",
+      "https://docs.copilotkit.ai/google-adk/generative-ui/open-generative-ui",
+      "https://docs.copilotkit.ai/google-adk/generative-ui/open-json-ui",
+      "https://docs.copilotkit.ai/google-adk/headless",
+      "https://docs.copilotkit.ai/google-adk/headless-threads",
+      "https://docs.copilotkit.ai/google-adk/human-in-the-loop/headless",
+      "https://docs.copilotkit.ai/google-adk/human-in-the-loop/useInterrupt",
+      "https://docs.copilotkit.ai/google-adk/migrate/1.10.X",
+      "https://docs.copilotkit.ai/google-adk/migrate/1.8.2",
+      "https://docs.copilotkit.ai/google-adk/migrate/v2",
+      "https://docs.copilotkit.ai/google-adk/prebuilt-components",
+      "https://docs.copilotkit.ai/google-adk/prebuilt-components/copilot-threads-drawer",
+      "https://docs.copilotkit.ai/google-adk/premium/headless-ui",
+      "https://docs.copilotkit.ai/google-adk/premium/intelligence-platform",
+      "https://docs.copilotkit.ai/google-adk/premium/managed-intelligence-platform",
+      "https://docs.copilotkit.ai/google-adk/premium/overview",
+      "https://docs.copilotkit.ai/google-adk/premium/self-hosting",
+      "https://docs.copilotkit.ai/google-adk/premium/threads-explained",
+      "https://docs.copilotkit.ai/google-adk/reference/v2/hooks/useCapabilities",
+      "https://docs.copilotkit.ai/google-adk/runtime-server-adapter",
+      "https://docs.copilotkit.ai/google-adk/telemetry",
+      "https://docs.copilotkit.ai/google-adk/threads",
+      "https://docs.copilotkit.ai/google-adk/threads-import",
+      "https://docs.copilotkit.ai/google-adk/threads-lifecycle",
+      "https://docs.copilotkit.ai/google-adk/troubleshooting/common-issues",
+      "https://docs.copilotkit.ai/google-adk/troubleshooting/debug-mode",
+      "https://docs.copilotkit.ai/google-adk/troubleshooting/error-debugging",
+      "https://docs.copilotkit.ai/google-adk/troubleshooting/error-reference",
+      "https://docs.copilotkit.ai/google-adk/troubleshooting/event-inspector",
+      "https://docs.copilotkit.ai/google-adk/troubleshooting/hook-explorer",
+      "https://docs.copilotkit.ai/google-adk/troubleshooting/inspector-dev-console",
+      "https://docs.copilotkit.ai/google-adk/tutorials/ai-powered-textarea/next-steps",
+      "https://docs.copilotkit.ai/google-adk/tutorials/ai-powered-textarea/overview",
+      "https://docs.copilotkit.ai/google-adk/tutorials/ai-powered-textarea/step-1-checkout-repo",
+      "https://docs.copilotkit.ai/google-adk/tutorials/ai-powered-textarea/step-2-setup-copilotkit",
+      "https://docs.copilotkit.ai/google-adk/tutorials/ai-powered-textarea/step-3-copilot-textarea",
+      "https://docs.copilotkit.ai/google-adk/tutorials/ai-powered-textarea/step-4-copilot-readable-state",
+      "https://docs.copilotkit.ai/google-adk/tutorials/ai-todo-app/next-steps",
+      "https://docs.copilotkit.ai/google-adk/tutorials/ai-todo-app/overview",
+      "https://docs.copilotkit.ai/google-adk/tutorials/ai-todo-app/step-1-checkout-repo",
+      "https://docs.copilotkit.ai/google-adk/tutorials/ai-todo-app/step-2-setup-copilotkit",
+      "https://docs.copilotkit.ai/google-adk/tutorials/ai-todo-app/step-3-copilot-readable-state",
+      "https://docs.copilotkit.ai/google-adk/tutorials/ai-todo-app/step-4-frontend-tools",
+      "https://docs.copilotkit.ai/google-adk/tutorials/multi-conversation-chat",
+      "https://docs.copilotkit.ai/google-adk/vs-code-extension",
+      "https://docs.copilotkit.ai/google-adk/whats-new",
+      "https://docs.copilotkit.ai/google-adk/whats-new/a2a-mcp-handshake",
+      "https://docs.copilotkit.ai/google-adk/whats-new/a2ui-launch",
+      "https://docs.copilotkit.ai/google-adk/whats-new/generative-ui-spec-support",
+      "https://docs.copilotkit.ai/google-adk/whats-new/langgraph-deep-agents",
+      "https://docs.copilotkit.ai/google-adk/whats-new/mcp-apps-support",
+      "https://docs.copilotkit.ai/google-adk/whats-new/v1-50"
+    ]
+  }
+}

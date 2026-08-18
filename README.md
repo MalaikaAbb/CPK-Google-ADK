@@ -4,7 +4,7 @@ A navigable, working test harness for the CopilotKit Google ADK integration — 
 
 | | |
 |---|---|
-| **Doc sync date** | 2026-08-05 |
+| **Doc sync date** | Machine-maintained — `doc-snapshot/manifest.json` → `syncedAt`, rewritten on every sync |
 | **CopilotKit packages** | `@copilotkit/react-core` 1.66.2 · `@copilotkit/runtime` 1.66.2 · `@copilotkit/a2ui-renderer` 1.66.2 · `@copilotkit/voice` 1.66.2 |
 | **AG-UI packages** | `@ag-ui/client` 0.0.57 · `ag-ui-adk` 0.7.0 |
 | **ADK packages** | `google-adk` 2.6.2 · `google-genai` 2.16.0 |
@@ -453,6 +453,32 @@ The fixed-schema pattern pairs a schema with action handlers so clicking Book sw
 | Console floods `unexpected parse state B` | Same cause | That assert is `lit-html`'s. Next mirrors every browser console line to the dev server, so the flood consumes memory on both sides. |
 | Want the inspector gone entirely | — | `NEXT_PUBLIC_COPILOTKIT_INSPECTOR=off` in `frontend/.env.local`, then restart. |
 | `npm install` ERESOLVE on zod | `zod` bumped to 4 | See §9 item 15. Stay on `^3.25.76`. |
+
+---
+
+## Doc drift detection
+
+`/doc-sync` keeps this repo honest about the docs it mirrors. Press **Sync docs now** (on the landing page or on `/doc-sync`) and it fetches the markdown source behind all 33 tracked doc pages, diffs each against the copy stored in `doc-snapshot/`, replaces that copy, and reports what moved — ranked by whether the change can actually break an implementation.
+
+Doc pages are fetched by appending `.md` to their URL, which returns the authored MDX rather than 250 KB of rendered HTML. Every response is checked for `text/markdown` before it is allowed near the snapshot: a URL that misses the markdown handler still answers `200` with the HTML app shell, and writing that in would destroy the baseline and report the whole corpus as rewritten on the next run. A run commits all pages or none.
+
+**Severity is decided by where the edit landed**, not how big it was:
+
+| Level | Trigger |
+|---|---|
+| **High** | a changed line inside a fenced code block, a changed fence count, or a page that now 404s and is gone from the sitemap |
+| **Medium** | a changed heading, changed frontmatter `title`/`description`, or prose in the same section as changed code |
+| **Low** | other prose |
+
+**Sections checked** lists every tracked page in nav order with a mark — `✓` unchanged, `!` changed, `+` stored, `✗` 404, `~` unstable, `·` not checked. Expanding a row shows the comparison: for a changed page the diff (`−` existing snapshot, `+` newly fetched), and for an unchanged one the two matching hashes, which is the evidence the check ran.
+
+**`doc-snapshot/CHANGELOG.md`** is the record that survives a re-sync. Because syncing replaces the copy it just compared against, the run *after* a change reports nothing — so the changelog is written at the moment of discovery and never rewritten later. Only changed pages are recorded; a clean run does not touch the file. It keeps the three most recent dated entries, counted rather than aged, so a change from six weeks ago still shows if nothing has happened since.
+
+**One sync date.** `syncedAt` in `doc-snapshot/manifest.json`, rewritten on every run and shown on `/`, `/status` and `/doc-sync`. There is no hand-maintained date to keep in step with it.
+
+**To test it**, edit any `doc-snapshot/pages/*.md` file and press the button — a line inside a code fence for High, a `##` heading for Medium, a sentence for Low. The comparison reads the stored file itself, so nothing else needs changing. Both `/doc-sync` and the changelog label the result as a local snapshot edit rather than upstream drift.
+
+Commit `doc-snapshot/` — `pages/`, `manifest.json` and `CHANGELOG.md` are the baseline every diff is taken against. `reports/` is gitignored derived data.
 
 ---
 
