@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "docsRoot": "https://docs.copilotkit.ai/google-adk",
-  "syncedAt": "2026-08-17T13:33:01.475Z",
+  "syncedAt": "2026-08-18T05:40:40.099Z",
   "pages": {
     "/google-adk": {
       "file": "google-adk.md",
@@ -14,7 +14,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:02 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:41 GMT"
     },
     "/google-adk/agent-config": {
       "file": "google-adk__agent-config.md",
@@ -26,7 +26,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:02 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:41 GMT"
     },
     "/google-adk/backend/copilot-runtime": {
       "file": "google-adk__backend__copilot-runtime.md",
@@ -38,7 +38,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:02 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:41 GMT"
     },
     "/google-adk/custom-look-and-feel/css": {
       "file": "google-adk__custom-look-and-feel__css.md",
@@ -50,7 +50,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:02 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:41 GMT"
     },
     "/google-adk/custom-look-and-feel/headless-ui": {
       "file": "google-adk__custom-look-and-feel__headless-ui.md",
@@ -62,7 +62,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:02 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:41 GMT"
     },
     "/google-adk/custom-look-and-feel/reasoning-messages": {
       "file": "google-adk__custom-look-and-feel__reasoning-messages.md",
@@ -74,7 +74,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:02 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:41 GMT"
     },
     "/google-adk/custom-look-and-feel/slots": {
       "file": "google-adk__custom-look-and-feel__slots.md",
@@ -86,7 +86,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:02 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:41 GMT"
     },
     "/google-adk/frontend-tools": {
       "file": "google-adk__frontend-tools.md",
@@ -98,7 +98,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:02 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:41 GMT"
     },
     "/google-adk/generative-ui/a2ui/dynamic-schema": {
       "file": "google-adk__generative-ui__a2ui__dynamic-schema.md",
@@ -110,7 +110,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:02 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:41 GMT"
     },
     "/google-adk/generative-ui/a2ui/fixed-schema": {
       "file": "google-adk__generative-ui__a2ui__fixed-schema.md",
@@ -122,7 +122,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:02 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:41 GMT"
     },
     "/google-adk/generative-ui/reasoning": {
       "file": "google-adk__generative-ui__reasoning.md",
@@ -134,7 +134,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:02 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:41 GMT"
     },
     "/google-adk/generative-ui/state-rendering": {
       "file": "google-adk__generative-ui__state-rendering.md",
@@ -146,7 +146,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:02 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:41 GMT"
     },
     "/google-adk/generative-ui/tool-based": {
       "file": "google-adk__generative-ui__tool-based.md",
@@ -158,7 +158,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:03 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:41 GMT"
     },
     "/google-adk/generative-ui/tool-rendering": {
       "file": "google-adk__generative-ui__tool-rendering.md",
@@ -170,7 +170,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:03 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:41 GMT"
     },
     "/google-adk/human-in-the-loop": {
       "file": "google-adk__human-in-the-loop.md",
@@ -182,7 +182,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:03 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:41 GMT"
     },
     "/google-adk/inspector": {
       "file": "google-adk__inspector.md",
@@ -194,7 +194,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:03 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:42 GMT"
     },
     "/google-adk/multi-agent/subagents": {
       "file": "google-adk__multi-agent__subagents.md",
@@ -206,7 +206,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:03 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:42 GMT"
     },
     "/google-adk/multimodal-attachments": {
       "file": "google-adk__multimodal-attachments.md",
@@ -218,7 +218,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:03 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:42 GMT"
     },
     "/google-adk/prebuilt-components/chat": {
       "file": "google-adk__prebuilt-components__chat.md",
@@ -230,7 +230,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:03 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:42 GMT"
     },
     "/google-adk/prebuilt-components/chat-controls": {
       "file": "google-adk__prebuilt-components__chat-controls.md",
@@ -242,7 +242,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:04 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:42 GMT"
     },
     "/google-adk/prebuilt-components/popup": {
       "file": "google-adk__prebuilt-components__popup.md",
@@ -254,7 +254,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:04 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:42 GMT"
     },
     "/google-adk/prebuilt-components/sidebar": {
       "file": "google-adk__prebuilt-components__sidebar.md",
@@ -266,7 +266,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:04 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:42 GMT"
     },
     "/google-adk/programmatic-control": {
       "file": "google-adk__programmatic-control.md",
@@ -278,7 +278,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:04 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:42 GMT"
     },
     "/google-adk/quickstart": {
       "file": "google-adk__quickstart.md",
@@ -290,7 +290,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:05 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:42 GMT"
     },
     "/google-adk/shared-state": {
       "file": "google-adk__shared-state.md",
@@ -302,7 +302,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:05 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:42 GMT"
     },
     "/google-adk/shared-state/agent-readonly": {
       "file": "google-adk__shared-state__agent-readonly.md",
@@ -314,7 +314,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:05 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:42 GMT"
     },
     "/google-adk/shared-state/in-app-agent-read": {
       "file": "google-adk__shared-state__in-app-agent-read.md",
@@ -326,7 +326,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:05 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:42 GMT"
     },
     "/google-adk/shared-state/in-app-agent-write": {
       "file": "google-adk__shared-state__in-app-agent-write.md",
@@ -338,7 +338,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:05 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:42 GMT"
     },
     "/google-adk/shared-state/predictive-state-updates": {
       "file": "google-adk__shared-state__predictive-state-updates.md",
@@ -350,7 +350,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:05 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:42 GMT"
     },
     "/google-adk/shared-state/rendering-in-app": {
       "file": "google-adk__shared-state__rendering-in-app.md",
@@ -362,7 +362,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:05 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:42 GMT"
     },
     "/google-adk/shared-state/streaming": {
       "file": "google-adk__shared-state__streaming.md",
@@ -374,7 +374,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:05 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:42 GMT"
     },
     "/google-adk/shared-state/workflow-execution": {
       "file": "google-adk__shared-state__workflow-execution.md",
@@ -386,7 +386,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:05 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:42 GMT"
     },
     "/google-adk/voice": {
       "file": "google-adk__voice.md",
@@ -398,11 +398,11 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Mon, 17 Aug 2026 13:33:05 GMT"
+      "date": "Tue, 18 Aug 2026 05:40:42 GMT"
     }
   },
   "sitemap": {
-    "fetchedAt": "2026-08-17T13:33:01.475Z",
+    "fetchedAt": "2026-08-18T05:40:40.099Z",
     "urlsUnderRoot": 127,
     "knownUnmapped": [
       "https://docs.copilotkit.ai/google-adk/agent-spec",

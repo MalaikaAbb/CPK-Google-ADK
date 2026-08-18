@@ -26,14 +26,6 @@ export default function Page() {
       </Panel>
 
 
-      <Panel title="It is an issue - half the code is missing and imports are missing">
-        <Callout tone="warn" title="Missing code">
-          <p>
-           Missing imports and code 
-          </p>
-        </Callout>
-      </Panel>
-
       <Panel title="The three primitives">
         <dl className="space-y-2 text-sm">
           {[
@@ -66,9 +58,9 @@ export default function Page() {
         <SourceCode file="frontend/src/app/programmatic-control/demo-chat/page.tsx" />
       </Panel>
 
-      {/* <Panel title="The reconstructed helpers">
+      <Panel title="The reconstructed helpers">
         <SourceCode file="frontend/src/app/programmatic-control/headless-helpers.ts" />
-      </Panel> */}
+      </Panel>
 
       <Panel title="The agent">
         <SourceCodeGroup
@@ -85,6 +77,25 @@ export default function Page() {
           errors through the subscriber system.{" "}
           <code>agent.runAgent(options)</code> sends the request and does none
           of that — useful only when you specifically want the raw send.
+        </p>
+      </Callout>
+
+      <Callout tone="warn" title="Doc issue: the published snippet references undefined helpers">
+        <p>
+          The <code>headless-complete</code> code sample on this doc page
+          destructures <code>useAttachmentsConfig</code>,{" "}
+          <code>useAutoScroll</code>, and <code>buildContent</code> from
+          local scope, but none of the three are defined anywhere in the
+          snippet, and only <code>useAttachments</code> (not{" "}
+          <code>useAttachmentsConfig</code>) exists as a real export of{" "}
+          <code>@copilotkit/react-core/v2</code>. Copy-pasting the doc
+          sample as-is throws{" "}
+          <code>ReferenceError: useAttachmentsConfig is not defined</code>{" "}
+          at runtime. This repo reconstructed the missing three in{" "}
+          <code>headless-helpers.ts</code> (see below) as a best guess at
+          intent, but that file is this repo&apos;s invention, not
+          published API — worth flagging upstream so the doc either ships
+          the real helper source or names the correct existing export.
         </p>
       </Callout>
 

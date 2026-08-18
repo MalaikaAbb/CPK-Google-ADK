@@ -4,6 +4,11 @@ import { useAgent, useCopilotKit } from "@copilotkit/react-core/v2";
 import { useCallback, useState } from "react";
 
 import { DemoFrame } from "@/components/demo-frame";
+import {
+  useAttachmentsConfig,
+  useAutoScroll,
+  buildContent,
+} from "../headless-helpers";
 
 
 const AGENT_ID = "programmatic-control";
@@ -99,6 +104,16 @@ function Chat({ agentId }: { agentId: string }) {
     [sendText],
   );
 
+  // Cancel mid-run without clearing the transcript — the doc's third
+  // primitive, `copilotkit.stopAgent({ agent })`.
+  const handleStop = useCallback(() => {
+    void copilotkit
+      .stopAgent({ agent })
+      .catch((err) =>
+        console.error("[headless-complete] stopAgent failed", err),
+      );
+  }, [agent, copilotkit]);
+
   const handleReset = useCallback(() => {
     if (agent.isRunning) {
       try {
@@ -112,5 +127,91 @@ function Chat({ agentId }: { agentId: string }) {
     stickRef.current = true;
   }, [agent]);
 
-  return (<></>)
+  return (
+    <div className="flex h-full flex-col">
+      <div
+        ref={containerRef}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        className={`flex min-h-0 flex-1 flex-col ${
+          dragOver ? "bg-blue-50 dark:bg-blue-950/30" : ""
+        }`}
+      >
+        <div
+          ref={listRef}
+          className="flex-1 space-y-2 overflow-y-auto px-4 py-3 text-sm"
+        >
+          {messages.map((m) => (
+            <div key={m.id} className="whitespace-pre-wrap">
+              <span className="font-medium">{m.role}: </span>
+              {typeof m.content === "string" ? m.content : JSON.stringify(m.content)}
+            </div>
+          ))}
+          <div ref={bottomRef} />
+        </div>
+
+        {attachments.length > 0 && (
+          <ul className="shrink-0 space-y-1 border-t px-4 py-2 text-xs">
+            {attachments.map((a) => (
+              <li key={a.id} className="flex items-center gap-2">
+                {a.filename}
+                <button type="button" onClick={() => removeAttachment(a.id)}>
+                  ✕
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <div className="flex shrink-0 items-center gap-2 border-t px-4 py-3">
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            className="hidden"
+            onChange={handleFileUpload}
+          />
+          <button type="button" onClick={() => fileInputRef.current?.click()}>
+            📎
+          </button>
+          <input
+            className="flex-1 rounded border px-2 py-1"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSend();
+            }}
+            placeholder="Type a message…"
+          />
+          <button type="button" onClick={handleSend} disabled={agent.isRunning}>
+            Send
+          </button>
+          <button
+            type="button"
+            onClick={handleStop}
+            disabled={!agent.isRunning}
+          >
+            Stop
+          </button>
+          <button type="button" onClick={handleReset}>
+            Reset
+          </button>
+        </div>
+
+        <div className="flex shrink-0 flex-wrap gap-2 border-t px-4 py-2">
+          {SUGGESTIONS.map((s) => (
+            <button
+              key={s}
+              type="button"
+              className="rounded border px-2 py-1 text-xs"
+              onClick={() => handleSuggestion(s)}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
