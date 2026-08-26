@@ -8,31 +8,27 @@ The Copilot Runtime is the backend layer that connects your frontend application
 
 The runtime is a lightweight server endpoint that you add to your backend. Here's a minimal example using Next.js:
 
-```ts title="app/api/copilotkit/route.ts"
+```ts title="app/api/copilotkit/[[...slug]]/route.ts" doctest="component"
 import {
   CopilotRuntime,
-  ExperimentalEmptyAdapter,
-  copilotRuntimeNextJSAppRouterEndpoint,
-} from "@copilotkit/runtime";
-import { NextRequest } from "next/server";
-
-const serviceAdapter = new ExperimentalEmptyAdapter();
+  createCopilotRuntimeHandler,
+  InMemoryAgentRunner,
+} from "@copilotkit/runtime/v2";
 
 const runtime = new CopilotRuntime({
   agents: {
     // your agents go here
   },
+  runner: new InMemoryAgentRunner(),
 });
 
-export const POST = async (req: NextRequest) => {
-  const { handleRequest } = copilotRuntimeNextJSAppRouterEndpoint({
-    runtime,
-    serviceAdapter,
-    endpoint: "/api/copilotkit",
-  });
+const handler = createCopilotRuntimeHandler({
+  runtime,
+  basePath: "/api/copilotkit",
+});
 
-  return handleRequest(req);
-};
+export const GET = handler;
+export const POST = handler;
 ```
 
 Then point your frontend at the endpoint:
@@ -41,7 +37,7 @@ Then point your frontend at the endpoint:
 ```tsx
 import { CopilotKit } from "@copilotkit/react-core/v2";
 
-<CopilotKit runtimeUrl="/api/copilotkit">
+<CopilotKit runtimeUrl="/api/copilotkit" useSingleEndpoint={false}>
   <YourApp />
 </CopilotKit>
 ```
@@ -64,6 +60,16 @@ see [Runtime HTTP endpoints](/google-adk/backend/runtime-endpoints).
   Both styles work in v1.50. For new projects, use the v2 handlers. See [Deploy to any runtime](/google-adk/runtime-server-adapter).
 </Callout>
 
+
+<Callout type="warn" title="Switching to a v2 handler also switches the transport">
+  The legacy factories are single-route; the v2 handlers are multi-route by
+  default. The `<CopilotKit>` above sets no transport, so it detects the switch
+  on its own — but if you have pinned `useSingleEndpoint={true}` anywhere, drop
+  it or flip it to `{false}` when you move to a v2 handler. See
+  [Provider and handler pairs](/google-adk/backend/runtime-endpoints#provider-and-handler-pairs).
+</Callout>
+
+
 ## Agents
 
 The runtime supports multiple agent types. `BuiltInAgent` is the primary agent class:
@@ -75,7 +81,7 @@ The runtime supports multiple agent types. `BuiltInAgent` is the primary agent c
 
 If you register an agent under the name `"default"`, CopilotKit's prebuilt UI components will use it automatically without any additional configuration on the frontend. This is useful when you have one primary agent and don't want to specify an `agentId` everywhere.
 
-```ts title="app/api/copilotkit/route.ts"
+```ts title="app/api/copilotkit/[[...slug]]/route.ts"
 import { BuiltInAgent } from "@copilotkit/runtime/v2";
 
 const runtime = new CopilotRuntime({
@@ -102,9 +108,53 @@ The [AG-UI protocol](/google-adk/backend/ag-ui) supports a middleware layer (`ag
 
 When you register multiple agents, the runtime handles discovery and routing automatically. Your frontend doesn't need to know where each agent lives or how to reach it.
 
-### Enterprise Intelligence Platform
+### CopilotKit Intelligence
 
-[Threads](/google-adk/threads), the [inspector](/google-adk/inspector), and other Enterprise Intelligence Platform capabilities are provided through the runtime. These give you conversation persistence and debugging without extra setup.
+[Threads](/google-adk/threads), the [inspector](/google-adk/inspector), and other CopilotKit Intelligence capabilities are provided through the runtime. These give you conversation persistence and debugging without extra setup.
+
+The examples below take `intelligence` and `identifyUser` as given. `intelligence` is a `CopilotKitIntelligence` instance — see [Connect your runtime to Intelligence](/google-adk/premium/connect-your-runtime) for the constructor and where the project API key comes from.
+
+#### Assign Threads to Learning Containers
+
+Create a Learning Container in your Intelligence Project, then pass its stable
+ID to the Runtime:
+
+```ts title="runtime.ts"
+const runtime = new CopilotRuntime({
+  agents: { default: myAgent },
+  intelligence,
+  identifyUser,
+  ɵlearning: {
+    containerId: "support-quality",
+  },
+});
+```
+
+Use a callback when the Container depends on the run. The same callback handles
+web and Channel runs:
+
+```ts title="runtime.ts"
+const runtime = new CopilotRuntime({
+  agents: { default: myAgent },
+  intelligence,
+  identifyUser,
+  channels: [supportChannel],
+  ɵlearning: {
+    containerId: async ({ surface, agentId, userId, threadId }) => {
+      return chooseLearningContainer({ surface, agentId, userId, threadId });
+    },
+  },
+});
+```
+
+The callback runs once per agent run. Return a 1–64 character stable ID made
+from lowercase letters, numbers, and single hyphens. Return `null` to leave the
+Thread unassigned. A Thread can receive its first assignment when it is created
+or locked, but it cannot move to another Learning Container later.
+
+The Runtime sends only the Container ID with the normal Thread create and lock
+calls. It does not upload transcripts. The Intelligence AgentRunner's persisted
+AG-UI events remain the source for Learning.
 
 ## Built-in middleware
 
@@ -135,7 +185,7 @@ default theme:
 ```tsx
 import { CopilotKit } from "@copilotkit/react-core/v2";
 
-<CopilotKit runtimeUrl="/api/copilotkit" a2ui={{ theme: myCustomTheme }}>
+<CopilotKit runtimeUrl="/api/copilotkit" a2ui={{ theme: myCustomTheme }} useSingleEndpoint={false}>
   {children}
 </CopilotKit>
 ```

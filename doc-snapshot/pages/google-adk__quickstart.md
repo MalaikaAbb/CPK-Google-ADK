@@ -2,10 +2,11 @@
 
 > Turn your ADK Agents into an agent-native application in 10 minutes.
 
+
 <OpsPlatformCTA
   variant="card"
   title="Ship ADK to production"
-  body="Add persistent threads and the inspector with the Enterprise Intelligence Platform."
+  body="Add persistent threads and the inspector with CopilotKit Intelligence."
   ctaLabel="Create a free account"
   surface="docs_adk_quickstart"
 />
@@ -25,7 +26,7 @@ Before you begin, you'll need the following:
     <Step>
         ### Create a free account
 
-        <SignupLink surface="docs_adk_quickstart_step1">Sign up for a free developer account</SignupLink> on our Enterprise Intelligence Platform to get a license key. You'll use it later to enable persistent threads and the inspector.
+        <SignupLink surface="docs_adk_quickstart_step1">Sign up for a free developer account</SignupLink> for CopilotKit Intelligence to get a license key. You'll use it later to enable persistent threads and the inspector.
     </Step>
 
     <Step>
@@ -52,7 +53,7 @@ Before you begin, you'll need the following:
                 The CLI walks you through:
 
                 - **Project name**
-                - **Enterprise Intelligence Platform** — persistent threads and the inspector. Choose **Yes** to scaffold a project pre-wired for the platform (the CLI walks you through sign-up, or you can [create an account](https://dashboard.operations.copilotkit.ai/?utm_source=docs&utm_medium=cta&utm_campaign=intelligence&utm_content=docs_cli_prompt) first), or **No** for a standard ADK setup.
+                - **CopilotKit Intelligence** — persistent threads and the inspector. Choose **Yes** to scaffold a project pre-wired for the platform (the CLI walks you through sign-up, or you can [create an account](https://dashboard.operations.copilotkit.ai/?utm_source=docs&utm_medium=cta&utm_campaign=intelligence&utm_content=docs_cli_prompt) first), or **No** for a standard ADK setup.
                 - **Framework** — pick **ADK** when prompted.
             </Step>
             <Step>
@@ -129,6 +130,20 @@ Before you begin, you'll need the following:
                 </Accordions>
 
             </Step>
+
+    <Step>
+        ### Open Inspector and confirm setup
+
+On localhost, click the Inspector button in the corner of the app.
+
+1. Open **Agents**, then **Agent**. Your agent is listed.
+2. Send a chat message. Open **Agents**, then **AG-UI Events**. Events are moving.
+3. Open **Threads**. The list is unlocked (Intelligence is on), or locked with Enable Intelligence (Intelligence is off).
+
+More detail: [Inspector](/google-adk/inspector).
+
+    </Step>
+
         </TailoredContentOption>
         <TailoredContentOption
             id="bring-your-own"
@@ -225,33 +240,52 @@ Before you begin, you'll need the following:
 
                 Create an API route to connect CopilotKit to your ADK agent:
 
-                ```tsx title="app/api/copilotkit/route.ts"
+                ```tsx title="app/api/copilotkit/[[...slug]]/route.ts" doctest="component"
                 import {
+                  CopilotKitIntelligence,
                   CopilotRuntime,
-                  ExperimentalEmptyAdapter,
-                  copilotRuntimeNextJSAppRouterEndpoint,
-                } from "@copilotkit/runtime";
+                  createCopilotRuntimeHandler,
+                } from "@copilotkit/runtime/v2";
                 import { HttpAgent } from "@ag-ui/client";
-                import { NextRequest } from "next/server";
-
-                const serviceAdapter = new ExperimentalEmptyAdapter();
 
                 const runtime = new CopilotRuntime({
                   agents: {
                     my_agent: new HttpAgent({ url: "http://localhost:8000/" }),
-                  }
+                  },
+                  // [!code highlight:8]
+                  intelligence: new CopilotKitIntelligence({
+                    apiKey: process.env.INTELLIGENCE_API_KEY!,
+                  }),
+                  // Threads are per-user. Without this, every visitor shares one history.
+                  identifyUser: (request) => ({
+                    id: request.headers.get("x-user-id") ?? "anonymous",
+                    name: request.headers.get("x-user-name") ?? "Anonymous",
+                  }),
                 });
 
-                export const POST = async (req: NextRequest) => {
-                  const { handleRequest } = copilotRuntimeNextJSAppRouterEndpoint({
-                    runtime,
-                    serviceAdapter,
-                    endpoint: "/api/copilotkit",
-                  });
+                const handler = createCopilotRuntimeHandler({
+                  runtime,
+                  basePath: "/api/copilotkit",
+                });
 
-                  return handleRequest(req);
-                };
+                export const GET = handler;
+                export const POST = handler;
                ```
+
+                The runtime reads the license key from step 1. Add it to the app that serves
+                this route:
+
+                ```plaintext title=".env.local"
+                INTELLIGENCE_API_KEY=your_license_key
+                ```
+
+                <Callout type="info" title="Running without the Intelligence Platform?">
+                  Drop the `intelligence` and `identifyUser` options and the runtime falls back
+                  to SSE mode with an in-memory runner. Chat still works, but Threads and the
+                  Inspector stay locked and the key is never read. See
+                  [Connect your runtime to Intelligence](/google-adk/premium/connect-your-runtime) for the
+                  full constructor and how to confirm the key is in use.
+                </Callout>
             </Step>
             <Step>
                 ### Configure CopilotKit Provider
@@ -270,7 +304,7 @@ Before you begin, you'll need the following:
                     <html lang="en">
                       <body>
                         {/* [!code highlight:3] */}
-                        <CopilotKit runtimeUrl="/api/copilotkit" agent="my_agent">
+                        <CopilotKit runtimeUrl="/api/copilotkit" agent="my_agent" useSingleEndpoint={false}>
                           {children}
                         </CopilotKit>
                       </body>
@@ -278,6 +312,14 @@ Before you begin, you'll need the following:
                   );
                 }
                 ```
+
+                <Callout type="info" title="This relative runtimeUrl assumes Next.js serves the runtime">
+                  `/api/copilotkit` resolves only because Next.js serves your app and the runtime from the
+                  same origin. A client-only frontend has no shared origin, so it needs a standalone runtime
+                  server of its own and an absolute `runtimeUrl` such as
+                  `http://localhost:8200/api/copilotkit`. The per-frontend guides at `/react-spa`, `/vue`,
+                  `/angular` and `/react-native` each show that setup.
+                </Callout>
             </Step>
             <Step>
               ### Add the chat interface
@@ -368,6 +410,20 @@ Before you begin, you'll need the following:
                 </Accordions>
 
             </Step>
+
+    <Step>
+        ### Open Inspector and confirm setup
+
+On localhost, click the Inspector button in the corner of the app.
+
+1. Open **Agents**, then **Agent**. Your agent is listed.
+2. Send a chat message. Open **Agents**, then **AG-UI Events**. Events are moving.
+3. Open **Threads**. The list is unlocked (Intelligence is on), or locked with Enable Intelligence (Intelligence is off).
+
+More detail: [Inspector](/google-adk/inspector).
+
+    </Step>
+
         </TailoredContentOption>
     </TailoredContent>
     </Step>
