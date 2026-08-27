@@ -49,3 +49,11 @@ export const AGENT_URL = process.env.AGENT_URL ?? "http://localhost:8000";
 
 /** The one agent the A2UI fixed-schema route scopes its runtime middleware to. */
 export const A2UI_FIXED_AGENT_ID = "a2ui-fixed-schema";
+
+/**
+ * The one agent the Rich Threads routes use.
+ *
+ * Threads are listed per agent, and the Intelligence runtime registers only
+ * this one — see `lib/copilot-runtime.ts` for why the count matters.
+ */
+export const THREADS_AGENT_ID = "my_agent";

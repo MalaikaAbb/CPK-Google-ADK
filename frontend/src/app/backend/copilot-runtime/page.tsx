@@ -47,7 +47,7 @@ export default function Page() {
             ]}
           />
         </div>
-        <SourceCode file="frontend/src/app/api/copilotkit/route.ts" />
+        <SourceCode file="frontend/src/app/api/copilotkit/[[...slug]]/route.ts" />
       </Panel>
 
       <Panel title="The demo">

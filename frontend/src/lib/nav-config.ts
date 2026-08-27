@@ -68,6 +68,47 @@ export const NAV: NavGroup[] = [
     ],
   },
   {
+    title: "Rich Threads",
+    routes: [
+      {
+        path: "/prebuilt-components/copilot-threads-drawer",
+        hasDemo: true,
+        agentId: "my_agent",
+        title: "Threads Drawer",
+        docPath: "/google-adk/prebuilt-components/copilot-threads-drawer",
+        summary:
+          "The drop-in conversation sidebar, wired with no active-thread state of its own.",
+        status: "partial",
+        statusNote:
+          "Needs the runtime in Intelligence mode for real rows, and a license (publicLicenseKey or licenseToken) for the drawer to render anything but its locked Upgrade view. Those are two separate switches.",
+      },
+      {
+        path: "/headless-threads",
+        hasDemo: true,
+        agentId: "my_agent",
+        title: "Headless Threads",
+        docPath: "/google-adk/headless-threads",
+        summary:
+          "The same thread data through useThreads, with a hand-built list — including rename, which the drawer omits.",
+        status: "partial",
+        statusNote:
+          "Needs Intelligence mode. In SSE mode /info reports mutations: false, so rename/archive/delete have no endpoint to call.",
+      },
+      {
+        path: "/threads-lifecycle",
+        hasDemo: true,
+        agentId: "my_agent",
+        title: "Thread & History Lifecycle",
+        docPath: "/google-adk/threads-lifecycle",
+        summary:
+          "Where a threadId comes from, how history replays, and how switching differs from starting fresh.",
+        status: "partial",
+        statusNote:
+          "Switch and start are live regardless of mode; history replay needs a server-side store to replay from, so it is inert in SSE mode.",
+      },
+    ],
+  },
+  {
     title: "Prebuilt Components",
     routes: [
       {

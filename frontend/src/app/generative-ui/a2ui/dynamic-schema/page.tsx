@@ -93,7 +93,7 @@ export default function Page() {
         <SourceCodeGroup
           files={[
             { file: "frontend/src/app/generative-ui/a2ui/dynamic-schema/demo-chat/page.tsx" },
-            { file: "frontend/src/app/api/copilotkit-declarative-gen-ui/route.ts" },
+            { file: "frontend/src/app/api/copilotkit-declarative-gen-ui/[[...slug]]/route.ts" },
             { file: "backend/src/agents/declarative_gen_ui_agent.py", region: "agent" },
           ]}
         />

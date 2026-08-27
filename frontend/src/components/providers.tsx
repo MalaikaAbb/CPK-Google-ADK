@@ -26,6 +26,32 @@ import { rootInspectorSetting } from "@/lib/inspector";
 
 const RUNTIME_URL = "/api/copilotkit";
 
+/**
+ * The identity `identifyUser` reads on the runtime.
+ *
+ * Threads are per-user, so without these headers every visitor of a deployed
+ * copy would share one history. A real app derives this from a verified
+ * session; a local harness has none, so it sends a fixed demo identity you can
+ * override with NEXT_PUBLIC_DEMO_USER_ID to watch two thread lists diverge.
+ */
+const DEMO_USER_ID = process.env.NEXT_PUBLIC_DEMO_USER_ID ?? "harness-local";
+const DEMO_USER_NAME = process.env.NEXT_PUBLIC_DEMO_USER_NAME ?? "Harness User";
+
+/**
+ * The client-side half of the license axis, and what the Threads Drawer doc's
+ * own sample passes. The server-side half is `licenseToken` on the runtime.
+ *
+ * Either one unlocks the drawer's real UI; with neither, `<CopilotThreadsDrawer>`
+ * renders its locked "Upgrade" view even when the runtime is in Intelligence
+ * mode and threads work perfectly — it gates on the reported license status,
+ * not on whether thread endpoints respond.
+ *
+ * Genuinely public, hence the NEXT_PUBLIC_ prefix — unlike
+ * INTELLIGENCE_API_KEY, which is a server secret and must never be prefixed.
+ */
+const PUBLIC_LICENSE_KEY =
+  process.env.NEXT_PUBLIC_COPILOTKIT_PUBLIC_LICENSE_KEY;
+
 export function Providers({ children }: { children: ReactNode }) {
   // The inspector can only watch the core it is attached to, and two of them
   // on one page is fatal — so on routes that bring their own provider, this
@@ -35,6 +61,14 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <CopilotKitProvider
       runtimeUrl={RUNTIME_URL}
+      headers={{
+        "x-user-id": DEMO_USER_ID,
+        "x-user-name": DEMO_USER_NAME,
+      }}
+      // Spread rather than passed as `publicLicenseKey={undefined}`: an
+      // explicit undefined is still a supplied prop, and the provider treats a
+      // present-but-empty key differently from an absent one.
+      {...(PUBLIC_LICENSE_KEY ? { publicLicenseKey: PUBLIC_LICENSE_KEY } : {})}
       showDevConsole={rootInspectorSetting(pathname)}
       // Bottom-left, because the prebuilt Popup and Sidebar launchers both
       // live bottom-right and would sit under the inspector button.
