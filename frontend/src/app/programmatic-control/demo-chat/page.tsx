@@ -5,6 +5,11 @@ import { useCallback, useState } from "react";
 
 import { DemoFrame } from "@/components/demo-frame";
 
+import {
+  buildContent,
+  useAttachmentsConfig,
+  useAutoScroll,
+} from "../headless-helpers";
 
 const AGENT_ID = "programmatic-control";
 

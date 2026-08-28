@@ -18,7 +18,7 @@ A navigable, working test harness for the CopilotKit Google ADK integration — 
 
 [Google's Agent Development Kit](https://google.github.io/adk-docs/) is a Python framework for building agents. The `ag-ui-adk` bridge exposes an ADK `LlmAgent` over the [AG-UI protocol](https://ag-ui.com), which is what lets a React app drive it with streaming, tool calls, shared state and generative UI.
 
-This repo covers a **scoped set of 32 doc pages** (§8). Each route implements what its page teaches and shows the exact source that makes it work, read off disk at render time.
+This repo covers a **scoped set of 35 doc pages** (§8). Each route implements what its page teaches and shows the exact source that makes it work, read off disk at render time.
 
 **Everything comes from the documentation.** Where a page defined an agent, tool or callback, it is reproduced. Where a page *named* something it never printed, §9 lists exactly what was filled in and why — that list is short and complete.
 
@@ -31,7 +31,7 @@ Tracks: **<https://docs.copilotkit.ai/google-adk>**
 ```
 Browser (React 19)
   │  @copilotkit/react-core/v2 — CopilotKitProvider, CopilotChat, hooks
-  │  POST /api/copilotkit
+  │  GET/POST/PATCH/DELETE /api/copilotkit/**
   ▼
 Next.js 16 App Router  ·  localhost:3000
   │  Copilot Runtime (@copilotkit/runtime)
@@ -52,9 +52,22 @@ Most routes use one. Two doc pages need configuration the main endpoint cannot c
 
 | Endpoint | Why it exists |
 |---|---|
-| `/api/copilotkit` | All 28 agents. Sets `a2ui: { injectA2UITool: false, agents: ["a2ui-fixed-schema"] }` — that agent owns its own `display_flight` tool and must not also be handed `generate_a2ui`. |
+| `/api/copilotkit/[[...slug]]` | All 28 agents. Sets `a2ui: { injectA2UITool: false, agents: ["a2ui-fixed-schema"] }` — that agent owns its own `display_flight` tool and must not also be handed `generate_a2ui`. |
 | `/api/copilotkit-voice/[[...slug]]` | `transcriptionService` exists only on the **v2** runtime; the v1 wrapper drops it. The catch-all lets the v2 handler own its sub-routing (`/info`, `/transcribe`, `/agent/:id/run`). |
-| `/api/copilotkit-declarative-gen-ui` | Needs A2UI tool injection **on**, which the main runtime turns off. |
+| `/api/copilotkit-declarative-gen-ui/[[...slug]]` | Needs A2UI tool injection **on**, which the main runtime turns off. |
+
+All three are the **v2** runtime and share `frontend/src/lib/copilot-runtime.ts`, so CopilotKit Intelligence and per-user threads are configured once. Each is a catch-all route (`[[...slug]]`) because the handler serves a subtree — `/info`, agent runs, and thread list/rename/delete — and exports four verbs, not one: `GET` serves `/info` and the thread list, `POST` runs agents, `PATCH`/`DELETE` rename, archive and delete threads.
+
+### CopilotKit Intelligence
+
+Two credentials that do different jobs and fail differently:
+
+| Variable | What it does | Without it |
+|---|---|---|
+| `INTELLIGENCE_API_KEY` | Puts the runtime in Intelligence mode — threads persist, thread endpoints return real rows. Server-side only. | Runtime falls back to SSE with an in-memory runner. Chat still works everywhere; the Rich Threads routes have nothing to list. |
+| `COPILOTKIT_LICENSE_TOKEN` *or* `NEXT_PUBLIC_COPILOTKIT_PUBLIC_LICENSE_KEY` | Advertises a licence. `/info` reports `licenseStatus` from it, and client-side feature UIs read that field. | `<CopilotThreadsDrawer>` renders its locked Upgrade view **even when threads work perfectly**. |
+
+`identifyUser` is required alongside `intelligence` — threads are per-user, so without it every visitor shares one history. The harness sends a fixed demo identity from the provider as `x-user-id` / `x-user-name`; override with `NEXT_PUBLIC_DEMO_USER_ID` to watch two thread lists diverge.
 
 ### The 28 agents
 
@@ -88,7 +101,9 @@ Ids follow each doc page's own demo id where it names one (`my_agent`, `agentic_
 | Google Gemini API key | — | **Required.** <https://aistudio.google.com/apikey> |
 | OpenAI API key | — | Optional. Only the mic on `/voice` uses it. |
 
-No CopilotKit Cloud account is needed; no route here requires one.
+| CopilotKit Intelligence key | — | Optional. Only the three Rich Threads routes need it; everything else runs without. <https://dashboard.operations.copilotkit.ai/> |
+
+Every chat route works with only a Gemini key. Intelligence is what makes threads persist — see §3.
 
 ---
 
@@ -143,6 +158,10 @@ cp .env.example frontend/.env.local
 | `GOOGLE_GEMINI_BASE_URL` | `backend/.env` | Optional Gemini proxy. Only Sub-Agents reads it. |
 | `AGENT_URL` | `frontend/.env.local` | Where the Next runtime forwards runs. Defaults `http://localhost:8000`. |
 | `OPENAI_API_KEY` | `frontend/.env.local` | Optional. Whisper transcription for the `/voice` mic only. |
+| `INTELLIGENCE_API_KEY` | `frontend/.env.local` | Optional. Puts the runtime in Intelligence mode so threads persist. Server-side — never prefix it `NEXT_PUBLIC_`. |
+| `COPILOTKIT_LICENSE_TOKEN` | `frontend/.env.local` | Optional. Advertises a licence so the Threads Drawer renders its real UI instead of the locked Upgrade view. |
+| `NEXT_PUBLIC_COPILOTKIT_PUBLIC_LICENSE_KEY` | `frontend/.env.local` | Optional. The client-side half of the same licence axis; either this or the token above works. |
+| `NEXT_PUBLIC_DEMO_USER_ID` / `_NAME` | `frontend/.env.local` | Optional. The identity `identifyUser` keys threads on. Change to watch two thread lists diverge. |
 | `NEXT_PUBLIC_COPILOTKIT_INSPECTOR` | `frontend/.env.local` | Optional. Set to `off` to disable the Inspector app-wide. Otherwise on for localhost only. |
 
 **Default ports:** frontend **3000**, agent server **8000**.
@@ -216,6 +235,16 @@ Code on a page is never a re-typed approximation: each page reads real files via
 **`/`** — Orientation, the architecture diagram, and the live agent roster.
 
 **`/quickstart`** — An ADK `LlmAgent` behind `ag-ui-adk`, reached over HTTP. **Try:** `Can you tell me a joke?` **Pass:** tokens stream. **Fail:** an error banner — check the Python server and its `GOOGLE_API_KEY`.
+
+### Rich Threads
+
+All three need `INTELLIGENCE_API_KEY` for real rows, and a licence for the drawer to render anything but its locked view — see §3.
+
+**`/prebuilt-components/copilot-threads-drawer`** — The drop-in conversation sidebar, wired with **no active-thread state of your own**. **Try:** send a message, press New Conversation, send another, then click back to the first row. **Pass:** two auto-named rows; clicking one replays that conversation. **Fail:** a locked "Threads are a CopilotKit Intelligence feature" panel — that is the licence check, not the runtime.
+
+**`/headless-threads`** — The same data through `useThreads` with a hand-built list, including **rename**, which the drawer omits. **Try:** press Rename on a row. **Pass:** the row relabels and survives a reload. **Fail:** rename/archive/delete do nothing — in SSE mode `/info` reports `mutations: false`.
+
+**`/threads-lifecycle`** — Where a `threadId` comes from and what moves it. **Try:** press New chat, then pick a conversation and press Open conversation vs Set id, no replay. **Pass:** the readout's `threadId` and `explicit` fields change, and only the explicit open replays history. **Fail:** the readout moves but the chat never replays — replay needs a server-side store.
 
 ### Prebuilt Components
 
@@ -310,6 +339,9 @@ Code on a page is never a re-typed approximation: each page reads real files via
 |---|---|---|---|
 | `/google-adk` | `/` | 📖 Reference | Orientation + agent roster. |
 | `/google-adk/quickstart?agent=bring-your-own` | `/quickstart` | ✅ Working | |
+| `/google-adk/prebuilt-components/copilot-threads-drawer` | `/prebuilt-components/copilot-threads-drawer` | ⚠️ Partial | Needs Intelligence mode for rows **and** a licence for the drawer to render unlocked — two separate switches. |
+| `/google-adk/headless-threads` | `/headless-threads` | ⚠️ Partial | Needs Intelligence mode. In SSE mode `/info` reports `mutations: false`, so rename/archive/delete have no endpoint. |
+| `/google-adk/threads-lifecycle` | `/threads-lifecycle` | ⚠️ Partial | Switch and start are live in either mode; history replay needs a server-side store, so it is inert in SSE mode. |
 | `/google-adk/prebuilt-components/chat` | `/prebuilt-components/chat` | ✅ Working | |
 | `/google-adk/prebuilt-components/sidebar` | `/prebuilt-components/sidebar` | ✅ Working | |
 | `/google-adk/prebuilt-components/popup` | `/prebuilt-components/popup` | ✅ Working | |
@@ -453,6 +485,44 @@ The fixed-schema pattern pairs a schema with action handlers so clicking Book sw
 | Console floods `unexpected parse state B` | Same cause | That assert is `lit-html`'s. Next mirrors every browser console line to the dev server, so the flood consumes memory on both sides. |
 | Want the inspector gone entirely | — | `NEXT_PUBLIC_COPILOTKIT_INSPECTOR=off` in `frontend/.env.local`, then restart. |
 | `npm install` ERESOLVE on zod | `zod` bumped to 4 | See §9 item 15. Stay on `^3.25.76`. |
+| **Dev server dies silently mid-session; a route "crashes"** | **The Linux OOM killer, not the app** | `dmesg -T | grep -i oom` — if it names `next-server`, see *Out-of-memory kills* below. |
+| A first page load takes minutes to compile | Cold Turbopack cache, or a dependency with a huge module graph | Expected once after `rm -rf .next`. If it repeats on every route, check what that route's graph pulls in — see §9. |
+
+### Out-of-memory kills
+
+The most confusing failure this repo has produced. The terminal shows a route
+compiling, then nothing — no stack trace, no exit message, just a dead server.
+It reads like the route crashed. It is the kernel killing `next-server`:
+
+```
+$ dmesg -T | grep -i "oom\|killed process"
+Out of memory: Killed process 4396 (next-server (v1) ... anon-rss:13841920kB
+```
+
+13.8 GB resident on a 16 GB machine. The route being compiled is incidental —
+whichever one you opened is the one that gets blamed.
+
+The cause is Turbopack's persistent dev cache at `.next/dev/cache/turbopack`.
+It is an append-only LSM store of `.sst` files, it is memory-mapped, and it is
+not pruned between restarts. In this repo it had reached **8.5 GB**. Two things
+keep it in bounds:
+
+1. **`turbopackMemoryEviction: "full"`** in `frontend/next.config.ts`. The
+   default is `"auto"`, which evicts only when it predicts a large saving or
+   detects pressure — too late to help here. `"full"` drops what it can after
+   every snapshot. The cache stays on disk, so restarts are still warm.
+2. **`rm -rf frontend/.next` when it gets large.** Check with
+   `du -sh frontend/.next`. Anything past a couple of GB is worth clearing; the
+   cost is one cold compile.
+
+If it still gets killed, turn the cache off entirely with
+`experimental: { turbopackFileSystemCacheForDev: false }` and accept a cold
+compile on every restart.
+
+Worth knowing before you blame the app: `free -h` before starting. This is a
+memory-hungry dev server sharing a box with a browser and an editor, and it
+will lose that fight quietly.
+
 
 ---
 
@@ -534,6 +604,7 @@ google-adk/
         │   ├── route-header.tsx
         │   └── ui.tsx                       # Panel, Callout, TryIt, KeyValue
         └── lib/
+            ├── copilot-runtime.ts          # ★ Intelligence + identifyUser, once
             ├── nav-config.ts                # ★ routes, docs, status — one source
             ├── agents.ts                    # ★ agent ids, mirrors registry.py
             ├── source.ts                    # server-only file reader
@@ -545,6 +616,8 @@ google-adk/
 ## 12. References
 
 **Getting Started** — [Quickstart (bring your own agent)](https://docs.copilotkit.ai/google-adk/quickstart?agent=bring-your-own)
+
+**Rich Threads** — [Threads Drawer](https://docs.copilotkit.ai/google-adk/prebuilt-components/copilot-threads-drawer) · [Headless Threads](https://docs.copilotkit.ai/google-adk/headless-threads) · [Thread & History Lifecycle](https://docs.copilotkit.ai/google-adk/threads-lifecycle)
 
 **Prebuilt Components** — [CopilotChat](https://docs.copilotkit.ai/google-adk/prebuilt-components/chat) · [CopilotSidebar](https://docs.copilotkit.ai/google-adk/prebuilt-components/sidebar) · [CopilotPopup](https://docs.copilotkit.ai/google-adk/prebuilt-components/popup) · [Open, close, and feedback](https://docs.copilotkit.ai/google-adk/prebuilt-components/chat-controls)
 
