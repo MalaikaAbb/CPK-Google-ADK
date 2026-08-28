@@ -485,6 +485,44 @@ The fixed-schema pattern pairs a schema with action handlers so clicking Book sw
 | Console floods `unexpected parse state B` | Same cause | That assert is `lit-html`'s. Next mirrors every browser console line to the dev server, so the flood consumes memory on both sides. |
 | Want the inspector gone entirely | — | `NEXT_PUBLIC_COPILOTKIT_INSPECTOR=off` in `frontend/.env.local`, then restart. |
 | `npm install` ERESOLVE on zod | `zod` bumped to 4 | See §9 item 15. Stay on `^3.25.76`. |
+| **Dev server dies silently mid-session; a route "crashes"** | **The Linux OOM killer, not the app** | `dmesg -T | grep -i oom` — if it names `next-server`, see *Out-of-memory kills* below. |
+| A first page load takes minutes to compile | Cold Turbopack cache, or a dependency with a huge module graph | Expected once after `rm -rf .next`. If it repeats on every route, check what that route's graph pulls in — see §9. |
+
+### Out-of-memory kills
+
+The most confusing failure this repo has produced. The terminal shows a route
+compiling, then nothing — no stack trace, no exit message, just a dead server.
+It reads like the route crashed. It is the kernel killing `next-server`:
+
+```
+$ dmesg -T | grep -i "oom\|killed process"
+Out of memory: Killed process 4396 (next-server (v1) ... anon-rss:13841920kB
+```
+
+13.8 GB resident on a 16 GB machine. The route being compiled is incidental —
+whichever one you opened is the one that gets blamed.
+
+The cause is Turbopack's persistent dev cache at `.next/dev/cache/turbopack`.
+It is an append-only LSM store of `.sst` files, it is memory-mapped, and it is
+not pruned between restarts. In this repo it had reached **8.5 GB**. Two things
+keep it in bounds:
+
+1. **`turbopackMemoryEviction: "full"`** in `frontend/next.config.ts`. The
+   default is `"auto"`, which evicts only when it predicts a large saving or
+   detects pressure — too late to help here. `"full"` drops what it can after
+   every snapshot. The cache stays on disk, so restarts are still warm.
+2. **`rm -rf frontend/.next` when it gets large.** Check with
+   `du -sh frontend/.next`. Anything past a couple of GB is worth clearing; the
+   cost is one cold compile.
+
+If it still gets killed, turn the cache off entirely with
+`experimental: { turbopackFileSystemCacheForDev: false }` and accept a cold
+compile on every restart.
+
+Worth knowing before you blame the app: `free -h` before starting. This is a
+memory-hungry dev server sharing a box with a browser and an editor, and it
+will lose that fight quietly.
+
 
 ---
 
