@@ -177,6 +177,18 @@ export const NAV: NavGroup[] = [
         status: "working",
       },
       {
+        path: "/custom-look-and-feel/markdown",
+        hasDemo: true,
+        agentId: "chat-slots",
+        title: "Markdown Rendering",
+        docPath: "/google-adk/custom-look-and-feel/markdown",
+        summary:
+          "The markdownRenderer slot in its three forms: a Streamdown components map, a class string, and a full replacement.",
+        status: "partial",
+        statusNote:
+          "Not yet checked in a browser. The my-link/my-heading CSS is harness-only because the doc never defines those classes. Reuses the chat-slots agent because the doc names no backend.",
+      },
+      {
         path: "/custom-look-and-feel/headless-ui",
         hasDemo: true,
         agentId: "headless-simple",
@@ -297,6 +309,42 @@ export const NAV: NavGroup[] = [
         statusNote:
           "The Book button is inert: a2ui.render in the Python SDK does not yet accept action_handlers.",
       },
+      {
+        path: "/generative-ui/open-generative-ui",
+        hasDemo: true,
+        agentId: "open_gen_ui",
+        title: "Open Generative UI",
+        docPath: "/google-adk/generative-ui/open-generative-ui",
+        summary:
+          "The agent writes sandboxed HTML/CSS/JS that streams into an iframe, optionally calling back into host functions.",
+        status: "partial",
+        statusNote:
+          "Not yet checked in a browser. The page publishes no agent, and uses headers, Chat and VISUALIZATION_DESIGN_SKILL without defining them. It imports an unpublished ./suggestions, and the advanced snippet is cut off. The route lists each gap and what fills it.",
+      },
+      {
+        path: "/generative-ui/json-render",
+        hasDemo: true,
+        agentId: "byoc_json_render",
+        title: "JSON Render",
+        docPath: "/google-adk/generative-ui/json-render",
+        summary:
+          "An agent-emitted { root, elements } spec, meant to be validated against a Zod catalog and drawn by @json-render/react.",
+        status: "broken",
+        statusNote:
+          "As published it throws: the missing custom code is filled in, but the doc's <Renderer spec catalog> call is kept. @json-render/react 0.21 takes registry and needs JSONUIProvider. The demo's \"fixed\" mode has the working version, not yet checked in a browser.",
+      },
+      {
+        path: "/generative-ui/hashbrown",
+        hasDemo: true,
+        agentId: "byoc_hashbrown",
+        title: "Hashbrown",
+        docPath: "/google-adk/generative-ui/hashbrown",
+        summary:
+          "Streamed JSON meant to be parsed progressively by @hashbrownai/react and rendered through a component catalog.",
+        status: "broken",
+        statusNote:
+          "Broken by design: the missing custom code is filled in, but the doc's hook calls are kept as published. In 0.6.1 useJsonParser needs a schema and useUiKit takes { components }, so the first reply throws.",
+      },
     ],
   },
   {
@@ -321,6 +369,18 @@ export const NAV: NavGroup[] = [
         summary:
           "useHumanInTheLoop suspending the run behind a picker until the user answers.",
         status: "working",
+      },
+      {
+        path: "/human-in-the-loop/governed-actions",
+        hasDemo: true,
+        agentId: "governed-actions",
+        title: "Governed Action Approval UI",
+        docPath: "/google-adk/human-in-the-loop/governed-actions",
+        summary:
+          "Gating a side-effecting action behind an approve/reject card, driven by the action's verdict.",
+        status: "partial",
+        statusNote:
+          "Not yet checked in a browser. Only the useHumanInTheLoop half can run. useInterrupt needs an AG-UI interrupt, which ag-ui-adk never emits. No policy engine, agent or executeSideEffect is published, so the verdict is whatever the model writes.",
       },
       {
         path: "/programmatic-control",
@@ -450,6 +510,18 @@ export const NAV: NavGroup[] = [
         summary:
           "A typed config object the UI owns, published with useAgentContext and rebuilt into the system prompt each turn.",
         status: "working",
+      },
+      {
+        path: "/agent-app-context",
+        hasDemo: true,
+        agentId: "agent-app-context",
+        title: "Agent App Context",
+        docPath: "/google-adk/agent-app-context",
+        summary:
+          "useAgentContext sending app data, read into an ADK prompt through an InstructionProvider.",
+        status: "partial",
+        statusNote:
+          "Not yet checked in a browser. Frontend and agent are the doc's, verbatim. The tool-reading example is a stub on the page and is shown as text only.",
       },
     ],
   },

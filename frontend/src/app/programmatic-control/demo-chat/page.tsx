@@ -1,6 +1,6 @@
 "use client";
 
-import { useAgent, useCopilotKit } from "@copilotkit/react-core/v2";
+import { CopilotSidebar, useAgent, useCopilotKit } from "@copilotkit/react-core/v2";
 import { useCallback, useState } from "react";
 
 import { DemoFrame } from "@/components/demo-frame";
@@ -41,81 +41,33 @@ export default function Page() {
 }
 
 function Chat({ agentId }: { agentId: string }) {
-   const { agent } = useAgent({ agentId });
+  const { agent } = useAgent({ agentId });
   const { copilotkit } = useCopilotKit();
-
-  const {
-    attachments,
-    fileInputRef,
-    containerRef,
-    handleFileUpload,
-    handleDragOver,
-    handleDragLeave,
-    handleDrop,
-    dragOver,
-    removeAttachment,
-    consumeAttachments,
-  } = useAttachmentsConfig();
-
-  const [input, setInput] = useState("");
-  const messages = agent.messages;
-  const { listRef, bottomRef, stickRef } = useAutoScroll(
-    messages,
-    agent.isRunning,
-  );
-
-  // Send pipeline: consume any ready attachments at submit time, build
-  // the multimodal `content` array if needed, then dispatch the run.
-  const sendText = useCallback(
-    (text: string) => {
-      const trimmed = text.trim();
-      // Consume queued uploads first so they get sent even if the user
-      // didn't type any text alongside them.
-      const ready = consumeAttachments();
-      if (!trimmed && ready.length === 0) return;
-      if (agent.isRunning) return;
-
-      stickRef.current = true;
-
-      const content = buildContent(trimmed, ready);
-      agent.addMessage({
-        id: crypto.randomUUID(),
-        role: "user",
-        content,
-      });
-      void copilotkit
-        .runAgent({ agent })
-        .catch((err) =>
-          console.error("[headless-complete] runAgent failed", err),
-        );
-    },
-    [agent, copilotkit, consumeAttachments],
-  );
-
-  const handleSend = useCallback(() => {
-    sendText(input);
-    setInput("");
-  }, [input, sendText]);
-
-  const handleSuggestion = useCallback(
-    (text: string) => {
-      sendText(text);
-    },
-    [sendText],
-  );
-
-  const handleReset = useCallback(() => {
-    if (agent.isRunning) {
-      try {
-        agent.abortRun();
-      } catch {
-        // no-op: some transports don't support abort
-      }
+  const run = async () => {
+    if (agent.isRunning) return;
+    agent.addMessage({
+      id: crypto.randomUUID(),
+      role: "user",
+      content: "Summarize the latest sales data",
+    });
+    try {
+      await copilotkit.runAgent({ agent });
+    } catch (error) {
+      console.error("CopilotKit runAgent failed:", error);
     }
-    agent.setMessages([]);
-    setInput("");
-    stickRef.current = true;
-  }, [agent]);
-
-  return (<></>)
+  };
+  return (
+    <>
+      <button onClick={run} disabled={agent.isRunning}>
+        Run agent
+      </button>
+      <button
+        onClick={() => copilotkit.stopAgent({ agent })}
+        disabled={!agent.isRunning}
+      >
+        Stop
+      </button>
+      <CopilotSidebar agentId={agentId} defaultOpen={true} />
+    </>
+  );
 }

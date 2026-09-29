@@ -29,8 +29,13 @@ export const AGENT_IDS = [
   "gen-ui-tool-based",
   "a2ui-fixed-schema",
   "declarative-gen-ui",
+  "open_gen_ui",
+  "open_gen_ui_advanced",
+  "byoc_json_render",
+  "byoc_hashbrown",
   "frontend_tools",
   "hitl-in-chat",
+  "governed-actions",
   "programmatic-control",
   "shared-state-read-write",
   "shared-state-streaming",
@@ -40,6 +45,7 @@ export const AGENT_IDS = [
   "workflow-execution",
   "subagents",
   "agent-config",
+  "agent-app-context",
 ] as const;
 
 export type AgentId = (typeof AGENT_IDS)[number];

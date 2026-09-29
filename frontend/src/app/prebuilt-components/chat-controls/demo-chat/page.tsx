@@ -2,6 +2,7 @@
 
 import {
   CopilotChatConfigurationProvider,
+  CopilotPopup,
   CopilotSidebar,
   useCopilotChatConfiguration,
 } from "@copilotkit/react-core/v2";
@@ -41,6 +42,7 @@ export default function Page() {
       >
         <div className="h-full overflow-hidden">
           <CopilotSidebar
+            position="left"
             agentId="chat-controls"
             defaultOpen={false}
             messageView={{
@@ -87,7 +89,7 @@ function MainContent({ feedback }: { feedback: Feedback[] }) {
         </p>
         {feedback.length === 0 ? (
           <p className="mt-3 rounded-lg border border-dashed border-slate-300 px-4 py-6 text-center text-sm text-slate-500 dark:border-slate-700">
-            Send a message, then rate the reply.
+            Send a message, then rate the reply. (Use SIDEBAR)
           </p>
         ) : (
           <ul className="mt-3 space-y-1.5">
@@ -107,19 +109,16 @@ function MainContent({ feedback }: { feedback: Feedback[] }) {
 }
 
 function OpenChatButton() {
-  const config = useCopilotChatConfiguration();
-
-  // setModalOpen is only present when a provider in the tree owns modal state
-  // (the prebuilt CopilotPopup / CopilotSidebar create it for you).
-  if (!config?.setModalOpen) return null;
-
+  const [chatOpen, setChatOpen] = useState(false);
   return (
-    <button
-      onClick={() => config.setModalOpen?.(true)}
-      className="rounded-md bg-[var(--accent)] px-3 py-1.5 text-sm font-medium text-white"
-    >
-      Ask the assistant
-    </button>
+     <>
+    <nav>
+        <button onClick={() => setChatOpen(!chatOpen)} className="rounded-md bg-[var(--accent)] px-3 py-1.5 text-sm font-medium text-white">
+          Ask the assistant (Pop up)
+        </button>
+      </nav>
+    <CopilotPopup agentId="chat-controls" open={chatOpen} onOpenChange={setChatOpen} />
+    </>
   );
 }
 
@@ -132,7 +131,9 @@ function ToggleChatButton() {
       onClick={() => config.setModalOpen?.(!config.isModalOpen)}
       className="rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 dark:border-slate-700 dark:text-slate-200"
     >
-      {config.isModalOpen ? "Close chat" : "Open chat"}
+      {config.isModalOpen ? "Close Sidebar" : "Open Sidebar"}
     </button>
+   
+     
   );
 }

@@ -2,6 +2,7 @@
 
 > The Copilot Runtime is the backend that connects your frontend to your AI agents, providing authentication, middleware, routing, and more.
 
+
 The Copilot Runtime is the backend layer that connects your frontend application to your AI agents. It's set up during the [quickstart](/google-adk/quickstart) and is the recommended way to use CopilotKit.
 
 ## Setting up the runtime
@@ -29,6 +30,8 @@ const handler = createCopilotRuntimeHandler({
 
 export const GET = handler;
 export const POST = handler;
+export const PATCH = handler;
+export const DELETE = handler;
 ```
 
 Then point your frontend at the endpoint:
@@ -77,6 +80,81 @@ The runtime supports multiple agent types. `BuiltInAgent` is the primary agent c
 - **Simple mode:** pass a model string and let CopilotKit handle the rest. Best for quick setup. See [Quickstart](/google-adk/quickstart).
 - **Factory mode:** bring your own AI SDK, TanStack AI, or custom LLM backend. Best when you need full control. See [Factory Mode](/google-adk/backend/custom-agent).
 
+<Callout type="warn" title="Wiring an external agent: what to pass, and which URL">
+Two mistakes account for most failures here.
+
+`agents` takes `AbstractAgent` instances. A framework's own SDK client is not one — pass the
+`@ag-ui/<framework>` wrapper for it, or a plain `HttpAgent`, rather than the client itself.
+
+And the URL an external agent takes is its **own** server or deployment, not
+`/api/copilotkit`. That path is the browser-to-runtime hop; this is the runtime-to-agent hop,
+and they are different addresses. Each integration guide names the exact URL its framework
+serves, including any required suffix.
+</Callout>
+
+<Callout type="warn" title="One agent instance runs one turn at a time">
+A `BuiltInAgent` refuses a second concurrent run on itself, with
+`Agent is already running. Call abortRun() first or create a new instance.` The instance in
+the examples here is created once at module scope, so on a server handling more than one
+person the second concurrent request is the one that fails.
+
+Per-thread state lives in the runner, not the agent, so the fix is to give each concurrent
+run its own agent instance — construct it inside the request rather than at module scope —
+or to serialise turns per user. A single shared instance is fine for local development and
+for a single-user surface.
+</Callout>
+
+## Which name identifies an agent
+
+The name you use to address an agent from the frontend must equal a **key of the
+runtime's `agents` map**. That key is the only name the frontend can ask for. An
+agent's own `name`, `id`, or class name is never used for routing, and the two are
+free to differ.
+
+```ts title="app/api/copilotkit/[[...slug]]/route.ts"
+const runtime = new CopilotRuntime({
+  agents: {
+    // `my_agent` is the key — the one string the frontend may ask for.
+    my_agent: new HttpAgent({ url: "http://localhost:8000/" }),
+  },
+});
+```
+
+
+```tsx title="app/providers.tsx"
+<CopilotKit runtimeUrl="/api/copilotkit" agent="my_agent" useSingleEndpoint={false}>
+  <YourApp />
+</CopilotKit>
+```
+
+
+
+
+Most integrations write that key literally in the runtime route, as above, so the
+binding is visible in one file. Some derive it instead, and that is where the rule
+stops being obvious:
+
+- **Mastra** — `MastraAgent.getRemoteAgents` and `getLocalAgents` both build the map
+  from `listAgents()`, which is keyed by the **record key** in
+  `new Mastra({ agents: { ... } })`, not by the agent's `id`. Given
+  `new Agent({ name: "My Agent" })` exported as `myAgent` and registered as
+  `agents: { myAgent }`, the runtime key is `myAgent`.
+- **LangGraph** — `graphId` is a *separate* binding, from the runtime to a key in your
+  deployment's `langgraph.json`. It does not have to equal the runtime's agents-map
+  key, and it is not the name the frontend asks for. The starter template happens to
+  use `sample_agent` for both.
+
+<Callout type="warn" title="An agent's declared name is not its routing key">
+  Asking for a name the runtime did not register resolves no agent, and the frontend
+  raises `CopilotKitAgentDiscoveryError` — see [Agent discovery
+  failed](/google-adk/troubleshooting/error-reference). The error message lists the keys the
+  runtime actually returned, which is the quickest way to see the real names.
+</Callout>
+
+To read the registered keys directly, hit `GET {runtimeUrl}/info`. It returns the
+agents the runtime advertises, under exactly the names the frontend must use.
+
+
 ## The default agent
 
 If you register an agent under the name `"default"`, CopilotKit's prebuilt UI components will use it automatically without any additional configuration on the frontend. This is useful when you have one primary agent and don't want to specify an `agentId` everywhere.
@@ -112,45 +190,52 @@ When you register multiple agents, the runtime handles discovery and routing aut
 
 [Threads](/google-adk/threads), the [inspector](/google-adk/inspector), and other CopilotKit Intelligence capabilities are provided through the runtime. These give you conversation persistence and debugging without extra setup.
 
-The examples below take `intelligence` and `identifyUser` as given. `intelligence` is a `CopilotKitIntelligence` instance — see [Connect your runtime to Intelligence](/google-adk/premium/connect-your-runtime) for the constructor and where the project API key comes from.
+The examples below take `intelligence` and `identifyUser` as given. `intelligence` is a `CopilotKitIntelligence` instance — see [Connect your runtime to Intelligence](/google-adk/intelligence/quickstart) for the constructor and where the project API key comes from.
 
 #### Assign Threads to Learning Containers
 
-Create a Learning Container in your Intelligence Project, then pass its stable
-ID to the Runtime:
+Create a Learning Container in your Intelligence Project, then choose its stable
+ID in the Intelligence SDK:
 
 ```ts title="runtime.ts"
-const runtime = new CopilotRuntime({
-  agents: { default: myAgent },
-  intelligence,
-  identifyUser,
-  ɵlearning: {
-    containerId: "support-quality",
+const intelligence = new CopilotKitIntelligence({
+  apiKey: process.env.CPK_INTELLIGENCE_API_KEY!,
+  getLearningContainerId: () => "support-quality",
+});
+```
+
+The selector receives the resolved application user and the AG-UI run input.
+The same API handles web and Channel runs:
+
+```ts title="runtime.ts"
+const intelligence = new CopilotKitIntelligence({
+  apiKey: process.env.CPK_INTELLIGENCE_API_KEY!,
+  getLearningContainerId: async ({ surface, user, agentId, input }) => {
+    return chooseLearningContainer({
+      surface,
+      user,
+      agentId,
+      threadId: input.threadId,
+      runId: input.runId,
+      state: input.state,
+      messages: input.messages,
+      forwardedProps: input.forwardedProps,
+    });
   },
 });
 ```
 
-Use a callback when the Container depends on the run. The same callback handles
-web and Channel runs:
+For web runs, `user` is the full result from `identifyUser`. For Channel runs,
+it is the application user resolved by the Channel identity strategy, or `null`
+when no application user was resolved. `input` contains the parsed run fields,
+including `threadId`, `runId`, `messages`, `state`, `tools`, `context`, and
+`forwardedProps`.
 
-```ts title="runtime.ts"
-const runtime = new CopilotRuntime({
-  agents: { default: myAgent },
-  intelligence,
-  identifyUser,
-  channels: [supportChannel],
-  ɵlearning: {
-    containerId: async ({ surface, agentId, userId, threadId }) => {
-      return chooseLearningContainer({ surface, agentId, userId, threadId });
-    },
-  },
-});
-```
-
-The callback runs once per agent run. Return a 1–64 character stable ID made
-from lowercase letters, numbers, and single hyphens. Return `null` to leave the
-Thread unassigned. A Thread can receive its first assignment when it is created
-or locked, but it cannot move to another Learning Container later.
+The callback runs once for each attempted agent run. Return a 1–64 character
+stable ID made from lowercase letters, numbers, and single hyphens. Return
+`null` or `undefined` to leave the Thread unassigned. Always return the same ID
+for the same Thread. A Thread cannot move after its first assignment, and a
+Thread with an earlier agent run cannot receive its first assignment later.
 
 The Runtime sends only the Container ID with the normal Thread create and lock
 calls. It does not upload transcripts. The Intelligence AgentRunner's persisted
@@ -264,6 +349,10 @@ forwardHeaders: { allow: ["authorization", "x-tenant-id"] }
 <Callout type="warn" title="Allowlist mode bypasses the default denylist">
 In allowlist mode the built-in denylist does **not** apply — only your `allow` set (minus your own `deny`) forwards. Don't allow-list protected headers such as `x-copilotcloud-public-api-key` or `x-forwarded-*` unless you truly intend to forward them, since the default protection isn't there to catch them.
 </Callout>
+
+## Keeping quiet streams alive
+
+A run can be silent for a long time while the agent reasons or waits on a slow tool. The runtime writes a `: keep-alive` SSE comment after 15 seconds without output so proxies and browsers with idle timeouts keep the connection open. Comments are transport frames: they never become AG-UI events. Tune or disable this with `sseKeepAliveIntervalSeconds` (`0` disables it).
 
 ## Connecting to an AG-UI agent directly
 

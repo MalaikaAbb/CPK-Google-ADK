@@ -21,7 +21,7 @@ from google.adk.agents import LlmAgent
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.models.llm_request import LlmRequest
 from google.adk.models.llm_response import LlmResponse
-
+from google.adk.agents.readonly_context import ReadonlyContext
 from agents.shared_chat import MODEL, stop_on_terminal_text
 
 
@@ -63,20 +63,22 @@ def _inject_context(
 
 
 #region agent
-_INSTRUCTION = (
-    "You are an in-app assistant. The application tells you who the user is, "
-    "what timezone they are in, and what they have been doing. Answer "
-    "questions about that context directly and specifically. If the user asks "
-    "you to change any of it, explain that those values belong to the app and "
-    "you can only read them."
-)
+def instructions(ctx: ReadonlyContext) -> str:
+    entries = ctx.state.get(CONTEXT_STATE_KEY, [])
+    context = "\n".join(
+        f"{entry['description']}: {entry['value']}" for entry in entries
+    )
+    return (
+        "Help the user using the following read-only application context.\n"
+        + context
+    )
 
 readonly_state_agent_context_agent = LlmAgent(
     name="ReadonlyStateAgentContextAgent",
     model=MODEL,
-    instruction=_INSTRUCTION,
+    instruction=instructions,
     tools=[AGUIToolset()],
-    before_model_callback=_inject_context,
+    #before_model_callback=_inject_context,
     after_model_callback=stop_on_terminal_text,
 )
 #endregion

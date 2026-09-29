@@ -7,10 +7,10 @@ import { DemoFrame } from "@/components/demo-frame";
 /**
  * The Quickstart's `app/page.tsx`, which is a heading and a `<CopilotSidebar />`.
  *
- * The doc names the agent once, on the provider (`agent="my_agent"`). This app
- * has a single root provider shared by every route, so the agent is named per
- * surface with `agentId` instead — same binding, chosen at the component
- * rather than the tree.
+ * The doc names the agent once, on the provider (`agent="my_agent"`), so the
+ * sidebar here is bare too. That works because this route renders the doc's
+ * own `providers.tsx` via `layout.tsx` rather than the app-wide provider.
+ * `defaultOpen` is the one harness addition, so the chat is visible on load.
  */
 export default function Page() {
   return (
@@ -23,7 +23,7 @@ export default function Page() {
           The sidebar on the right is talking to an ADK <code>LlmAgent</code>{" "}
           running in the Python server on port 8000. Ask it anything.
         </p>
-        <CopilotSidebar agentId="my_agent" defaultOpen />
+        <CopilotSidebar defaultOpen />
       </main>
     </DemoFrame>
   );

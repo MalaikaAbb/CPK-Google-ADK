@@ -124,3 +124,79 @@ reasoning_custom_agent = build_thinking_chat_agent(
     instruction=_REASONING_INSTRUCTION,
 )
 #endregion
+
+
+#region doc-gap-agents
+# Pages that publish no agent at all. Each gets the same generic shape as the
+# frontend-only routes above, and no instruction beyond `_GENERIC`: writing a
+# page-specific prompt would be supplying the half the doc left out.
+
+# Governed Action Approval UI — the page is frontend-only. The model learns
+# about `approve_governed_action` purely from the tool description the
+# frontend registers.
+governed_actions_agent = build_simple_chat_agent(
+    name="GovernedActionsAgent",
+    instruction=_GENERIC,
+)
+
+# Open Generative UI — the page's runtime points at `/open_gen_ui` and
+# `/open_gen_ui_advanced` but never shows either agent. `generateSandboxedUi`
+# reaches the model as a frontend tool, through `AGUIToolset()`.
+open_gen_ui_agent = build_simple_chat_agent(
+    name="OpenGenUiAgent",
+    instruction=_GENERIC,
+)
+
+open_gen_ui_advanced_agent = build_simple_chat_agent(
+    name="OpenGenUiAdvancedAgent",
+    instruction=_GENERIC,
+)
+#endregion
+
+
+#region byoc-agents
+# JSON Render and Hashbrown. Neither page shows an agent or a prompt; both
+# only show the JSON the agent should reply with. These instructions are
+# harness-authored and ask for exactly those shapes, component names and props
+# taken from the pages' catalogs. They are the one piece of substance on these
+# routes that did not come from the docs.
+
+_BYOC_DATA_NOTE = (
+    "There is no real data source: use plausible illustrative sales numbers. "
+    "Reply with the JSON object only — no prose, no code fences."
+)
+
+byoc_json_render_agent = build_simple_chat_agent(
+    name="ByocJsonRenderAgent",
+    instruction=(
+        "You draw dashboards by replying with a single JSON object of the form "
+        '{"root": "<id>", "elements": {"<id>": {"type": ..., "props": {...}, '
+        '"children": ["<id>", ...]}}}. `root` is the id of the top-level '
+        "element; every id in `children` must be a key in `elements`.\n"
+        "Element types:\n"
+        "- Stack: no props; lays out its children.\n"
+        "- MetricCard: props {title: string, value: number, delta?: number}.\n"
+        "- BarChart: props {data: [{label: string, value: number}]}.\n"
+        "- PieChart: props {data: [{label: string, value: number}]}.\n"
+        "Use a Stack as the root when there is more than one element. "
+        + _BYOC_DATA_NOTE
+    ),
+)
+
+byoc_hashbrown_agent = build_simple_chat_agent(
+    name="ByocHashbrownAgent",
+    instruction=(
+        "You draw dashboards by replying with a single JSON object. Each node "
+        'has a "type" and its props as sibling keys; a Stack node holds a '
+        '"children" array of nodes. Example: {"type": "Stack", "children": '
+        '[{"type": "MetricCard", "title": "Total revenue", "value": 184302}, '
+        '{"type": "BarChart", "data": [{"label": "North", "value": 52000}]}]}.\n'
+        "Node types:\n"
+        "- Stack: children only.\n"
+        "- MetricCard: title (string), value (number), delta (number, optional).\n"
+        "- BarChart: data, a list of {label: string, value: number}.\n"
+        "- PieChart: data, a list of {label: string, value: number}.\n"
+        + _BYOC_DATA_NOTE
+    ),
+)
+#endregion

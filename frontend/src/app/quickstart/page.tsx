@@ -76,6 +76,38 @@ export default function Page() {
       </Panel>
 
       <Panel
+        title="The provider"
+        description="The doc's providers.tsx, verbatim, and the layout that renders it around the demo."
+      >
+        <SourceCodeGroup
+          files={[
+            { file: "frontend/src/app/quickstart/demo-chat/providers.tsx" },
+            { file: "frontend/src/app/quickstart/demo-chat/layout.tsx" },
+          ]}
+        />
+      </Panel>
+
+      <Callout tone="info" title="Why the demo has its own provider">
+        <p>
+          The rest of this app shares one root provider so chats survive
+          navigation. The Quickstart demo swaps in the doc&apos;s own{" "}
+          <code>Providers</code> instead, so what you exercise is exactly what
+          the page tells you to write: <code>agent=&quot;my_agent&quot;</code>{" "}
+          on the provider (the sidebar is bare), and{" "}
+          <code>useSingleEndpoint={"{false}"}</code>, which pins the client to
+          the REST transport — one URL per operation under{" "}
+          <code>/api/copilotkit</code>, which is why the route has to be{" "}
+          <code>[[...slug]]</code>.
+        </p>
+        <p className="mt-2">
+          Side effects of copying it verbatim: no <code>x-user-id</code> header
+          is sent, so <code>identifyUser</code> resolves this route&apos;s
+          threads to <code>anonymous</code>, and the inspector follows the
+          package default (localhost only) rather than the harness kill switch.
+        </p>
+      </Callout>
+
+      <Panel
         title="The four files that make it work"
         description="Read from this repo, so they can be diffed against the doc's samples directly."
       >

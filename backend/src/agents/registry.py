@@ -22,6 +22,7 @@ from agents import chat_agents
 from agents.a2ui_fixed_agent import a2ui_fixed_agent
 from agents.agent_config_agent import agent_config_agent
 from agents.declarative_gen_ui_agent import declarative_gen_ui_agent
+from agents.agent_app_context_agent import colleagues_agent
 from agents.hitl_in_chat_agent import hitl_in_chat_agent
 from agents.predictive_state_updates_agent import predictive_state_updates_agent
 from agents.quickstart_agent import agent as quickstart_agent
@@ -118,6 +119,23 @@ REGISTRY: dict[str, RegisteredAgent] = {
         declarative_gen_ui_agent,
         "/google-adk/generative-ui/a2ui/dynamic-schema",
     ),
+    # Open Generative UI. Ids are the URL paths the page's runtime points at
+    # (`${AGENT_URL}/open_gen_ui`); the runtime names them `open-gen-ui`.
+    "open_gen_ui": RegisteredAgent(
+        chat_agents.open_gen_ui_agent,
+        "/google-adk/generative-ui/open-generative-ui",
+    ),
+    "open_gen_ui_advanced": RegisteredAgent(
+        chat_agents.open_gen_ui_advanced_agent,
+        "/google-adk/generative-ui/open-generative-ui",
+    ),
+    "byoc_json_render": RegisteredAgent(
+        chat_agents.byoc_json_render_agent,
+        "/google-adk/generative-ui/json-render",
+    ),
+    "byoc_hashbrown": RegisteredAgent(
+        chat_agents.byoc_hashbrown_agent, "/google-adk/generative-ui/hashbrown"
+    ),
 
     # App control
     "frontend_tools": RegisteredAgent(
@@ -125,6 +143,10 @@ REGISTRY: dict[str, RegisteredAgent] = {
     ),
     "hitl-in-chat": RegisteredAgent(
         hitl_in_chat_agent, "/google-adk/human-in-the-loop"
+    ),
+    "governed-actions": RegisteredAgent(
+        chat_agents.governed_actions_agent,
+        "/google-adk/human-in-the-loop/governed-actions",
     ),
     "programmatic-control": RegisteredAgent(
         chat_agents.programmatic_control_agent, "/google-adk/programmatic-control"
@@ -164,5 +186,8 @@ REGISTRY: dict[str, RegisteredAgent] = {
 
     # Agent config
     "agent-config": RegisteredAgent(agent_config_agent, "/google-adk/agent-config"),
+    "agent-app-context": RegisteredAgent(
+        colleagues_agent, "/google-adk/agent-app-context"
+    ),
 }
 #endregion

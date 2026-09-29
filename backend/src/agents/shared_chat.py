@@ -31,84 +31,105 @@ MODEL = "gemini-2.5-flash"
 
 
 #region stop-on-terminal-text
+# def stop_on_terminal_text(
+#     callback_context: CallbackContext, llm_response: LlmResponse
+# ) -> Optional[LlmResponse]:
+#     """Terminate the ADK agentic loop on a final text-only model turn.
+
+#     Lifted from the (orphaned) `simple_after_model_modifier` in
+#     `agents/main.py`, with the SalesPipelineAgent name-gate removed so it
+#     applies to every registered agent. Guards:
+
+#     1. Skip partial streaming events — never end on a mid-stream chunk
+#        (belt-and-suspenders with `ADK_DISABLE_PROGRESSIVE_SSE_STREAMING=1`
+#        in `entrypoint.sh`).
+#     2. Only terminate when the final non-partial response contains TEXT
+#        and NO pending function_call — mixed text+function_call responses
+#        (a known Gemini Flash quirk) must NOT terminate.
+#     3. `_invocation_context` is an ADK private attribute; if it disappears
+#        in a future ADK release, log-and-degrade rather than crash the
+#        callback (which would stall the request).
+
+#     Without this guard, Gemini calls the same tool indefinitely after a
+#     successful tool result because no native termination condition fires.
+#     """
+#     content = llm_response.content
+#     if not content or not content.parts:
+#         if llm_response.error_message:
+#             logger.warning(
+#                 "stop_on_terminal_text: Gemini returned error_message for agent=%s: %s",
+#                 callback_context.agent_name,
+#                 llm_response.error_message,
+#             )
+#         return None
+
+#     if getattr(llm_response, "partial", False):
+#         return None
+
+#     # Under thinking mode (`include_thoughts=True`), Gemini emits a turn
+#     # as TWO separate non-partial chunks:
+#     #   1. text-only chunk: thought + reply text, `finish_reason=None`
+#     #   2. function_call-only chunk: `finish_reason=FUNCTION_CALL`
+#     # The callback fires on both. Without the finish_reason guard below,
+#     # chunk 1's text-without-function-call shape causes premature
+#     # termination — the function call in chunk 2 still streams but the
+#     # agentic loop is already marked `end_invocation=True`, so the
+#     # post-tool-result re-invocation that would chain to the next tool
+#     # never happens (tool-rendering-reasoning-chain AAPL→MSFT regression).
+#     # Only terminate when Gemini signals the turn is genuinely done with
+#     # `finish_reason=STOP` (no further chunks coming). FUNCTION_CALL and
+#     # None mean "more chunks are inbound" — defer.
+#     finish_reason = getattr(llm_response, "finish_reason", None)
+#     finish_reason_name = (
+#         getattr(finish_reason, "name", None) if finish_reason is not None else None
+#     )
+#     if finish_reason_name != "STOP" and finish_reason != "STOP":
+#         return None
+
+#     has_text = any(getattr(part, "text", None) for part in content.parts)
+#     has_function_call = any(
+#         getattr(part, "function_call", None) for part in content.parts
+#     )
+#     if content.role != "model" or not has_text or has_function_call:
+#         return None
+
+#     invocation_context = getattr(callback_context, "_invocation_context", None)
+#     if invocation_context is None:
+#         logger.debug(
+#             "stop_on_terminal_text: callback_context has no "
+#             "_invocation_context attribute; skipping end_invocation."
+#         )
+#         return None
+
+#     try:
+#         invocation_context.end_invocation = True
+#     except AttributeError:
+#         logger.debug(
+#             "stop_on_terminal_text: _invocation_context lacks "
+#             "end_invocation; ADK private-API shape may have drifted."
+#         )
+#     return None
+
 def stop_on_terminal_text(
     callback_context: CallbackContext, llm_response: LlmResponse
-) -> Optional[LlmResponse]:
-    """Terminate the ADK agentic loop on a final text-only model turn.
-
-    Lifted from the (orphaned) `simple_after_model_modifier` in
-    `agents/main.py`, with the SalesPipelineAgent name-gate removed so it
-    applies to every registered agent. Guards:
-
-    1. Skip partial streaming events — never end on a mid-stream chunk
-       (belt-and-suspenders with `ADK_DISABLE_PROGRESSIVE_SSE_STREAMING=1`
-       in `entrypoint.sh`).
-    2. Only terminate when the final non-partial response contains TEXT
-       and NO pending function_call — mixed text+function_call responses
-       (a known Gemini Flash quirk) must NOT terminate.
-    3. `_invocation_context` is an ADK private attribute; if it disappears
-       in a future ADK release, log-and-degrade rather than crash the
-       callback (which would stall the request).
-
-    Without this guard, Gemini calls the same tool indefinitely after a
-    successful tool result because no native termination condition fires.
-    """
+) -> None:
     content = llm_response.content
-    if not content or not content.parts:
-        if llm_response.error_message:
-            logger.warning(
-                "stop_on_terminal_text: Gemini returned error_message for agent=%s: %s",
-                callback_context.agent_name,
-                llm_response.error_message,
-            )
-        return None
+    if llm_response.partial or not content or content.role != "model":
+        return
+    finish_reason = llm_response.finish_reason
+    if getattr(finish_reason, "name", finish_reason) != "STOP":
+        return
+    parts = content.parts or []
+    if not any(part.text for part in parts) or any(part.function_call for part in parts):
+        return
+    # ADK's invocation context is private; tolerate SDK changes.
+    invocation = getattr(callback_context, "_invocation_context", None)
+    if invocation is not None:
+        try:
+            invocation.end_invocation = True
+        except AttributeError:
+            pass
 
-    if getattr(llm_response, "partial", False):
-        return None
-
-    # Under thinking mode (`include_thoughts=True`), Gemini emits a turn
-    # as TWO separate non-partial chunks:
-    #   1. text-only chunk: thought + reply text, `finish_reason=None`
-    #   2. function_call-only chunk: `finish_reason=FUNCTION_CALL`
-    # The callback fires on both. Without the finish_reason guard below,
-    # chunk 1's text-without-function-call shape causes premature
-    # termination — the function call in chunk 2 still streams but the
-    # agentic loop is already marked `end_invocation=True`, so the
-    # post-tool-result re-invocation that would chain to the next tool
-    # never happens (tool-rendering-reasoning-chain AAPL→MSFT regression).
-    # Only terminate when Gemini signals the turn is genuinely done with
-    # `finish_reason=STOP` (no further chunks coming). FUNCTION_CALL and
-    # None mean "more chunks are inbound" — defer.
-    finish_reason = getattr(llm_response, "finish_reason", None)
-    finish_reason_name = (
-        getattr(finish_reason, "name", None) if finish_reason is not None else None
-    )
-    if finish_reason_name != "STOP" and finish_reason != "STOP":
-        return None
-
-    has_text = any(getattr(part, "text", None) for part in content.parts)
-    has_function_call = any(
-        getattr(part, "function_call", None) for part in content.parts
-    )
-    if content.role != "model" or not has_text or has_function_call:
-        return None
-
-    invocation_context = getattr(callback_context, "_invocation_context", None)
-    if invocation_context is None:
-        logger.debug(
-            "stop_on_terminal_text: callback_context has no "
-            "_invocation_context attribute; skipping end_invocation."
-        )
-        return None
-
-    try:
-        invocation_context.end_invocation = True
-    except AttributeError:
-        logger.debug(
-            "stop_on_terminal_text: _invocation_context lacks "
-            "end_invocation; ADK private-API shape may have drifted."
-        )
-    return None
 #endregion
 
 
