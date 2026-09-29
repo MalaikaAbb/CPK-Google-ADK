@@ -30,7 +30,7 @@ export default function Page() {
         <div className="mt-4">
           <TryIt
             prompts={[
-              "Build me a dashboard for a SaaS company's Q3: revenue, churn, top accounts, and pipeline by stage",
+              "Build me a dashboard for sales",
               "Show me a breakdown of website traffic by source with a chart",
             ]}
             expect="A progress indicator while the schema generates, then cards, metric tiles, a table and a chart appear — assembled differently for each prompt."

@@ -234,7 +234,7 @@ Code on a page is never a re-typed approximation: each page reads real files via
 
 **`/`** — Orientation, the architecture diagram, and the live agent roster.
 
-**`/quickstart`** — An ADK `LlmAgent` behind `ag-ui-adk`, reached over HTTP. **Try:** `Can you tell me a joke?` **Pass:** tokens stream. **Fail:** an error banner — check the Python server and its `GOOGLE_API_KEY`.
+**`/quickstart`** — An ADK `LlmAgent` behind `ag-ui-adk`, reached over HTTP. **Try:** `Can you tell me a joke?` **Pass:** tokens stream. **Fail:** an error banner — check the Python server and its `GOOGLE_API_KEY`. The demo mounts the doc's `Providers` (`agent="my_agent"`, `useSingleEndpoint={false}`), so its threads belong to the `anonymous` user rather than the harness demo user.
 
 ### Rich Threads
 
@@ -262,6 +262,8 @@ All three need `INTELLIGENCE_API_KEY` for real rows, and a licence for the drawe
 
 **`/custom-look-and-feel/slots`** — All three override levels at once. **Pass:** a gradient welcome panel before sending; afterwards each reply sits in a tinted card with a "slot" badge, the composer is pre-focused, and the disclaimer is custom.
 
+**`/custom-look-and-feel/markdown`** — The `markdownRenderer` slot in three forms (Streamdown `components` map, class string, full replacement) plus the default, switchable on one chat that uses the `chat-slots` agent. **Try:** ask for a `## Links` heading followed by a markdown link. **Pass:** in *components* mode the heading is uppercase with an orange left rule, the link is orange with a wavy underline, and the `<a>` keeps `target="_blank"` but has no `data-streamdown` or `node` attribute. *class-string* makes the block smaller. *replace* shows the raw markdown in a `<pre>`. **Fail:** all modes look the same, or `node="[object Object]"` shows up on the `<a>`.
+
 **`/custom-look-and-feel/headless-ui`** — A chat with zero CopilotKit components. **Pass:** tokens stream into hand-written bubbles.
 
 **`/custom-look-and-feel/reasoning-messages`** — Default card vs. two replaced sub-slots, toggleable. **Try:** a question needing real working (see the page). **Pass:** a reasoning card streams above the answer. **Fail:** no card — Gemini did not deliberate on that prompt; ask something harder.
@@ -286,11 +288,19 @@ All three need `INTELLIGENCE_API_KEY` for real rows, and a licence for the drawe
 
 **`/generative-ui/a2ui/fixed-schema`** — A flight card from a JSON schema. **Try:** `Find me a flight from SFO to JFK`. **Pass:** an itinerary card with both airport codes, an airline badge, a price and a Book button. **Fail:** raw JSON — the `catalogId` does not match.
 
+**`/generative-ui/open-generative-ui`** — The agent writes a sandboxed HTML/CSS/JS page that streams into an iframe in the chat. It runs on its own runtime at `/api/copilotkit-ogui`, with *minimal* and *advanced* modes. **Try:** `build me a simple greeting card`. In *advanced*, ask for a calculator that calls `evaluateExpression`. **Pass:** an iframe preview fills in progressively. In *advanced*, the browser console logs `[open-gen-ui/advanced] evaluateExpression …`. **Fail:** a plain text reply. The agent has no page-specific prompt, so ask for a UI explicitly.
+
+**`/generative-ui/json-render`** — ❌ Broken by design. All the code the page leaves out is written in: the three parse/validate helpers, the dashboard components, the runtime route, and an agent that replies with a `{ root, elements }` spec. The page's `<Renderer spec catalog>` call is left as published. **Try:** `Show me a sales dashboard.` **Expected:** once a valid root element has streamed in, the renderer throws, most likely `useVisibility must be used within a VisibilityProvider` (the page never adds `JSONUIProvider`). **Unexpected:** no error and no output. The reply never became a valid spec, so check the raw reply in the Inspector. Switch to **fixed** for the working version: the same prompt should render metric cards and a chart with no error.
+
+**`/generative-ui/hashbrown`** — ❌ Broken by design. The missing components, runtime route and agent are written in, and the page's `useJsonParser` / `useUiKit` calls are left as published. **Try:** `Show me a sales dashboard.` **Expected:** the first assistant message throws `TypeError: Cannot read properties of undefined (reading 'forEach')` from `useUiKit`, which got no `components`. **Unexpected:** a reply renders cleanly. That would mean the installed Hashbrown accepts the page's calls, so re-check the route.
+
 ### App Control
 
 **`/frontend-tools`** — `change_background` executing in the browser. **Try:** `Make the background a warm sunset gradient`. **Pass:** the page recolours and the CSS value under the heading updates.
 
 **`/human-in-the-loop`** — `useHumanInTheLoop` suspending the run. **Try:** `Book an intro call with the sales team`. **Pass:** a picker renders and **nothing further streams** until you choose; the card then collapses to a green "Booked" badge naming your slot.
+
+**`/human-in-the-loop/governed-actions`** — `approve_governed_action`, a `useHumanInTheLoop` tool that shows the doc's approval card and acts on the action's verdict. **Try:** `Use approve_governed_action to apply a 30% discount to account NW-8812, verdict require_approval.` **Pass:** a card reading "User approval required" shows the summary, tool, reference and arguments. The run waits until you press Approve or Reject, then the agent replies. **Fail:** a prose reply with no card. The model decides when to call the tool, so name it explicitly.
 
 
 **`/programmatic-control`** — The doc's `headless-complete` send pipeline, run verbatim against this repo's agent. **Try:** press the second suggestion, then **Stop** mid-stream. **Pass:** status flips to Running, the transcript grows and follows the bottom, Stop halts it. ⚠️ Two of the three helpers its snippet destructures are never defined in the docs — see §9.
@@ -321,6 +331,8 @@ All three need `INTELLIGENCE_API_KEY` for real rows, and a licence for the drawe
 
 **`/agent-config`** — A typed config object published as runtime context. **Try:** ask the same question at `expertise=beginner` and then `expert`. **Pass:** visibly different answers. **Fail:** identical answers — the context is not reaching the callback.
 
+**`/agent-app-context`** — `useAgentContext` sends three colleagues, and the doc's `InstructionProvider` renders them into the ADK prompt. **Try:** `Who are my colleagues?`, then `Draft an email to Alice in finance`. **Pass:** exactly John Doe, Jane Smith and Bob Wilson with their roles. Alice is reported as not in the list. **Fail:** invented colleagues, or "the page sent no colleagues".
+
 ### Observe & Operate
 
 **`/inspector`** — The debugging overlay, mounted by the provider and therefore present on *every* route. **Try:** open it from the bottom-left button, then `highlight the churn panel`. **Pass:** AG-UI events stream, Frontend Tools already lists `highlight_panel` with its schema, Context shows the page's two entries, Agent State fills once the agent takes notes. **Fail:** no button at all — the provider is missing `showDevConsole`, or you are not on `localhost`/`127.0.0.1`.
@@ -338,7 +350,7 @@ All three need `INTELLIGENCE_API_KEY` for real rows, and a licence for the drawe
 | Doc page | Route | Status | Notes |
 |---|---|---|---|
 | `/google-adk` | `/` | 📖 Reference | Orientation + agent roster. |
-| `/google-adk/quickstart?agent=bring-your-own` | `/quickstart` | ✅ Working | |
+| `/google-adk/quickstart?agent=bring-your-own` | `/quickstart` | ✅ Working | Demo runs on the doc's own `providers.tsx` (verbatim, via a route `layout.tsx`), not the app-wide provider. |
 | `/google-adk/prebuilt-components/copilot-threads-drawer` | `/prebuilt-components/copilot-threads-drawer` | ⚠️ Partial | Needs Intelligence mode for rows **and** a licence for the drawer to render unlocked — two separate switches. |
 | `/google-adk/headless-threads` | `/headless-threads` | ⚠️ Partial | Needs Intelligence mode. In SSE mode `/info` reports `mutations: false`, so rename/archive/delete have no endpoint. |
 | `/google-adk/threads-lifecycle` | `/threads-lifecycle` | ⚠️ Partial | Switch and start are live in either mode; history replay needs a server-side store, so it is inert in SSE mode. |
@@ -348,6 +360,7 @@ All three need `INTELLIGENCE_API_KEY` for real rows, and a licence for the drawe
 | `/google-adk/prebuilt-components/chat-controls` | `/prebuilt-components/chat-controls` | ✅ Working | |
 | `/google-adk/custom-look-and-feel/css` | `/custom-look-and-feel/css` | ✅ Working | v2 tokens; the page's `--copilot-kit-*` set is v1 and inert here. |
 | `/google-adk/custom-look-and-feel/slots` | `/custom-look-and-feel/slots` | ✅ Working | |
+| `/google-adk/custom-look-and-feel/markdown` | `/custom-look-and-feel/markdown` | ⚠️ Partial | Not yet checked in a browser. `my-link`/`my-heading` CSS is harness-only because the doc never defines those classes. |
 | `/google-adk/custom-look-and-feel/headless-ui` | `/custom-look-and-feel/headless-ui` | ✅ Working | Minimal example; the "complete" one is not reimplemented. |
 | `/google-adk/custom-look-and-feel/reasoning-messages` | `/custom-look-and-feel/reasoning-messages` | ✅ Working | Needs Gemini thinking, which no doc page enables. This repo does. |
 | `/google-adk/multimodal-attachments` | `/multimodal-attachments` | ✅ Working | |
@@ -358,8 +371,12 @@ All three need `INTELLIGENCE_API_KEY` for real rows, and a licence for the drawe
 | `/google-adk/generative-ui/state-rendering` | `/generative-ui/state-rendering` | ✅ Working | Shares the streaming agent, as the docs do. |
 | `/google-adk/generative-ui/a2ui/dynamic-schema` | `/generative-ui/a2ui/dynamic-schema` | ✅ Working | Catalog is the doc's; leaf UI primitives are this repo's. |
 | `/google-adk/generative-ui/a2ui/fixed-schema` | `/generative-ui/a2ui/fixed-schema` | ✅ Working | Book button inert — Python SDK has no `action_handlers`. |
+| `/google-adk/generative-ui/open-generative-ui` | `/generative-ui/open-generative-ui` | ⚠️ Partial | Not yet checked in a browser. Page publishes no agent, leaves `headers`/`Chat`/`VISUALIZATION_DESIGN_SKILL`/`./suggestions` undefined, and cuts off the advanced snippet (§9 #22). |
+| `/google-adk/generative-ui/json-render` | `/generative-ui/json-render` | ❌ Broken | As published it throws (§9 #25). A working “fixed” mode sits alongside, not yet checked in a browser. |
+| `/google-adk/generative-ui/hashbrown` | `/generative-ui/hashbrown` | ❌ Broken | By design: missing code written in, hook calls left as published so the runtime error shows (§9 #26). |
 | `/google-adk/frontend-tools` | `/frontend-tools` | ✅ Working | |
 | `/google-adk/human-in-the-loop` | `/human-in-the-loop` | ✅ Working | |
+| `/google-adk/human-in-the-loop/governed-actions` | `/human-in-the-loop/governed-actions` | ⚠️ Partial | Not yet checked in a browser. Only the `useHumanInTheLoop` half runs; `useInterrupt` can't fire on ADK (§9 #23). |
 | `/google-adk/programmatic-control` | `/programmatic-control` | ⚠️ Partial | Runs the doc's `headless-complete` snippet; two of the three helpers it destructures are undefined in the docs and reconstructed here. Interrupt-resume half does not apply. |
 | `/google-adk/shared-state` | `/shared-state` | ✅ Working | |
 | `/google-adk/shared-state/rendering-in-app` | `/shared-state/rendering-in-app` | ✅ Working | |
@@ -371,6 +388,7 @@ All three need `INTELLIGENCE_API_KEY` for real rows, and a licence for the drawe
 | `/google-adk/shared-state/predictive-state-updates` | `/shared-state/predictive-state-updates` | ❌ Broken | **Deliberate.** Ships the doc's sample verbatim, including `useAgent({ render })` — a prop that does not exist. Kept as published rather than patched, so it does not compile. See §9 item 9. |
 | `/google-adk/multi-agent/subagents` | `/multi-agent/subagents` | ✅ Working | |
 | `/google-adk/agent-config` | `/agent-config` | ✅ Working | |
+| `/google-adk/agent-app-context` | `/agent-app-context` | ⚠️ Partial | Not yet checked in a browser. Frontend and agent are verbatim; the tool example is a stub (§9 #24). |
 | `/google-adk/inspector` | `/inspector` | ✅ Working | Four of five tabs work locally. Threads is the default tab and needs an Intelligence Platform key. |
 | `/google-adk/backend/copilot-runtime` | `/backend/copilot-runtime` | ✅ Working | |
 
@@ -461,6 +479,24 @@ So the rule is *exactly one per page, attached to the provider the page's chat a
 
 **21. `a2ui.render(...)` does not accept `action_handlers`**
 The fixed-schema pattern pairs a schema with action handlers so clicking Book swaps in `booked_schema.json`. The Python SDK has no such kwarg yet, so the schema is loaded and unused and the button is inert. Flagged on the route.
+
+**22. Open Generative UI publishes a runtime but only fragments of the rest**
+[The page](https://docs.copilotkit.ai/google-adk/generative-ui/open-generative-ui) has a complete runtime block, and 1.73.3 accepts `openGenerativeUI` on both `CopilotRuntime` and `<CopilotKit>`. Missing: any agent behind `/open_gen_ui` and `/open_gen_ui_advanced` (this repo mounts its generic `AGUIToolset()` agent at both). `headers` is used in the runtime block but never defined (set to `{}` here). Both frontend blocks render `<Chat />` without defining it (a bare `<CopilotChat />` here). The minimal block passes `VISUALIZATION_DESIGN_SKILL`, which is never defined, so that line is removed. The advanced block imports `./suggestions`, which is never published, so that import is removed. The advanced block also ends at `</CopilotKit>` with no closing `);` or `}`. `sandbox-functions.ts` is complete and used verbatim.
+
+**23. Governed Actions: the `useInterrupt` pattern can't run on ADK**
+[The page](https://docs.copilotkit.ai/google-adk/human-in-the-loop/governed-actions) offers two patterns. `useInterrupt` needs the backend to end a run with an AG-UI interrupt, and the installed `ag_ui_adk` never emits one, so that block is shown as text only. The `useHumanInTheLoop` pattern runs verbatim. The page is frontend-only, though: no agent, no policy engine, and the resume sample calls an `executeSideEffect` that is never defined. The verdict the card acts on is whatever the model writes into the tool call.
+
+**24. Agent App Context: two unused lines and a stub tool**
+[The page](https://docs.copilotkit.ai/google-adk/agent-app-context)'s `agent.py` imports `add_adk_fastapi_endpoint` without calling it, and builds an `ADKAgent` it never mounts. Both are kept verbatim, and this repo's server mounts `colleagues_agent` itself. The "read it inside a tool" example leaves the lookup as a comment and always returns `{"found": False}`, so it is shown as text and not wired in. The page's own component renders `<>...</>`, which shows as a literal "..." above the chat.
+
+**25. JSON Render: the renderer call doesn't match `@json-render/react` 0.21.0, and most of the code is missing**
+[The page](https://docs.copilotkit.ai/google-adk/generative-ui/json-render) publishes the page component, a renderer and a catalog. The renderer calls three helpers that are never defined (`stripCodeFencesAndPrelude`, `tolerantJsonParse`, `validateAgainstCatalog`) and never imports `AssistantMessage`. The catalog imports `MetricCard`, `BarChart` and `PieChart` from files that are never published. The example output uses a `Stack` type that isn't in the catalog. No runtime route or agent is shown. All of that is written in here (see the route). The library call itself is left as published: `<Renderer spec catalog>` should be `registry` (built with `defineRegistry`), and the renderer needs `JSONUIProvider` around it. A `@ts-expect-error` above the line lets the build pass, so the failure shows at runtime. The working version (`json-render-fixed.tsx`, the demo's **fixed** mode) builds a `registry` from the page's catalog, wraps `<Renderer>` in `<JSONUIProvider>`, plugs in through `assistantMessage.markdownRenderer` (typed, and gets the raw `content`), and calls `useConfigureSuggestions` inside `<CopilotKit>`.
+
+**26. Hashbrown: all three hook calls disagree with `@hashbrownai/react` 0.6.1**
+[The page](https://docs.copilotkit.ai/google-adk/generative-ui/hashbrown) calls `useJsonParser(text)`, but 0.6.1 needs `useJsonParser(text, schema)`. It calls `useUiKit({ catalog, value })`, but 0.6.1 takes `{ components }` built with `exposeComponent`. And it renders the kit object directly, where 0.6.1 needs `ui.render(value)`. The components, `AssistantMessage` import, runtime route and agent are never published, and are written in here. The hook calls are left as published, each with a `@ts-expect-error`, so the route throws at runtime.
+
+**27. Both BYOC pages: the assistant-message slot's type rejects a plain component**
+In CopilotKit 1.73.3 and 1.74.0, `messageView.assistantMessage` is typed as `typeof CopilotChatAssistantMessage`, including its static sub-components. The plain function component both pages pass doesn't satisfy it, so each page's `messageView` line carries a `@ts-expect-error`. Both pages also call `useConfigureSuggestions` outside the `<CopilotKit>` they render, so the suggestions register on the app's root provider and never show in their chat.
 
 ---
 
@@ -621,19 +657,19 @@ google-adk/
 
 **Prebuilt Components** — [CopilotChat](https://docs.copilotkit.ai/google-adk/prebuilt-components/chat) · [CopilotSidebar](https://docs.copilotkit.ai/google-adk/prebuilt-components/sidebar) · [CopilotPopup](https://docs.copilotkit.ai/google-adk/prebuilt-components/popup) · [Open, close, and feedback](https://docs.copilotkit.ai/google-adk/prebuilt-components/chat-controls)
 
-**Custom Look and Feel** — [CSS](https://docs.copilotkit.ai/google-adk/custom-look-and-feel/css) · [Slots](https://docs.copilotkit.ai/google-adk/custom-look-and-feel/slots) · [Headless UI](https://docs.copilotkit.ai/google-adk/custom-look-and-feel/headless-ui) · [Reasoning Messages](https://docs.copilotkit.ai/google-adk/custom-look-and-feel/reasoning-messages)
+**Custom Look and Feel** — [CSS](https://docs.copilotkit.ai/google-adk/custom-look-and-feel/css) · [Slots](https://docs.copilotkit.ai/google-adk/custom-look-and-feel/slots) · [Markdown Rendering](https://docs.copilotkit.ai/google-adk/custom-look-and-feel/markdown) · [Headless UI](https://docs.copilotkit.ai/google-adk/custom-look-and-feel/headless-ui) · [Reasoning Messages](https://docs.copilotkit.ai/google-adk/custom-look-and-feel/reasoning-messages)
 
 **Input Modalities** — [Multimodal Attachments](https://docs.copilotkit.ai/google-adk/multimodal-attachments) · [Voice](https://docs.copilotkit.ai/google-adk/voice)
 
-**Generative UI** — [Reasoning](https://docs.copilotkit.ai/google-adk/generative-ui/reasoning) · [Components as Tools](https://docs.copilotkit.ai/google-adk/generative-ui/tool-based) · [Tool Rendering](https://docs.copilotkit.ai/google-adk/generative-ui/tool-rendering) · [State Rendering](https://docs.copilotkit.ai/google-adk/generative-ui/state-rendering) · [A2UI Dynamic Schema](https://docs.copilotkit.ai/google-adk/generative-ui/a2ui/dynamic-schema) · [A2UI Fixed Schema](https://docs.copilotkit.ai/google-adk/generative-ui/a2ui/fixed-schema)
+**Generative UI** — [Reasoning](https://docs.copilotkit.ai/google-adk/generative-ui/reasoning) · [Components as Tools](https://docs.copilotkit.ai/google-adk/generative-ui/tool-based) · [Tool Rendering](https://docs.copilotkit.ai/google-adk/generative-ui/tool-rendering) · [State Rendering](https://docs.copilotkit.ai/google-adk/generative-ui/state-rendering) · [A2UI Dynamic Schema](https://docs.copilotkit.ai/google-adk/generative-ui/a2ui/dynamic-schema) · [A2UI Fixed Schema](https://docs.copilotkit.ai/google-adk/generative-ui/a2ui/fixed-schema) · [Open Generative UI](https://docs.copilotkit.ai/google-adk/generative-ui/open-generative-ui) · [JSON Render](https://docs.copilotkit.ai/google-adk/generative-ui/json-render) · [Hashbrown](https://docs.copilotkit.ai/google-adk/generative-ui/hashbrown)
 
-**App Control** — [Frontend Tools](https://docs.copilotkit.ai/google-adk/frontend-tools) · [Human in the Loop](https://docs.copilotkit.ai/google-adk/human-in-the-loop) · [Programmatic Control](https://docs.copilotkit.ai/google-adk/programmatic-control)
+**App Control** — [Frontend Tools](https://docs.copilotkit.ai/google-adk/frontend-tools) · [Human in the Loop](https://docs.copilotkit.ai/google-adk/human-in-the-loop) · [Governed Action Approval UI](https://docs.copilotkit.ai/google-adk/human-in-the-loop/governed-actions) · [Programmatic Control](https://docs.copilotkit.ai/google-adk/programmatic-control)
 
 **Shared State** — [Overview](https://docs.copilotkit.ai/google-adk/shared-state) · [Render state in your app](https://docs.copilotkit.ai/google-adk/shared-state/rendering-in-app) · [State Streaming](https://docs.copilotkit.ai/google-adk/shared-state/streaming) · [Agent Read-Only Context](https://docs.copilotkit.ai/google-adk/shared-state/agent-readonly) · [Reading agent state](https://docs.copilotkit.ai/google-adk/shared-state/in-app-agent-read) · [Writing agent state](https://docs.copilotkit.ai/google-adk/shared-state/in-app-agent-write) · [Workflow Execution](https://docs.copilotkit.ai/google-adk/shared-state/workflow-execution) · [Predictive state updates](https://docs.copilotkit.ai/google-adk/shared-state/predictive-state-updates)
 
 **Multi-Agent** — [Sub-Agents](https://docs.copilotkit.ai/google-adk/multi-agent/subagents)
 
-**Agent Config** — [Agent Config](https://docs.copilotkit.ai/google-adk/agent-config)
+**Agent Config** — [Agent Config](https://docs.copilotkit.ai/google-adk/agent-config) · [Agent App Context](https://docs.copilotkit.ai/google-adk/agent-app-context)
 
 **Observe & Operate** — [Inspector](https://docs.copilotkit.ai/google-adk/inspector)
 

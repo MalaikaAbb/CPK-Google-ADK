@@ -106,6 +106,16 @@ SHARED_STATE_STREAMING_PREDICT_STATE = [
 
 
   </Step>
+  <Step>
+    ### Stop after the final model response
+
+    The agent above imports `stop_on_terminal_text` and registers it as its
+    `after_model_callback`. This prevents Gemini from issuing the same tool
+    call again after its final text response. See the canonical
+    [`stop_on_terminal_text` implementation](https://github.com/CopilotKit/CopilotKit/blob/main/showcase/integrations/google-adk/src/agents/shared_chat.py)
+    when adapting the callback for your project.
+
+  </Step>
 </Steps>
 
 The backend pattern is always the same: map one streaming tool argument

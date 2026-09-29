@@ -7,6 +7,7 @@ import {
 } from "@copilotkit/react-core/v2";
 
 import { DemoFrame } from "@/components/demo-frame";
+import { useEffect } from "react";
 
 const AGENT_ID = "shared-state-language";
 
@@ -41,13 +42,16 @@ export default function Page() {
 }
 
 function YourMainContent() {
-  const { agent } = useAgent({
+  const { agent, isReady } = useAgent({
     agentId: AGENT_ID,
-    updates: [UseAgentUpdate.OnStateChanged],
   });
 
-  const state = agent.state as AgentState | undefined;
-  const language = state?.language ?? "english";
+  const state = (agent.state ?? {}) as Partial<AgentState>;
+  useEffect(() => {
+  if (!isReady || state.language !== undefined) return;
+      agent.setState({ ...(agent.state ?? {}), language: "english" });
+    }, [agent, isReady, state.language]);
+
 
   return (
     <main className="h-full overflow-y-auto p-10">

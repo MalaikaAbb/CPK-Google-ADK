@@ -103,6 +103,8 @@ as this guide uses it as a starting point.
     will update the agent state and trigger a rerender of anything that depends on the agent state.
 
     ```tsx title="ui/app/page.tsx"
+    import { useEffect } from "react";
+    import { useAgent } from "@copilotkit/react-core/v2";
 
     // Define the agent state type, should match the actual state of your agent
     type AgentState = {
@@ -111,15 +113,20 @@ as this guide uses it as a starting point.
 
     // Example usage in a pseudo React component
     function YourMainContent() {
-      const { agent } = useAgent({ // [!code highlight]
+      const { agent, isReady } = useAgent({
         agentId: "my_agent",
-        initialState: { language: "english" }  // optionally provide an initial state
       });
+      const state = (agent.state ?? {}) as Partial<AgentState>;
+
+      useEffect(() => {
+        if (!isReady || state.language !== undefined) return;
+        agent.setState({ ...(agent.state ?? {}), language: "english" });
+      }, [agent, isReady, state.language]);
 
       // ...
 
       const toggleLanguage = () => {
-        agent.setState({ language: agent.state?.language === "english" ? "spanish" : "english" }); // [!code highlight]
+        agent.setState({ ...(agent.state ?? {}), language: state.language === "english" ? "spanish" : "english" }); // [!code highlight]
       };
 
       // ...

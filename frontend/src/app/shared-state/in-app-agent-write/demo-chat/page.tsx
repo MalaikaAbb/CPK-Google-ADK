@@ -8,6 +8,7 @@ import {
 } from "@copilotkit/react-core/v2";
 
 import { DemoFrame } from "@/components/demo-frame";
+import { useEffect } from "react";
 
 const AGENT_ID = "shared-state-language";
 
@@ -40,31 +41,22 @@ export default function Page() {
 }
 
 function YourMainContent() {
-  const { agent } = useAgent({
-    agentId: AGENT_ID,
-    updates: [UseAgentUpdate.OnStateChanged, UseAgentUpdate.OnRunStatusChanged],
-  });
-  const { copilotkit } = useCopilotKit();
-
-  const state = agent.state as AgentState | undefined;
-  const language = state?.language ?? "english";
-  const next = language === "english" ? "spanish" : "english";
+   const { agent, isReady } = useAgent({
+     agentId: AGENT_ID,
+   });
+ 
+   const state = (agent.state ?? {}) as Partial<AgentState>;
+   useEffect(() => {
+   if (!isReady || state.language !== undefined) return;
+       agent.setState({ ...(agent.state ?? {}), language: "english" });
+     }, [agent, isReady, state.language]);
 
   /** The basic form: stage the value and let the next turn pick it up. */
   const toggleLanguage = () => {
-    agent.setState({ language: next });
+    agent.setState({ ...(agent.state ?? {}), language: state.language === "english" ? "spanish" : "english" }); 
   };
+  
 
-  /** The advanced form: stage it, then say so and re-run immediately. */
-  const toggleAndRerun = async () => {
-    agent.setState({ language: next });
-    agent.addMessage({
-      id: crypto.randomUUID(),
-      role: "user",
-      content: `the language has been updated to ${next}`,
-    });
-    await copilotkit.runAgent({ agent });
-  };
 
   return (
     <main className="h-full overflow-y-auto p-10">
@@ -80,7 +72,7 @@ function YourMainContent() {
           data-testid="language-value"
           className="mt-1 text-3xl font-semibold capitalize text-slate-900 dark:text-slate-100"
         >
-          {language}
+          {state.language}
         </p>
 
         <div className="mt-4 flex flex-wrap gap-2">
@@ -90,13 +82,6 @@ function YourMainContent() {
             className="rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium disabled:opacity-40 dark:border-slate-700"
           >
             Toggle Language
-          </button>
-          <button
-            onClick={toggleAndRerun}
-            disabled={agent.isRunning}
-            className="rounded-md bg-[var(--accent)] px-3 py-1.5 text-sm font-medium text-white disabled:opacity-40"
-          >
-            Toggle &amp; re-run
           </button>
         </div>
       </div>

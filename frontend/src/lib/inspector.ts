@@ -29,12 +29,16 @@ export const INSPECTOR_ENABLED =
  * be the second one on the page.
  */
 export const NESTED_PROVIDER_ROUTES = [
+  "/quickstart/demo-chat",
   "/voice/demo-chat",
   "/generative-ui/a2ui/fixed-schema/demo-chat",
   "/generative-ui/a2ui/dynamic-schema/demo-chat",
   "/prebuilt-components/copilot-threads-drawer/demo-chat",
   "/headless-threads/demo-chat",
   "/threads-lifecycle/demo-chat",
+  "/generative-ui/open-generative-ui/demo-chat",
+  "/generative-ui/json-render/demo-chat",
+  "/generative-ui/hashbrown/demo-chat",
 ] as const;
 
 /**

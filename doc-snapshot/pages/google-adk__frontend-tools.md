@@ -14,18 +14,6 @@
   More detail: [Inspector](/google-adk/inspector).
 </Callout>
 
-<Callout type="info" title="See this in Inspector">
-  Open Inspector on localhost. Go to **Inspect**, then **Event Snippets**.
-  You can compile a tool call, reasoning, text, or activity, run it on the live
-  agent, and save it. Saved snippets are grouped by recipe. On localhost chat,
-  **Save as snippet** uses the recipe for the thing you click and fills the form.
-  On a tool call, generative UI, or A2UI, the bookmark sits to the right of the
-  block (or to the left if there is no room on the right).
-  Run of a `generateSandboxedUi` tool call paints the sandbox UI in chat.
-
-  More detail: [Inspector](/google-adk/inspector).
-</Callout>
-
 
 ## What is this?
 
@@ -58,41 +46,51 @@ Use frontend tools when your agent needs to:
   <Step>
     ### Add `AGUIToolset()` to your agent
 
-    `AGUIToolset()` is the tool that exposes CopilotKit's frontend-tool
-    channel to the model — drop it into your `LlmAgent`'s `tools=` list and
-    frontend tools become available on every turn. Pair it with
-    `stop_on_terminal_text` as the `after_model_callback` so CopilotKit's UI
-    knows when the agent has finished its turn.
+    `AGUIToolset()` exposes CopilotKit's frontend tools to the model.
+    Add it to your `LlmAgent`'s `tools=` list. Use an ADK-supported model
+    available to your project.
 
-    
-~~~~python title="hitl_in_chat_agent.py"
-from google.adk.agents import LlmAgent
-from ag_ui_adk import AGUIToolset
+    The callback below preserves the Gemini termination safeguard: it stops on
+    final text with a `STOP` finish reason, while leaving partial responses and
+    pending tool calls alone. It is defined here in full, not imported from
+    `ag-ui-adk` or a showcase-only module.
 
-from agents.shared_chat import get_model, stop_on_terminal_text
+    ```python
+    from ag_ui_adk import AGUIToolset
+    from google.adk.agents import LlmAgent
+    from google.adk.agents.callback_context import CallbackContext
+    from google.adk.models.llm_response import LlmResponse
 
-# CopilotKit wires into ADK via the `AGUIToolset()` tool: pass it in the
-# `tools=` list of your `LlmAgent` to expose CopilotKit's frontend-tool
-# channel to the model. `stop_on_terminal_text` is a small ADK callback
-# that lets CopilotKit's UI know when the agent has finished its turn.
-_INSTRUCTION = (
-    "You are a planning assistant. When the user asks you to plan something, "
-    "always call generate_task_steps with the proposed list of steps (each "
-    "with description + status='enabled'). The frontend will render the "
-    "steps inline and the user will confirm or reject — your job is to plan "
-    "and call the tool, then summarise the user's decision once they "
-    "respond."
-)
 
-hitl_in_chat_agent = LlmAgent(
-    name="HitlInChatAgent",
-    model=get_model(),
-    instruction=_INSTRUCTION,
-    tools=[AGUIToolset()],
-    after_model_callback=stop_on_terminal_text,
-)
-~~~~
+    def stop_on_terminal_text(
+        callback_context: CallbackContext, llm_response: LlmResponse
+    ) -> None:
+        content = llm_response.content
+        if llm_response.partial or not content or content.role != "model":
+            return
+        finish_reason = llm_response.finish_reason
+        if getattr(finish_reason, "name", finish_reason) != "STOP":
+            return
+        parts = content.parts or []
+        if not any(part.text for part in parts) or any(part.function_call for part in parts):
+            return
+        # ADK's invocation context is private; tolerate SDK changes.
+        invocation = getattr(callback_context, "_invocation_context", None)
+        if invocation is not None:
+            try:
+                invocation.end_invocation = True
+            except AttributeError:
+                pass
 
+
+    agent = LlmAgent(
+        name="assistant",
+        model="gemini-3.1-flash-lite",
+        instruction="Help the user and call the available frontend tools when appropriate.",
+        tools=[AGUIToolset()],
+        after_model_callback=stop_on_terminal_text,
+    )
+    ```
 
   </Step>
 </Steps>
@@ -150,5 +148,30 @@ what happened.
       return { status: "success" };
     },
 ```
+
+## Registering a list of tools
+
+`useFrontendTool` registers one tool per call, so it cannot be called in a loop
+over a list whose length changes between renders. When the set of tools comes
+from state, from props, or from a backend response, use
+[`useFrontendTools`](/reference/hooks/useFrontendTools) instead. It takes an
+array and runs a single effect over it, so the array can be empty on one render
+and hold twenty entries on the next.
+
+```tsx
+useFrontendTools(
+  reports.map((report) => ({
+    name: `open_${report.id}`,
+    description: `Open the ${report.title} report`,
+    handler: async () => navigate(`/reports/${report.id}`),
+  })),
+  [navigate],
+);
+```
+
+Tools that leave the array are unregistered, tools that join it are registered,
+and a re-render that produces an equal list does not re-register anything. A
+description built from your data stays current on its own. The second argument
+is for values a handler closes over, such as `navigate` above.
 
 <IntegrationGrid path="frontend-tools" />

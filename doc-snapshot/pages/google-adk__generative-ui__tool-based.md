@@ -46,49 +46,75 @@ around a real backend tool, see [Tool rendering](/google-adk/generative-ui/tool-
   <Step>
     ### Add `AGUIToolset()` to your agent
 
-    `AGUIToolset()` is the tool that exposes CopilotKit's frontend-tool
-    channel to the model — drop it into your `LlmAgent`'s `tools=` list and
-    frontend tools become available on every turn. Pair it with
-    `stop_on_terminal_text` as the `after_model_callback` so CopilotKit's UI
-    knows when the agent has finished its turn.
+    `AGUIToolset()` exposes CopilotKit's frontend tools to the model.
+    Add it to your `LlmAgent`'s `tools=` list. Use an ADK-supported model
+    available to your project.
 
-    
-~~~~python title="hitl_in_chat_agent.py"
-from google.adk.agents import LlmAgent
-from ag_ui_adk import AGUIToolset
+    The callback below preserves the Gemini termination safeguard: it stops on
+    final text with a `STOP` finish reason, while leaving partial responses and
+    pending tool calls alone. It is defined here in full, not imported from
+    `ag-ui-adk` or a showcase-only module.
 
-from agents.shared_chat import get_model, stop_on_terminal_text
+    ```python
+    from ag_ui_adk import AGUIToolset
+    from google.adk.agents import LlmAgent
+    from google.adk.agents.callback_context import CallbackContext
+    from google.adk.models.llm_response import LlmResponse
 
-# CopilotKit wires into ADK via the `AGUIToolset()` tool: pass it in the
-# `tools=` list of your `LlmAgent` to expose CopilotKit's frontend-tool
-# channel to the model. `stop_on_terminal_text` is a small ADK callback
-# that lets CopilotKit's UI know when the agent has finished its turn.
-_INSTRUCTION = (
-    "You are a planning assistant. When the user asks you to plan something, "
-    "always call generate_task_steps with the proposed list of steps (each "
-    "with description + status='enabled'). The frontend will render the "
-    "steps inline and the user will confirm or reject — your job is to plan "
-    "and call the tool, then summarise the user's decision once they "
-    "respond."
-)
 
-hitl_in_chat_agent = LlmAgent(
-    name="HitlInChatAgent",
-    model=get_model(),
-    instruction=_INSTRUCTION,
-    tools=[AGUIToolset()],
-    after_model_callback=stop_on_terminal_text,
-)
-~~~~
+    def stop_on_terminal_text(
+        callback_context: CallbackContext, llm_response: LlmResponse
+    ) -> None:
+        content = llm_response.content
+        if llm_response.partial or not content or content.role != "model":
+            return
+        finish_reason = llm_response.finish_reason
+        if getattr(finish_reason, "name", finish_reason) != "STOP":
+            return
+        parts = content.parts or []
+        if not any(part.text for part in parts) or any(part.function_call for part in parts):
+            return
+        # ADK's invocation context is private; tolerate SDK changes.
+        invocation = getattr(callback_context, "_invocation_context", None)
+        if invocation is not None:
+            try:
+                invocation.end_invocation = True
+            except AttributeError:
+                pass
 
+
+    agent = LlmAgent(
+        name="assistant",
+        model="gemini-3.1-flash-lite",
+        instruction="Help the user and call the available frontend tools when appropriate.",
+        tools=[AGUIToolset()],
+        after_model_callback=stop_on_terminal_text,
+    )
+    ```
 
   </Step>
 </Steps>
 
+Import the React hook and Zod in the component that registers the tool. This also
+applies to the built-in agent, which needs no backend tool-registration step.
+
+```tsx
+import { useComponent } from "@copilotkit/react-core/v2";
+import { z } from "zod";
+```
+
 `useComponent` takes a name, a Zod schema for its props, and the component
 to render. The runtime registers it as a frontend tool so the agent can
-discover it, and Zod validates the LLM's arguments before they reach your
-component.
+discover it, and the schema becomes that tool's parameter definition — it is
+what tells the model which arguments to send.
+
+<Callout type="warn">
+  `parameters` is optional, but leaving it out advertises the tool with an
+  empty parameter schema (`{ "type": "object", "properties": {} }`). The model
+  then has nothing to fill in, so it calls the tool with no arguments and your
+  component renders with no props. Pass a schema for any component that needs
+  data.
+</Callout>
 
 ```typescript
 // src/app/demos/gen-ui-tool-based/page.tsx
@@ -110,5 +136,26 @@ anything about CopilotKit.
   name. Make it a verb like `render_bar_chart` or `show_weather` so the LLM
   reliably picks it when the user asks for that visualization.
 </Callout>
+
+## Rendering in a headless chat
+
+CopilotKit's built-in chat components paint registered components for you. A
+headless or custom chat renders the message list itself, so nothing paints a
+tool call unless you render it — the component is registered and the agent
+calls it, but the chat stays empty.
+
+Render the tool calls on each assistant message with
+`CopilotChatToolCallsView`:
+
+```tsx
+import { CopilotChatToolCallsView } from "@copilotkit/react-core/v2";
+
+<CopilotChatToolCallsView message={assistantMessage} messages={allMessages} />;
+```
+
+It looks up the sibling `tool`-role message for each tool call and hands both
+to the registered renderer. For finer placement, call `useRenderToolCall()` and
+paint each tool call yourself — see
+[Headless UI](/google-adk/custom-look-and-feel/headless-ui).
 
 <IntegrationGrid path="generative-ui/tool-based" />
