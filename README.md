@@ -292,7 +292,7 @@ All three need `INTELLIGENCE_API_KEY` for real rows, and a licence for the drawe
 
 **`/generative-ui/json-render`** — ❌ Broken by design. All the code the page leaves out is written in: the three parse/validate helpers, the dashboard components, the runtime route, and an agent that replies with a `{ root, elements }` spec. The page's `<Renderer spec catalog>` call is left as published. **Try:** `Show me a sales dashboard.` **Expected:** once a valid root element has streamed in, the renderer throws, most likely `useVisibility must be used within a VisibilityProvider` (the page never adds `JSONUIProvider`). **Unexpected:** no error and no output. The reply never became a valid spec, so check the raw reply in the Inspector. Switch to **fixed** for the working version: the same prompt should render metric cards and a chart with no error.
 
-**`/generative-ui/hashbrown`** — ❌ Broken by design. The missing components, runtime route and agent are written in, and the page's `useJsonParser` / `useUiKit` calls are left as published. **Try:** `Show me a sales dashboard.` **Expected:** the first assistant message throws `TypeError: Cannot read properties of undefined (reading 'forEach')` from `useUiKit`, which got no `components`. **Unexpected:** a reply renders cleanly. That would mean the installed Hashbrown accepts the page's calls, so re-check the route.
+**`/generative-ui/hashbrown`** — ❌ Broken by design, with a working **fixed** tab. The missing components, runtime route and agent are written in, and the page's `useJsonParser` / `useUiKit` calls are left as published. **Try:** `Show me a sales dashboard.` **As published — expected:** the first assistant message shows a red box inside the demo reading `The published code threw: TypeError: Cannot read properties of undefined (reading 'forEach')`, from `useUiKit`, which got no `components` (predicted from the library source). **Fixed — pass:** two suggestion pills, then an empty stack that fills with metric cards and a chart as the JSON streams. **Fixed — fail:** nothing renders; check in the Inspector that the reply starts with `{"ui": [`. See `HASHBROWN_FIX.md`.
 
 ### App Control
 
@@ -373,7 +373,7 @@ All three need `INTELLIGENCE_API_KEY` for real rows, and a licence for the drawe
 | `/google-adk/generative-ui/a2ui/fixed-schema` | `/generative-ui/a2ui/fixed-schema` | ✅ Working | Book button inert — Python SDK has no `action_handlers`. |
 | `/google-adk/generative-ui/open-generative-ui` | `/generative-ui/open-generative-ui` | ⚠️ Partial | Not yet checked in a browser. Page publishes no agent, leaves `headers`/`Chat`/`VISUALIZATION_DESIGN_SKILL`/`./suggestions` undefined, and cuts off the advanced snippet (§9 #22). |
 | `/google-adk/generative-ui/json-render` | `/generative-ui/json-render` | ❌ Broken | As published it throws (§9 #25). A working “fixed” mode sits alongside, not yet checked in a browser. |
-| `/google-adk/generative-ui/hashbrown` | `/generative-ui/hashbrown` | ❌ Broken | By design: missing code written in, hook calls left as published so the runtime error shows (§9 #26). |
+| `/google-adk/generative-ui/hashbrown` | `/generative-ui/hashbrown` | ❌ Broken | As published it throws, and the page's example output is the wrong shape for Hashbrown (§9 #26). A working **fixed** tab sits alongside, not yet checked in a browser. |
 | `/google-adk/frontend-tools` | `/frontend-tools` | ✅ Working | |
 | `/google-adk/human-in-the-loop` | `/human-in-the-loop` | ✅ Working | |
 | `/google-adk/human-in-the-loop/governed-actions` | `/human-in-the-loop/governed-actions` | ⚠️ Partial | Not yet checked in a browser. Only the `useHumanInTheLoop` half runs; `useInterrupt` can't fire on ADK (§9 #23). |
@@ -494,6 +494,15 @@ The fixed-schema pattern pairs a schema with action handlers so clicking Book sw
 
 **26. Hashbrown: all three hook calls disagree with `@hashbrownai/react` 0.6.1**
 [The page](https://docs.copilotkit.ai/google-adk/generative-ui/hashbrown) calls `useJsonParser(text)`, but 0.6.1 needs `useJsonParser(text, schema)`. It calls `useUiKit({ catalog, value })`, but 0.6.1 takes `{ components }` built with `exposeComponent`. And it renders the kit object directly, where 0.6.1 needs `ui.render(value)`. The components, `AssistantMessage` import, runtime route and agent are never published, and are written in here. The hook calls are left as published, each with a `@ts-expect-error`, so the route throws at runtime.
+
+The page's example agent output, `{ "type": "MetricCard", "title": … }`, is also the wrong shape. Hashbrown's UI kit parses a `{ "ui": [ { "MetricCard": { "props": { … } } } ] }` envelope, and a correctly built kit renders nothing for the page's shape (checked by server-rendering both shapes). The example's `Stack` isn't in the catalog either, and Hashbrown throws `Unknown element type` for names it wasn't given. So the agent here is prompted for the envelope. The working version (`hashbrown-fixed.tsx`, the demo's **fixed** tab):
+- exposes the components with `exposeComponent` and `s.*` prop schemas, including `Stack` and a `MetricCard` adapter for the nullable `delta`
+- calls `useJsonParser(content, kit.schema)` and `kit.render(value)`
+- strips prose and code fences before parsing
+- replaces the whole `assistantMessage` as the page does, reading `props.message.content`, falling back to the default message for non-JSON replies, and cast to satisfy CopilotKit's slot type (no markdown renderer involved)
+- calls the suggestions hook inside the provider
+
+The full write-up is in `HASHBROWN_FIX.md`.
 
 **27. Both BYOC pages: the assistant-message slot's type rejects a plain component**
 In CopilotKit 1.73.3 and 1.74.0, `messageView.assistantMessage` is typed as `typeof CopilotChatAssistantMessage`, including its static sub-components. The plain function component both pages pass doesn't satisfy it, so each page's `messageView` line carries a `@ts-expect-error`. Both pages also call `useConfigureSuggestions` outside the `<CopilotKit>` they render, so the suggestions register on the app's root provider and never show in their chat.

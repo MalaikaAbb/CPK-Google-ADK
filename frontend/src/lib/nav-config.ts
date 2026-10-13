@@ -343,7 +343,7 @@ export const NAV: NavGroup[] = [
           "Streamed JSON meant to be parsed progressively by @hashbrownai/react and rendered through a component catalog.",
         status: "broken",
         statusNote:
-          "Broken by design: the missing custom code is filled in, but the doc's hook calls are kept as published. In 0.6.1 useJsonParser needs a schema and useUiKit takes { components }, so the first reply throws.",
+          "As published it throws: the missing code (components, runtime route, agent prompt) is filled in, but the doc's hook calls are kept. In 0.6.1 useJsonParser needs a schema and useUiKit takes { components }. The page's example output is also the wrong shape for Hashbrown. The demo's \"fixed\" tab has the working version, not yet checked in a browser.",
       },
     ],
   },

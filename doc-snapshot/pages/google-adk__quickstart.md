@@ -230,7 +230,7 @@ More detail: [Inspector](/google-adk/inspector).
                 ### Install CopilotKit packages
 
                 ```npm
-                npm install @copilotkit/react-ui @copilotkit/react-core @copilotkit/runtime @ag-ui/client
+                npm install @copilotkit/react-ui @copilotkit/react-core @copilotkit/runtime @ag-ui/client@1.0.2
                 ```
             </Step>
             <Step>

@@ -3,9 +3,11 @@
 > Build a custom thread UI with useThreads while CopilotKit handles persistence, replay, synchronization, and lifecycle infrastructure.
 
 
+Intelligence’s AG-UI streams power the history and delivery behind this custom UI. Use `useThreads` to list and manage conversations, and pass their `threadId` to your chat.
+
 ## What is this?
 
-CopilotKit Rich Threads enable persistent, resumable multi-turn conversations. The `useThreads` hook lists, creates, renames, archives, and deletes CopilotKit Intelligence threads with realtime synchronization via WebSocket. Threads work with any agent framework — CopilotKit Intelligence stores conversation history server-side, so users can close their browser and pick up where they left off. It does not list or mutate native LangGraph, ADK, or other framework stores unless your backend explicitly bridges those systems. Thread metadata updates (renames, archives, new threads) appear on connected clients without polling.
+The `useThreads` hook lists, creates, renames, archives, and deletes CopilotKit Intelligence threads with realtime synchronization via WebSocket. Threads work with any agent framework — CopilotKit Intelligence stores conversation history server-side, so users can close their browser and pick up where they left off. It does not list or mutate native LangGraph, ADK, or other framework stores unless your backend explicitly bridges those systems. Thread metadata updates (renames, archives, new threads) appear on connected clients without polling.
 
 <IntelligenceOnboardingPrompt
   feature="threads"
@@ -35,18 +37,18 @@ CopilotKit Rich Threads enable persistent, resumable multi-turn conversations. T
 - A model provider key supported by your runtime
 
 For multi-user applications, configure the Runtime to
-[scope Rich Threads to the signed-in user](/google-adk/threads-lifecycle#scope-rich-threads-to-the-signed-in-user)
+[scope AG-UI Streams to the signed-in user](/google-adk/threads-lifecycle#scope-rich-threads-to-the-signed-in-user)
 before exposing thread lists or lifecycle actions.
 
 ## Implementation
 
-<Callout type="info" title="Migrating existing history?">
-  Threads capture new CopilotKit conversations once your app is connected to
-  CopilotKit Intelligence. To move historical Google ADK or LangGraph
-  conversations into the same thread store, start with
-  [Import & Synchronize Thread History](/google-adk/threads-import), or jump to
-  [Synchronize ADK threads](/google-adk/threads-import) or
-  [Synchronize LangGraph threads](/langgraph-python/threads-import).
+<Callout type="info" title="Add AG-UI streams to existing threads">
+  Connect your app to CopilotKit Intelligence to add AG-UI streams while keeping
+  your existing thread provider. Start with
+  [Add AG-UI Streams to Existing Threads](/google-adk/threads-import).
+  To also include earlier conversations in your app, follow the optional history
+  import steps for [Google ADK](/google-adk/threads-import) or
+  [LangGraph](/langgraph-python/threads-import).
 </Callout>
 
 <Steps>
@@ -246,7 +248,7 @@ addresses that thread.
 ## Next steps
 
 - **Prebuilt UI:** [Threads Drawer](/google-adk/prebuilt-components/copilot-threads-drawer) — the drop-in thread switcher ([React reference](/reference/components/CopilotThreadsDrawer))
-- **Thread architecture:** [Threads & Persistence Architecture](/google-adk/intelligence/threads-explained) — event replay model and WebSocket sync
+- **Thread architecture:** [AG-UI Streams & Framework Threads](/google-adk/intelligence/threads-explained) — event replay model and WebSocket sync
 - **Production self-hosting:** [Self-host CopilotKit Intelligence](/google-adk/intelligence/self-hosting) — run the Threads platform inside your infrastructure with CopilotKit Engineering
 - **API reference:** [useThreads](/reference/hooks/useThreads) — parameters, return values, types
 - **API reference:** [useAgent](/reference/hooks/useAgent) — including the thread-scoped shape above

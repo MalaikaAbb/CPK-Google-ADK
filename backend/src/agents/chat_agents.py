@@ -157,9 +157,10 @@ open_gen_ui_advanced_agent = build_simple_chat_agent(
 #region byoc-agents
 # JSON Render and Hashbrown. Neither page shows an agent or a prompt; both
 # only show the JSON the agent should reply with. These instructions are
-# harness-authored and ask for exactly those shapes, component names and props
-# taken from the pages' catalogs. They are the one piece of substance on these
-# routes that did not come from the docs.
+# harness-authored. JSON Render's asks for exactly the shape its page shows;
+# Hashbrown's asks for the envelope Hashbrown actually parses (see below).
+# They are the one piece of substance on these routes that did not come from
+# the docs.
 
 _BYOC_DATA_NOTE = (
     "There is no real data source: use plausible illustrative sales numbers. "
@@ -183,19 +184,31 @@ byoc_json_render_agent = build_simple_chat_agent(
     ),
 )
 
+# Hashbrown: deliberately NOT the `{"type": ...}` shape the page shows as its
+# example output. Hashbrown 0.6.1's UI kit parses a `{"ui": [...]}` envelope,
+# each element keyed by component name with props under "props", and renders
+# nothing for the page's shape. Names and props match the frontend's
+# `hashbrown/hashbrown-fixed.tsx`.
 byoc_hashbrown_agent = build_simple_chat_agent(
     name="ByocHashbrownAgent",
     instruction=(
-        "You draw dashboards by replying with a single JSON object. Each node "
-        'has a "type" and its props as sibling keys; a Stack node holds a '
-        '"children" array of nodes. Example: {"type": "Stack", "children": '
-        '[{"type": "MetricCard", "title": "Total revenue", "value": 184302}, '
-        '{"type": "BarChart", "data": [{"label": "North", "value": 52000}]}]}.\n'
-        "Node types:\n"
-        "- Stack: children only.\n"
-        "- MetricCard: title (string), value (number), delta (number, optional).\n"
-        "- BarChart: data, a list of {label: string, value: number}.\n"
-        "- PieChart: data, a list of {label: string, value: number}.\n"
+        "You draw dashboards by replying with a single JSON object with one "
+        'key, "ui": a list of elements. Each element is an object with exactly '
+        'one key, the component name, whose value is {"props": {...}} and, for '
+        'Stack only, "children": [ ...elements ].\n'
+        "Example:\n"
+        '{"ui": [{"Stack": {"props": {}, "children": ['
+        '{"MetricCard": {"props": {"title": "Total revenue", "value": 184302, "delta": 0.07}}}, '
+        '{"BarChart": {"props": {"data": [{"label": "North", "value": 52000}]}}}]}}]}\n'
+        "Components:\n"
+        "- Stack: props {}; lays out its children.\n"
+        "- MetricCard: props {title: string, value: number, delta: number or "
+        "null} (delta is a ratio, e.g. 0.07 for +7%; use null when there is "
+        "none).\n"
+        "- BarChart: props {data: [{label: string, value: number}]}.\n"
+        "- PieChart: props {data: [{label: string, value: number}]}.\n"
+        "Always include every prop. Use a Stack when there is more than one "
+        "element. "
         + _BYOC_DATA_NOTE
     ),
 )

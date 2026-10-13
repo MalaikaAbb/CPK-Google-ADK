@@ -46,7 +46,7 @@ It requires CopilotKit Intelligence (threads are stored and synced
 server-side). <SignupLink surface="docs_drawer">Start cloud-hosted setup</SignupLink> to create or select a project.
 
 For multi-user applications, configure the Runtime to
-[scope Rich Threads to the signed-in user](/google-adk/threads-lifecycle#scope-rich-threads-to-the-signed-in-user).
+[scope AG-UI Streams to the signed-in user](/google-adk/threads-lifecycle#scope-rich-threads-to-the-signed-in-user).
 
 <OpsPlatformCTA
   variant="inline"
@@ -203,7 +203,7 @@ project whose subscription is inactive.
 
 ## Related
 
-- [Rich Threads overview](/google-adk/threads): compare thread UI and deployment paths
+- [AG-UI Streams overview](/google-adk/threads): compare thread UI and deployment paths
 - [Headless Threads](/google-adk/headless-threads): build a custom UI with the `useThreads` data layer
 - [Threads Drawer reference (React)](/reference/components/CopilotThreadsDrawer)
 - [CopilotChat](/google-adk/prebuilt-components/chat): the chat the drawer connects to

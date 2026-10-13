@@ -5,6 +5,27 @@
 
 The Copilot Runtime is the backend layer that connects your frontend application to your AI agents. It's set up during the [quickstart](/google-adk/quickstart) and is the recommended way to use CopilotKit.
 
+## Runtime languages
+
+**TypeScript is the default and most fully featured runtime. It is the only runtime that can run without CopilotKit Intelligence.** Use it for an open-source setup, or connect it to Intelligence when you need its services.
+
+Python, Go, Ruby, and C#/.NET runtimes require an Intelligence project and server-side API key. They work with both [cloud-hosted](/google-adk/intelligence/managed-intelligence-platform) and [self-hosted](/google-adk/intelligence/self-hosting) Intelligence; they do not provide an in-memory or SQLite runner.
+
+| Language | Host | Without Intelligence |
+| --- | --- | --- |
+| TypeScript | Next.js, Express, Hono, and other JavaScript servers | Yes |
+| Python | ASGI, with Python 3.11+ | No |
+| Go | `net/http`, with Go 1.22+ | No |
+| Ruby | Rack, including Rails and Sinatra, with Ruby 2.7+ | No |
+| C#/.NET | ASP.NET Core, with .NET 8 | No |
+
+Your runtime language does not have to match your agent language. Each runtime can connect to a remote AG-UI agent. A Python agent can stay behind a TypeScript runtime, for example.
+
+Use the [Intelligence quickstart](/google-adk/intelligence/quickstart#connect-your-runtime) for language-specific installation, authentication, and server setup. Shared Intelligence capabilities do not imply identical runtime APIs: TypeScript options such as `BuiltInAgent`, custom `AgentRunner` classes, audio transcription, and Open Generative UI are not available in every implementation.
+
+The examples below use the TypeScript runtime.
+
+
 ## Setting up the runtime
 
 The runtime is a lightweight server endpoint that you add to your backend. Here's a minimal example using Next.js:
@@ -79,6 +100,8 @@ The runtime supports multiple agent types. `BuiltInAgent` is the primary agent c
 
 - **Simple mode:** pass a model string and let CopilotKit handle the rest. Best for quick setup. See [Quickstart](/google-adk/quickstart).
 - **Factory mode:** bring your own AI SDK, TanStack AI, or custom LLM backend. Best when you need full control. See [Factory Mode](/google-adk/backend/custom-agent).
+
+To register agent logic you wrote yourself, extend AG-UI's `AbstractAgent`. See [Write your own AG-UI agent](/google-adk/backend/custom-ag-ui-agent).
 
 <Callout type="warn" title="Wiring an external agent: what to pass, and which URL">
 Two mistakes account for most failures here.
@@ -295,7 +318,7 @@ const runtime = new CopilotRuntime({
 
 Each server entry optionally accepts an `agentId` field to scope that server to a single agent. Without it, the server is available to all agents.
 
-Per-tool filtering belongs to `@ag-ui/mcp-apps-middleware`. The runtime currently pins version `0.0.3`, which does not support `includeTools` or `excludeTools`. Supplying either key raises a configuration error instead of silently ignoring it; use a compatible middleware release when that upstream policy contract is available.
+Per-tool filtering belongs to `@ag-ui/mcp-apps-middleware`. The release the runtime depends on does not support `includeTools` or `excludeTools`. Supplying either key raises a configuration error instead of silently ignoring it. A newer middleware release alone does not change this: the runtime has to adopt the policy first. Follow [#5930](https://github.com/CopilotKit/CopilotKit/issues/5930) for that work.
 
 ## Forwarding request headers to your agent
 
