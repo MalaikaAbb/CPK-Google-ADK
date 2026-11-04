@@ -72,7 +72,7 @@ as this guide uses it as a starting point.
 
     agent = LlmAgent(
         name="my_agent",
-        model="gemini-2.5-flash",
+        model="gemini-3.8-flash",
         instruction="""
         You are a helpful assistant. Help users by answering their questions.
         Please use the language specified in state when responding to the user.

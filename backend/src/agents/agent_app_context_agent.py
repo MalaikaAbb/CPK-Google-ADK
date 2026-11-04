@@ -54,7 +54,7 @@ def build_instruction(ctx: ReadonlyContext) -> str:
 
 colleagues_agent = LlmAgent(
     name="colleagues_agent",
-    model="gemini-2.5-flash",
+    model="gemini-3.5-flash-lite",
     instruction=build_instruction,
 )
 

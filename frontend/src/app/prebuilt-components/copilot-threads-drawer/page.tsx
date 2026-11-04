@@ -35,8 +35,12 @@ export default function Page() {
             prompts={[
               "Send a message, then press New Conversation and send another",
               "Click back to the first row",
+              "Press the header's own 'New conversation' button",
+              "Tick 'Hide the drawer's own new-conversation controls'",
+              "Switch Thread ownership to 'controlled' and repeat",
             ]}
-            expect="Two rows in the drawer. Clicking the first replays its messages into the chat without a page reload. The row menu offers archive and delete."
+            expect="Two rows in the drawer. Clicking the first replays its messages into the chat without a page reload. The row menu offers archive and delete. The header button shows the welcome screen with no row highlighted, and the new thread only gets a row after its first run. With the checkbox ticked, the drawer's New Conversation row and the collapsed launcher's (+) disappear. In controlled mode the threadId shown in the header changes on every new conversation and row click."
+
             fail="A locked panel offering an upgrade instead of a list — that is the license gate, not a wiring bug. See the two switches below."
           />
         </div>
@@ -88,6 +92,39 @@ export default function Page() {
           }
         />
       </Panel>
+
+      <Callout tone="info" title="Your own New conversation button">
+        <p>
+          The header button calls <code>startNewThread()</code> from{" "}
+          <code>useCopilotChatConfiguration()</code>, which is the same function
+          the drawer&apos;s own row calls. It only works inside the shared{" "}
+          <code>CopilotChatConfigurationProvider</code>. Outside one, the hook
+          returns <code>null</code> and the click does nothing.
+        </p>
+        <p className="mt-2">
+          Once the provider gets a <code>threadId</code> prop (the
+          &ldquo;controlled&rdquo; mode), the app owns the thread.{" "}
+          <code>startNewThread()</code> and the drawer&apos;s built-in row
+          selection become no-ops that log a warning, so the drawer needs{" "}
+          <code>onThreadSelect</code> and <code>onNewThread</code>. The
+          drawer&apos;s own controls can be hidden through the{" "}
+          <code>new-thread-button</code> and <code>launcher-new-thread</code>{" "}
+          CSS parts.
+        </p>
+      </Callout>
+
+      <Callout tone="info" title="Which agent's threads it lists">
+        <p>
+          One agent only, resolved in this order: the drawer&apos;s{" "}
+          <code>agentId</code> prop, then the nearest{" "}
+          <code>CopilotChatConfigurationProvider</code>&apos;s{" "}
+          <code>agentId</code> (<code>&lt;CopilotKit agent&gt;</code> renders
+          one), then <code>agentId</code> on <code>CopilotKitProvider</code>,
+          then <code>&quot;default&quot;</code>. Here the provider pins{" "}
+          <code>my_agent</code>, so the drawer and the chat move together.
+          Passing <code>agentId</code> to the drawer alone would split them.
+        </p>
+      </Callout>
 
       <Callout tone="info" title="Rename is missing on purpose">
         <p>

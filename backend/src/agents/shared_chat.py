@@ -26,7 +26,16 @@ logger = logging.getLogger(__name__)
 #region model
 # https://docs.copilotkit.ai/google-adk/quickstart?agent=bring-your-own names
 # exactly one model. Every agent here uses it.
-MODEL = "gemini-2.5-flash"
+MODEL = "gemini-3.5-flash-lite"
+#endregion
+
+
+#region get-model
+# Harness-authored. The MCP Apps page's Code tab imports `get_model` from
+# `agents.shared_chat`, but the page never publishes it. It returns the same
+# model every other agent here uses.
+def get_model() -> str:
+    return MODEL
 #endregion
 
 

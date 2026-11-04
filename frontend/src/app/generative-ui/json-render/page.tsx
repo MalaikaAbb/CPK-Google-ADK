@@ -11,47 +11,19 @@ export default function Page() {
 
       <Panel title="What it demonstrates">
         <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
-          The page replaces the assistant message slot with a renderer that
-          reads the reply as a <code>{"{ root, elements }"}</code> spec,
-          checks each element against a Zod catalog, and draws it with{" "}
-          <code>@json-render/react</code>. Here, all the code the page
-          leaves out has been written in, but its call into the library is
-          kept exactly as published. So this route shows what happens when
-          you follow the page as written.
+          The assistant message slot is replaced with a renderer that reads
+          the reply as a <code>{"{ root, elements }"}</code> spec, checks each
+          element against a Zod catalog, and draws it with{" "}
+          <code>@json-render/react</code>. Only the working version is on this
+          route. The page&apos;s library call, as published, throws against
+          0.21 (see below), so it was dropped.
         </p>
-        <div className="mt-4">
-          <TryIt
-            prompts={["(as published) Show me a sales dashboard.", "(as published) Break down sales by region."]}
-            expect={
-              <>
-                <strong>An error is expected.</strong> Once the reply has a
-                valid root element, <code>&lt;Renderer&gt;</code> throws,
-                most likely{" "}
-                <code>
-                  useVisibility must be used within a VisibilityProvider
-                </code>
-                . The page never wraps it in <code>JSONUIProvider</code>. If
-                the providers were there, the next failure would be{" "}
-                <code>registry</code> being <code>undefined</code>, because
-                the page passes <code>catalog</code>.
-              </>
-            }
-            fail={
-              <>
-                The chat shows nothing and no error. The reply never became a
-                valid spec, so the renderer returned <code>null</code> before
-                reaching the library. Check the raw reply in the Inspector.
-              </>
-            }
-          />
-        </div>
       </Panel>
 
-      <Panel title="The fix — switch the demo to “fixed”">
+      <Panel title="The working version">
         <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
-          A working version sits next to the published one. It reuses the
-          page&apos;s catalog, components, Zod schemas and helpers, and makes
-          four changes:
+          It reuses the page&apos;s catalog, components, Zod schemas and
+          helpers, and makes four changes:
         </p>
         <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
           <li>
@@ -65,10 +37,11 @@ export default function Page() {
             <code>&lt;JSONUIProvider registry&gt;</code>.
           </li>
           <li>
-            It plugs in through{" "}
-            <code>assistantMessage.markdownRenderer</code>, which gets the raw{" "}
-            <code>content</code> and type-checks, instead of replacing the
-            whole <code>assistantMessage</code>.
+            Like the page, it replaces the whole <code>assistantMessage</code>
+            , but reads <code>props.message.content</code> and falls back to
+            the default message when the reply isn&apos;t a spec. The slot is
+            typed <code>typeof CopilotChatAssistantMessage</code>, so it is
+            passed with an <code>as unknown as</code> cast.
           </li>
           <li>
             It calls <code>useConfigureSuggestions</code> inside{" "}
@@ -77,7 +50,7 @@ export default function Page() {
         </ol>
         <div className="mt-4">
           <TryIt
-            prompts={["(fixed) Show me a sales dashboard."]}
+            prompts={["Show me a sales dashboard.", "Break down sales by region."]}
             expect="Two suggestion pills above the input. The reply renders as metric cards and a bar or pie chart that fill in as the JSON streams, with no error."
             fail="Raw JSON or nothing. Check in the Inspector that the reply is a { root, elements } object. If a card is missing, its props failed the catalog's Zod schema and were dropped."
           />
@@ -87,33 +60,16 @@ export default function Page() {
         </div>
       </Panel>
 
-      <Panel title="Left as published — the library call">
-        <Callout tone="warn" title="Not fixed on purpose">
-          <code>&lt;Renderer spec=&#123;spec&#125; catalog=&#123;catalog&#125; /&gt;</code>{" "}
-          doesn&apos;t match <code>@json-render/react</code> 0.21. That
-          version takes <code>registry</code> (a map from name to render
-          function, built with <code>defineRegistry</code>) and needs its
-          providers around it. A <code>@ts-expect-error</code> above the line
-          lets the build pass, so the error surfaces at runtime.
-        </Callout>
-        <div className="mt-4">
-          <Callout tone="warn" title="Also from the page: the slot type">
-            <code>messageView.assistantMessage</code> is typed as{" "}
-            <code>typeof CopilotChatAssistantMessage</code> in CopilotKit
-            1.74.0. The page&apos;s plain component doesn&apos;t satisfy it,
-            so that line also carries a <code>@ts-expect-error</code>.
-          </Callout>
-        </div>
-        <div className="mt-4">
-          <SourceCodeGroup
-            files={[
-              { file: `${DIR}/byoc-json-render-demo.tsx` },
-              { file: `${DIR}/json-render-renderer.tsx` },
-              { file: `${DIR}/registry.tsx` },
-            ]}
-          />
-        </div>
-      </Panel>
+      <Callout tone="warn" title="Why the published version was removed">
+        The page renders{" "}
+        <code>&lt;Renderer spec=&#123;spec&#125; catalog=&#123;catalog&#125; /&gt;</code>
+        . <code>@json-render/react</code> 0.21 takes <code>registry</code>{" "}
+        instead and needs <code>JSONUIProvider</code> around it. As
+        published, it threw{" "}
+        <code>useVisibility must be used within a VisibilityProvider</code>{" "}
+        once a valid spec arrived. Details are in{" "}
+        <code>JSON_RENDERER_FIX.md</code>.
+      </Callout>
 
       <Panel title="Written in — what the page leaves out">
         <ul className="mb-4 list-disc space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
@@ -133,6 +89,7 @@ export default function Page() {
         </ul>
         <SourceCodeGroup
           files={[
+            { file: `${DIR}/registry.tsx` },
             { file: `${DIR}/spec-helpers.ts` },
             { file: "frontend/src/components/byoc-dashboard.tsx" },
             { file: "frontend/src/app/api/copilotkit-byoc-json-render/[[...slug]]/route.ts" },
@@ -150,9 +107,8 @@ export default function Page() {
           </li>
           <li>
             The page calls <code>useConfigureSuggestions</code> outside the{" "}
-            <code>&lt;CopilotKit&gt;</code> it renders. The suggestions
-            therefore register on the app&apos;s root provider, so they
-            won&apos;t appear in this chat.
+            <code>&lt;CopilotKit&gt;</code> it renders, so its suggestions
+            would never reach this chat. The working version calls it inside.
           </li>
         </ul>
       </Panel>

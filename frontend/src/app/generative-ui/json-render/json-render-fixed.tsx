@@ -1,7 +1,7 @@
 /**
- * Harness-authored: a working version of the page, for comparison with the
- * published one (./byoc-json-render-demo.tsx + ./json-render-renderer.tsx,
- * which are left as published and throw).
+ * Harness-authored: the working version of the page. The doc's code as
+ * published throws against @json-render/react 0.21, so only this version is
+ * kept on the route.
  *
  * Four changes, each fixing one thing the published code gets wrong:
  *
@@ -12,10 +12,12 @@
  *    catalog omits, is added as a plain container.
  * 2. `<JSONUIProvider>` around `<Renderer>`. The renderer reads visibility,
  *    action and state contexts, and throws without them.
- * 3. The `markdownRenderer` sub-slot instead of replacing the whole
- *    `assistantMessage`. The Markdown Rendering page documents that a
- *    component passed there receives the raw `content`; it type-checks without
- *    a suppression and keeps the message's toolbar.
+ * 3. Replaces the whole `assistantMessage`, as the page does, but reads
+ *    `props.message.content` and falls back to the default message when the
+ *    reply is not a spec. The slot is typed `typeof
+ *    CopilotChatAssistantMessage`, so it is passed with an `as unknown as`
+ *    cast (Option B in JSON_RENDERER_FIX.md; the commented-out
+ *    `markdownRenderer` variant below is Option A).
  * 4. `useConfigureSuggestions` inside `<CopilotKit>`. The page calls it
  *    outside, so its suggestions go to a different provider.
  *
@@ -104,7 +106,10 @@ function Chat() {
     <CopilotChat
       className="h-full"
       //messageView={{ assistantMessage: { markdownRenderer: JsonRenderMarkdown } }}
-      messageView={{ assistantMessage: JsonRenderAssistantMessage }}
+      messageView={{
+        assistantMessage:
+          JsonRenderAssistantMessage as unknown as typeof CopilotChatAssistantMessage,
+      }}
     />
   );
 }

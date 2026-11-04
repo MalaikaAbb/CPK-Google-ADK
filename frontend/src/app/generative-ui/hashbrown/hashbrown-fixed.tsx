@@ -1,7 +1,7 @@
 /**
- * Harness-authored: a working version of the page, for comparison with the
- * published one (./byoc-hashbrown-demo.tsx + ./hashbrown-renderer.tsx, which
- * are left as published and throw).
+ * Harness-authored: the working version of the page. The doc's hook calls as
+ * published throw against @hashbrownai/react 0.6.1, so only this version is
+ * kept on the route.
  *
  * What changes, and why:
  *

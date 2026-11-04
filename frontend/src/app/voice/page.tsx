@@ -20,10 +20,10 @@ export default function Page() {
           <TryIt
             prompts={[
               "Click 🎙 Try a sample audio, then send",
-              "Click the mic in the composer and speak (needs OPENAI_API_KEY)",
+              "Click the mic in the composer and speak (needs OPENAI_TRANSCRIPTION_API_KEY)",
             ]}
-            expect="The sample button drops a question into the composer and the agent answers in one or two spoken-length sentences. With a key set, the mic records, transcribes, and auto-sends."
-            fail="No mic button at all — the runtime has no transcriptionService, or basePath does not match the route directory."
+            expect="The sample button drops a question into the composer and the agent answers in one or two spoken-length sentences. With a key set, the mic records, transcribes, and auto-sends. Without a key there is no mic, and that is the intended state."
+            fail="No mic button even though OPENAI_TRANSCRIPTION_API_KEY is set (restart after setting it), or basePath does not match the route directory."
           />
         </div>
       </Panel>
@@ -32,12 +32,12 @@ export default function Page() {
         <p>
           Gemini answers the chat, but transcription goes through OpenAI
           Whisper, so <code>GOOGLE_API_KEY</code> alone will not make the mic
-          work. Set <code>OPENAI_API_KEY</code> in{" "}
-          <code>frontend/.env.local</code> to enable it. Without one, the route
-          still runs — the sample-audio button bypasses{" "}
-          <code>/transcribe</code> entirely — and clicking the mic returns a
-          clear error rather than an opaque 500, because the service is wrapped
-          in a guard.
+          work. Set <code>OPENAI_TRANSCRIPTION_API_KEY</code> in{" "}
+          <code>frontend/.env.local</code> to enable it. Without one,{" "}
+          <code>createTranscriptionService()</code> returns{" "}
+          <code>undefined</code>, the runtime reports transcription as
+          disabled, and the mic is hidden. The route still runs, because the
+          sample-audio button bypasses <code>/transcribe</code> entirely.
         </p>
       </Callout>
 
@@ -46,6 +46,13 @@ export default function Page() {
         description="Three things force this onto its own endpoint rather than the app-wide one."
       >
         <SourceCode file="frontend/src/app/api/copilotkit-voice/[[...slug]]/route.ts" />
+      </Panel>
+
+      <Panel
+        title="The transcription service"
+        description="Built only when its own credential is set."
+      >
+        <SourceCode file="frontend/src/lib/transcription-service.ts" />
       </Panel>
 
       <Panel title="The demo">
@@ -64,9 +71,10 @@ export default function Page() {
           for AssemblyAI, Deepgram, a self-hosted Whisper, anything.{" "}
           <code>TranscriptionServiceOpenAI</code> from{" "}
           <code>@copilotkit/voice</code> is the reference implementation, and
-          this route wraps it rather than replacing it. Wrapping is worth
-          copying: an unconfigured credential otherwise surfaces as a 5xx from
-          deep inside the provider SDK.
+          this route builds it directly from the doc&apos;s factory.{" "}
+          <code>transcribeFile</code> must return a plain string and let
+          provider errors through unchanged, because the runtime classifies
+          failures from them.
         </p>
       </Panel>
 

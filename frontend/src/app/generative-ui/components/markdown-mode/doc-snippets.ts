@@ -1,0 +1,8 @@
+// Doc snippets shown as reference on this route, byte-exact from the
+// rendered page. Generated, not hand-typed.
+
+export const EXAMPLE_REPLY = "Here is an estimate you can play with:\n\n```a2ui\n{\"version\":\"v1.0\",\"createSurface\":{\"surfaceId\":\"plan-estimator\",\"dataModel\":{\"seats\":10,\"price\":\"$290 / month\"},\"components\":[{\"id\":\"root\",\"component\":\"Card\",\"children\":[\"seats\",\"price\"]}]}}\n{\"version\":\"v1.0\",\"updateComponents\":{\"surfaceId\":\"plan-estimator\",\"components\":[{\"id\":\"seats\",\"component\":\"Slider\",\"label\":\"Seats\",\"min\":1,\"max\":50,\"value\":{\"@path\":\"/seats\"}},{\"id\":\"price\",\"component\":\"Text\",\"text\":{\"@path\":\"/price\"}}]}}\n```\n\nMove the slider to change the seat count.";
+
+export const FORWARDED_UI = "{\n  \"v1.0\": {\n    \"supportedCatalogIds\": [\"copilotkit/standard@1\"],\n    \"inlineCatalogs\": [\n      {\n        \"catalogId\": \"copilotkit/standard@1\",\n        \"protocolVersion\": \"1.0\",\n        \"components\": { \"Card\": { \"props\": { \"type\": \"object\" } } },\n        \"functions\": {},\n        \"instructions\": \"You can show interactive UI in your reply ...\"\n      }\n    ]\n  },\n  \"metadata\": {\n    \"extensions\": {\n      \"copilotkit_format\": 3,\n      \"copilotkit_transport\": \"markdown\",\n      \"copilotkit_targets\": [{ \"id\": \"chat\", \"kind\": \"chat\" }],\n      \"copilotkit_surfaces\": {},\n      \"copilotkit_contextSent\": false\n    }\n  }\n}";
+
+export const PYTHON_PROMPT = "ui = input.forwarded_props[\"copilotkit\"][\"ui\"]\ncatalog = ui[\"v1.0\"][\"inlineCatalogs\"][0]\nsystem = f\"{MY_PROMPT}\\n\\n{catalog['instructions']}\\n\\nComponents:\\n{json.dumps(catalog['components'])}\"";

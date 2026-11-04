@@ -30,13 +30,14 @@ export default function Page() {
         </ol>
         <p className="mt-3 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
           Objects nest, so a slot can drill into its own sub-slots to any depth
-          — <code>messageView.assistantMessage.copyButton</code> is a valid
-          path. The demo uses all three levels at once.
+          — <code>messageView.assistantMessage.toolCallsView</code> is a valid
+          path, and the one the demo uses. The demo uses all three levels at
+          once.
         </p>
         <div className="mt-4">
           <TryIt
-            prompts={["Hello", "What did you just do?"]}
-            expect="Before sending: a gradient welcome panel tagged 'slot: welcomeScreen'. After: each reply sits in a tinted card with a 'slot' badge, the message area is tinted, the composer is already focused, and the disclaimer under it is the custom one."
+            prompts={["Hello", "Roll a 20-sided die, then a 6-sided die"]}
+            expect="Before sending: a gradient welcome panel tagged 'slot: welcomeScreen'. After: the message area is tinted, the composer is already focused, and the disclaimer under it is the custom one. The dice rolls appear inside a dashed box tagged 'slot: toolCallsView', with the built-in tool card (grouped as 'Used 2 tools' when the calls come in a row) inside it."
             fail="A default-looking chat, or a type error at build time — the slot casts are what let a hand-written component stand in for the default."
           />
         </div>
@@ -71,6 +72,30 @@ export default function Page() {
           <code>toggleButton</code>.
         </p>
       </Panel>
+
+      <Callout tone="info" title="Tool calls: wrap, don't replace">
+        <p>
+          <code>toolCallsView</code> draws all the tool calls of one assistant
+          message. The demo wraps the default{" "}
+          <code>CopilotChatToolCallsView</code> in its own container and
+          renders the default inside it, so registered renderers keep working.
+          To change only how calls are grouped (card, line, stack, per turn),
+          no component is needed. Set <code>toolCallDisplay</code> on the
+          message view instead, as the{" "}
+          <a
+            href="/generative-ui/tool-rendering"
+            className="text-[var(--accent)] underline underline-offset-4"
+          >
+            Tool Rendering
+          </a>{" "}
+          route shows.
+        </p>
+        <p className="mt-2">
+          The <code>roll_dice</code> frontend tool is a harness addition. The
+          doc snippet has no tool, and this agent has no backend tools, so
+          without one the slot would never render.
+        </p>
+      </Callout>
 
       <Callout tone="info" title="labels is not a slot">
         <p>

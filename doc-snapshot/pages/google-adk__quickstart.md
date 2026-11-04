@@ -181,7 +181,7 @@ More detail: [Inspector](/google-adk/inspector).
                 ```
 
                 <Callout type="info" title="What about other models?">
-                  This example uses Gemini 2.5 Flash, but you can modify it to use any language model supported by ADK.
+                  This example uses Gemini 3.8 Flash, but you can modify it to use any language model supported by ADK.
                 </Callout>
             </Step>
             <Step>
@@ -196,7 +196,7 @@ More detail: [Inspector](/google-adk/inspector).
 
                 agent = LlmAgent(
                     name="assistant",
-                    model="gemini-2.5-flash",
+                    model="gemini-3.8-flash",
                     instruction="Be helpful and fun!"
                 )
 

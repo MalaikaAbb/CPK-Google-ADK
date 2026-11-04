@@ -46,6 +46,8 @@ export const AGENT_IDS = [
   "subagents",
   "agent-config",
   "agent-app-context",
+  "genui",
+  "mcp-apps",
 ] as const;
 
 export type AgentId = (typeof AGENT_IDS)[number];
