@@ -79,58 +79,14 @@ Wire up the V2 runtime with a `TranscriptionService`. The V1 wrapper drops the `
 import type { NextRequest } from "next/server";
 import {
   CopilotRuntime,
-  TranscriptionService,
   createCopilotRuntimeHandler,
 } from "@copilotkit/runtime/v2";
-import type { TranscribeFileOptions } from "@copilotkit/runtime/v2";
 import { HttpAgent } from "@ag-ui/client";
-import { TranscriptionServiceOpenAI } from "@copilotkit/voice";
-import OpenAI from "openai";
+import { createTranscriptionService } from "@/lib/transcription-service";
 
 const AGENT_URL = process.env.AGENT_URL || "http://localhost:8000";
 
 const voiceDemoAgent = new HttpAgent({ url: `${AGENT_URL}/voice` });
-
-/**
- * Transcription service wrapper that pins `baseURL` to real OpenAI (or
- * `OPENAI_TRANSCRIPTION_BASE_URL` when explicitly set) instead of falling
- * through to `OPENAI_BASE_URL`. In local docker / Railway preview
- * environments `OPENAI_BASE_URL` points at aimock so LLM completions stay
- * deterministic, but aimock's proxy mode mangles multipart audio bodies on
- * forward — Whisper rejects with `502 Invalid file format` even when the
- * recorded webm/opus bytes are valid. Bypassing aimock for transcription
- * lets real Whisper see the original bytes and the demo's mic round-trip
- * actually works. Mirrors what langgraph-python does in its voice route.
- *
- * The sample-audio button is the deterministic affordance (synchronous
- * text injection); the mic is the only path that should exercise real
- * Whisper.
- */
-class GuardedOpenAITranscriptionService extends TranscriptionService {
-  private delegate: TranscriptionServiceOpenAI | null;
-
-  constructor() {
-    super();
-    const apiKey = process.env.OPENAI_API_KEY;
-    const baseURL =
-      process.env.OPENAI_TRANSCRIPTION_BASE_URL ?? "https://api.openai.com/v1";
-    this.delegate = apiKey
-      ? new TranscriptionServiceOpenAI({
-          openai: new OpenAI({ apiKey, baseURL }),
-        })
-      : null;
-  }
-
-  async transcribeFile(options: TranscribeFileOptions): Promise<string> {
-    if (!this.delegate) {
-      throw new Error(
-        "OPENAI_API_KEY not configured for this deployment (api key missing). " +
-          "Set OPENAI_API_KEY to enable voice transcription.",
-      );
-    }
-    return this.delegate.transcribeFile(options);
-  }
-}
 
 let cachedHandler: ((req: Request) => Promise<Response>) | null = null;
 function getHandler(): (req: Request) => Promise<Response> {
@@ -142,7 +98,7 @@ function getHandler(): (req: Request) => Promise<Response> {
       "voice-demo": voiceDemoAgent,
       default: voiceDemoAgent,
     },
-    transcriptionService: new GuardedOpenAITranscriptionService(),
+    transcriptionService: createTranscriptionService(),
   });
 
   cachedHandler = createCopilotRuntimeHandler({
@@ -182,8 +138,24 @@ For the Google ADK showcase, agent runs take one more hop: this Next.js route re
 
 `TranscriptionService` from `@copilotkit/runtime/v2` is an abstract class. Subclass it to plug in any transcription provider — Whisper, AssemblyAI, Deepgram, your own model. The library ships `TranscriptionServiceOpenAI` as the canonical reference implementation.
 
+<Callout type="info" title="TranscriptionServiceOpenAI takes an openai 5.x client">
+`@copilotkit/voice` depends on `openai` `^5.9.0`, and the `openai` option of
+`TranscriptionServiceOpenAI` is typed against the copy of `openai` that
+`@copilotkit/voice` resolves. Pass an `OpenAI` instance created from that same
+installed copy. The `OpenAI` class has private (`#private`) members, so an
+instance from another copy or another major version fails type-checking, even
+when it looks the same.
+
+If your app uses `openai` v4, v6 or v7 (npm's latest is 7.x), either:
+
+- align your app on `openai` 5.x, so your app and `@copilotkit/voice` share one
+  copy, or
+- subclass `TranscriptionService` and call your own client inside
+  `transcribeFile`.
+</Callout>
+
 <Callout type="warn" title="Return a string, and let provider errors through">
-`transcribe` returns the transcript as a string — the handler wraps it into
+`transcribeFile` returns the transcript as a string — the handler wraps it into
 `{ transcription }` itself, so returning a richer object is a type error.
 
 Let the provider's own errors propagate unchanged. The runtime classifies failures by reading
@@ -195,61 +167,24 @@ it with your own wording bypasses that and everything lands as a generic provide
 A useful pattern is constructing the service only when its dedicated credential is configured. Without it, omit `transcriptionService`; the runtime reports the capability as disabled, hides the mic, and returns the documented 503 if `/transcribe` is called directly:
 
 ```typescript
-// src/app/api/copilotkit-voice/[[...slug]]/route.ts
-import type { NextRequest } from "next/server";
-import {
-  CopilotRuntime,
-  TranscriptionService,
-  createCopilotRuntimeHandler,
-} from "@copilotkit/runtime/v2";
-import type { TranscribeFileOptions } from "@copilotkit/runtime/v2";
-import { HttpAgent } from "@ag-ui/client";
+// src/lib/transcription-service.ts
 import { TranscriptionServiceOpenAI } from "@copilotkit/voice";
-import OpenAI from "openai";
+import { OpenAI } from "openai";
 
-const AGENT_URL = process.env.AGENT_URL || "http://localhost:8000";
+const OPENAI_TRANSCRIPTION_URL = "https://api.openai.com/v1";
 
-const voiceDemoAgent = new HttpAgent({ url: `${AGENT_URL}/voice` });
+export function createTranscriptionService(
+  env: NodeJS.ProcessEnv = process.env,
+): TranscriptionServiceOpenAI | undefined {
+  const apiKey = env.OPENAI_TRANSCRIPTION_API_KEY;
+  if (!apiKey) return undefined;
 
-/**
- * Transcription service wrapper that pins `baseURL` to real OpenAI (or
- * `OPENAI_TRANSCRIPTION_BASE_URL` when explicitly set) instead of falling
- * through to `OPENAI_BASE_URL`. In local docker / Railway preview
- * environments `OPENAI_BASE_URL` points at aimock so LLM completions stay
- * deterministic, but aimock's proxy mode mangles multipart audio bodies on
- * forward — Whisper rejects with `502 Invalid file format` even when the
- * recorded webm/opus bytes are valid. Bypassing aimock for transcription
- * lets real Whisper see the original bytes and the demo's mic round-trip
- * actually works. Mirrors what langgraph-python does in its voice route.
- *
- * The sample-audio button is the deterministic affordance (synchronous
- * text injection); the mic is the only path that should exercise real
- * Whisper.
- */
-class GuardedOpenAITranscriptionService extends TranscriptionService {
-  private delegate: TranscriptionServiceOpenAI | null;
-
-  constructor() {
-    super();
-    const apiKey = process.env.OPENAI_API_KEY;
-    const baseURL =
-      process.env.OPENAI_TRANSCRIPTION_BASE_URL ?? "https://api.openai.com/v1";
-    this.delegate = apiKey
-      ? new TranscriptionServiceOpenAI({
-          openai: new OpenAI({ apiKey, baseURL }),
-        })
-      : null;
-  }
-
-  async transcribeFile(options: TranscribeFileOptions): Promise<string> {
-    if (!this.delegate) {
-      throw new Error(
-        "OPENAI_API_KEY not configured for this deployment (api key missing). " +
-          "Set OPENAI_API_KEY to enable voice transcription.",
-      );
-    }
-    return this.delegate.transcribeFile(options);
-  }
+  return new TranscriptionServiceOpenAI({
+    openai: new OpenAI({
+      apiKey,
+      baseURL: env.OPENAI_TRANSCRIPTION_BASE_URL ?? OPENAI_TRANSCRIPTION_URL,
+    }),
+  });
 }
 ```
 

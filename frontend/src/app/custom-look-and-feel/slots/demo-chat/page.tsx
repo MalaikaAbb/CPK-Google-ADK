@@ -2,17 +2,22 @@
 
 import {
   CopilotChat,
-  CopilotChatAssistantMessage,
   CopilotChatInput,
+  CopilotChatToolCallsView,
   CopilotChatView,
+  type CopilotChatToolCallsViewProps,
+  useDefaultRenderTool,
+  useFrontendTool,
 } from "@copilotkit/react-core/v2";
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode } from "react";
+import { z } from "zod";
 
 import { DemoFrame } from "@/components/demo-frame";
 
 /**
- * All three levels of the slot system on one chat, plus the doc's three
- * override points (welcome screen, assistant message, input disclaimer).
+ * All three levels of the slot system on one chat, plus the doc's override
+ * points (welcome screen, the assistant message's tool-calls view, input
+ * disclaimer).
  *
  * The casts are the doc's own: a slot's type is the default component it
  * replaces, and a hand-written replacement is not structurally that component,
@@ -57,19 +62,19 @@ function CustomWelcomeScreen({
   );
 }
 
-/** Level 3, nested — wraps the default assistant message rather than replacing it. */
-function CustomAssistantMessage(
-  props: ComponentProps<typeof CopilotChatAssistantMessage>,
-) {
-  return (
-    <div className="rounded-xl border border-indigo-200 bg-indigo-50/60 p-2 dark:border-indigo-900 dark:bg-indigo-950/30">
-      <span className="mb-1 inline-block rounded bg-indigo-600 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-white">
-        slot
-      </span>
-      <CopilotChatAssistantMessage {...props} />
-    </div>
-  );
-}
+/**
+ * Level 3, two deep — the doc's `toolCallsView` override. It wraps the
+ * default `CopilotChatToolCallsView` rather than replacing it, so the
+ * registered renderers (here the built-in card) still draw each call inside.
+ */
+const CustomToolCallsView = (props: CopilotChatToolCallsViewProps) => (
+  <div className="rounded-lg border border-dashed border-indigo-400 p-2">
+    <span className="mb-1 inline-block rounded bg-indigo-600 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-white">
+      slot: toolCallsView
+    </span>
+    <CopilotChatToolCallsView {...props} />
+  </div>
+);
 
 /** Level 3, two deep — the small print under the composer. */
 function CustomDisclaimer() {
@@ -81,14 +86,32 @@ function CustomDisclaimer() {
 }
 
 export default function Page() {
+  // Harness addition, not doc code: the slot only draws when a message has tool
+  // calls, and this agent has no backend tools. A frontend tool gives it one,
+  // and the zero-config built-in card renders the calls inside the slot.
+  useFrontendTool({
+    name: "roll_dice",
+    description: "Roll a die with the given number of sides and return the result.",
+    parameters: z.object({
+      sides: z.number().int().min(2).describe("Number of sides on the die."),
+    }),
+    handler: async ({ sides }) => ({
+      sides,
+      result: 1 + Math.floor(Math.random() * sides),
+    }),
+    agentId: "chat-slots",
+  });
+  useDefaultRenderTool();
+
   const welcomeScreen =
     CustomWelcomeScreen as unknown as typeof CopilotChatView.WelcomeScreen;
 
   const messageView = {
     // Level 1 — a Tailwind class string merged into the default component.
     className: "bg-slate-50 dark:bg-slate-900/60",
-    assistantMessage:
-      CustomAssistantMessage as unknown as typeof CopilotChatAssistantMessage,
+    // Level 2, nested — an object drilling into the assistant message's own
+    // sub-slots, exactly the doc's `assistantMessage: { toolCallsView }`.
+    assistantMessage: { toolCallsView: CustomToolCallsView },
   };
 
   const input = {

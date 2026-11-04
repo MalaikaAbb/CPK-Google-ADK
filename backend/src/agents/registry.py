@@ -22,6 +22,8 @@ from agents import chat_agents
 from agents.a2ui_fixed_agent import a2ui_fixed_agent
 from agents.agent_config_agent import agent_config_agent
 from agents.declarative_gen_ui_agent import declarative_gen_ui_agent
+from agents.genui_agent import genui_agent
+from agents.mcp_apps_agent import mcp_apps_agent
 from agents.agent_app_context_agent import colleagues_agent
 from agents.hitl_in_chat_agent import hitl_in_chat_agent
 from agents.predictive_state_updates_agent import predictive_state_updates_agent
@@ -188,6 +190,15 @@ REGISTRY: dict[str, RegisteredAgent] = {
     "agent-config": RegisteredAgent(agent_config_agent, "/google-adk/agent-config"),
     "agent-app-context": RegisteredAgent(
         colleagues_agent, "/google-adk/agent-app-context"
+    ),
+    # Components & surfaces (eight pages share one agent; none shows an ADK
+    # agent, so this one is harness-authored)
+    "genui": RegisteredAgent(
+        genui_agent, "/google-adk/generative-ui/components/surfaces"
+    ),
+    # MCP Apps — the Code tab mounts it at `/mcp-apps`
+    "mcp-apps": RegisteredAgent(
+        mcp_apps_agent, "/google-adk/generative-ui/mcp-apps"
     ),
 }
 #endregion

@@ -69,6 +69,8 @@ import { CopilotKit } from "@copilotkit/react-core/v2";
 
 
 
+
+
 For Express, NestJS, or plain Node.js HTTP variants, see the [quickstart](/google-adk/quickstart).
 For the exact HTTP routes the runtime exposes (and how to probe them with `curl`),
 see [Runtime HTTP endpoints](/google-adk/backend/runtime-endpoints).
@@ -92,6 +94,8 @@ see [Runtime HTTP endpoints](/google-adk/backend/runtime-endpoints).
   it or flip it to `{false}` when you move to a v2 handler. See
   [Provider and handler pairs](/google-adk/backend/runtime-endpoints#provider-and-handler-pairs).
 </Callout>
+
+
 
 
 ## Agents
@@ -211,7 +215,7 @@ When you register multiple agents, the runtime handles discovery and routing aut
 
 ### CopilotKit Intelligence
 
-[Threads](/google-adk/threads), the [inspector](/google-adk/inspector), and other CopilotKit Intelligence capabilities are provided through the runtime. These give you conversation persistence and debugging without extra setup.
+[Threads](/google-adk/AG-UI-Streams), the [inspector](/google-adk/inspector), and other CopilotKit Intelligence capabilities are provided through the runtime. These give you conversation persistence and debugging without extra setup.
 
 The examples below take `intelligence` and `identifyUser` as given. `intelligence` is a `CopilotKitIntelligence` instance — see [Connect your runtime to Intelligence](/google-adk/intelligence/quickstart) for the constructor and where the project API key comes from.
 
@@ -397,6 +401,8 @@ const myAgent = new HttpAgent({
   <YourApp />
 </CopilotKit>;
 ```
+
+
 
 
 

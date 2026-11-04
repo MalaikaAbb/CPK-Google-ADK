@@ -235,7 +235,7 @@ export const NAV: NavGroup[] = [
           "A second runtime carrying a TranscriptionService, which is what makes the composer grow a mic button.",
         status: "working",
         statusNote:
-          "The mic transcribes through OpenAI Whisper, so it needs OPENAI_API_KEY. Without one the route still runs via the doc's sample-audio button.",
+          "The mic transcribes through OpenAI Whisper and only appears when OPENAI_TRANSCRIPTION_API_KEY is set. Without it the route still runs via the doc's sample-audio button.",
       },
     ],
   },
@@ -328,10 +328,10 @@ export const NAV: NavGroup[] = [
         title: "JSON Render",
         docPath: "/google-adk/generative-ui/json-render",
         summary:
-          "An agent-emitted { root, elements } spec, meant to be validated against a Zod catalog and drawn by @json-render/react.",
-        status: "broken",
+          "An agent-emitted { root, elements } spec, validated against a Zod catalog and drawn by @json-render/react.",
+        status: "working",
         statusNote:
-          "As published it throws: the missing custom code is filled in, but the doc's <Renderer spec catalog> call is kept. @json-render/react 0.21 takes registry and needs JSONUIProvider. The demo's \"fixed\" mode has the working version, not yet checked in a browser.",
+          "Fixed version only. The doc's <Renderer spec catalog> call throws on @json-render/react 0.21 (needs registry and JSONUIProvider), so the published version was removed.",
       },
       {
         path: "/generative-ui/hashbrown",
@@ -340,10 +340,118 @@ export const NAV: NavGroup[] = [
         title: "Hashbrown",
         docPath: "/google-adk/generative-ui/hashbrown",
         summary:
-          "Streamed JSON meant to be parsed progressively by @hashbrownai/react and rendered through a component catalog.",
+          "Streamed JSON parsed progressively by @hashbrownai/react and rendered through a component catalog.",
+        status: "working",
+        statusNote:
+          "Fixed version only. The doc's hook calls throw on 0.6.1 (useJsonParser needs a schema, useUiKit takes { components }), and its example output is the wrong shape, so the published version was removed.",
+      },
+      {
+        path: "/generative-ui/components/surfaces",
+        hasDemo: true,
+        agentId: "genui",
+        title: "Components \u00b7 Surfaces",
+        docPath: "/google-adk/generative-ui/components/surfaces",
+        summary:
+          "Generated UI in named page targets (GenerativeUISurface) as well as the chat, with fallbacks, component limits and per-item targets.",
         status: "broken",
         statusNote:
-          "As published it throws: the missing code (components, runtime route, agent prompt) is filled in, but the doc's hook calls are kept. In 0.6.1 useJsonParser needs a schema and useUiKit takes { components }. The page's example output is also the wrong shape for Hashbrown. The demo's \"fixed\" tab has the working version, not yet checked in a browser.",
+          "Broken on Google ADK: Gemini can't fill render_ui's property-less operations schema via ag_ui_adk, so operations come back malformed and are rejected; nothing renders (README §9 #29). No fix applied, by decision.",
+      },
+      {
+        path: "/generative-ui/components/catalogs",
+        hasDemo: true,
+        agentId: "genui",
+        title: "Components \u00b7 Catalogs",
+        docPath: "/google-adk/generative-ui/components/catalogs",
+        summary:
+          "A typed catalog (createGenerativeUI) of the components the agent may render, combined with extends and exported as A2UI 1.0 JSON.",
+        status: "broken",
+        statusNote:
+          "Broken on Google ADK: Gemini can't fill render_ui's property-less operations schema via ag_ui_adk, so operations come back malformed and are rejected; nothing renders (README §9 #29). No fix applied, by decision.",
+      },
+      {
+        path: "/generative-ui/components/standard-catalog",
+        hasDemo: true,
+        agentId: "genui",
+        title: "Components \u00b7 Standard catalog",
+        docPath: "/generative-ui/components/standard-catalog",
+        summary:
+          "The 69-component standardUI, as is and with extends, omit and overrides.",
+        status: "broken",
+        statusNote:
+          "Broken on Google ADK: Gemini can't fill render_ui's property-less operations schema via ag_ui_adk, so operations come back malformed and are rejected; nothing renders (README §9 #29). No fix applied, by decision.",
+      },
+      {
+        path: "/generative-ui/components/state-and-actions",
+        hasDemo: true,
+        agentId: "genui",
+        title: "Components \u00b7 State and actions",
+        docPath: "/google-adk/generative-ui/components/state-and-actions",
+        summary:
+          "App state bound into props, functions run on clicks, writable inputs, and clicks sent to the agent.",
+        status: "broken",
+        statusNote:
+          "Broken on Google ADK: Gemini can't fill render_ui's property-less operations schema via ag_ui_adk, so operations come back malformed and are rejected; nothing renders (README §9 #29). No fix applied, by decision.",
+      },
+      {
+        path: "/generative-ui/components/theming",
+        hasDemo: true,
+        agentId: "genui",
+        title: "Components \u00b7 Theming",
+        docPath: "/google-adk/generative-ui/components/theming",
+        summary:
+          "CSS-variable themes for the standard components, per-mode dark values, and the dark class.",
+        status: "broken",
+        statusNote:
+          "Broken on Google ADK: Gemini can't fill render_ui's property-less operations schema via ag_ui_adk, so operations come back malformed and are rejected; nothing renders (README §9 #29). No fix applied, by decision.",
+      },
+      {
+        path: "/generative-ui/components/transports",
+        hasDemo: true,
+        agentId: "genui",
+        title: "Components \u00b7 Transports",
+        docPath: "/google-adk/generative-ui/components/transports",
+        summary:
+          "The render_ui tool transport, the markdown transport, and agentIds scoping.",
+        status: "partial",
+        statusNote:
+          "Tool mode is broken on Google ADK: Gemini can't fill render_ui's property-less operations schema via ag_ui_adk, so operations come back malformed and are rejected (README §9 #29). Markdown and agentIds modes are unaffected. Not yet checked in a browser.",
+      },
+      {
+        path: "/generative-ui/components/markdown-mode",
+        hasDemo: true,
+        agentId: "genui",
+        title: "Components \u00b7 Markdown mode",
+        docPath: "/google-adk/generative-ui/components/markdown-mode",
+        summary:
+          "a2ui code blocks inside the agent's reply, rendered as live surfaces while it streams.",
+        status: "partial",
+        statusNote:
+          "Not yet checked in a browser. Doc code verbatim; the pieces the page never defines are harness-authored and listed on the route. Backend-built prompts (sendContext: false) have no ADK code on the page.",
+      },
+      {
+        path: "/generative-ui/components/from-a2ui",
+        hasDemo: true,
+        agentId: "genui",
+        title: "Components \u00b7 Adopt from A2UI",
+        docPath: "/google-adk/generative-ui/components/from-a2ui",
+        summary:
+          "Migrating an A2UI v0.9 createCatalog app to an A2UI 1.0 createGenerativeUI catalog.",
+        status: "broken",
+        statusNote:
+          "Broken on Google ADK: Gemini can't fill render_ui's property-less operations schema via ag_ui_adk, so operations come back malformed and are rejected; nothing renders (README §9 #29). No fix applied, by decision.",
+      },
+      {
+        path: "/generative-ui/mcp-apps",
+        hasDemo: true,
+        agentId: "mcp-apps",
+        title: "MCP Apps",
+        docPath: "/google-adk/generative-ui/mcp-apps",
+        summary:
+          "An MCP server's tool UI (Excalidraw) rendered inline in the chat via the runtime's mcpApps middleware.",
+        status: "partial",
+        statusNote:
+          "Not yet checked in a browser. Code tab verbatim, with labelled stand-ins for the unpublished ./chat, header-forwarding and get_model, and the headless-complete path.",
       },
     ],
   },
@@ -359,6 +467,18 @@ export const NAV: NavGroup[] = [
         summary:
           "A tool the agent calls that executes in the browser and changes the page.",
         status: "working",
+      },
+      {
+        path: "/webmcp",
+        hasDemo: true,
+        agentId: "agentic_chat",
+        title: "WebMCP",
+        docPath: "/google-adk/webmcp",
+        summary:
+          "A frontend tool mirrored onto document.modelContext for WebMCP browser agents, via useFrontendTool and via a bare CopilotKitCore.",
+        status: "partial",
+        statusNote:
+          "Not yet checked in a browser. searchOrders is a labelled stub. The WebMCP side needs Chrome 149+ with the WebMCP flag; the chat side works in any browser.",
       },
       {
         path: "/human-in-the-loop",

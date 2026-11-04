@@ -1,15 +1,10 @@
 import type { NextRequest } from "next/server";
-import {
-  TranscriptionService,
-  createCopilotRuntimeHandler,
-} from "@copilotkit/runtime/v2";
-import type { TranscribeFileOptions } from "@copilotkit/runtime/v2";
+import { createCopilotRuntimeHandler } from "@copilotkit/runtime/v2";
 import { HttpAgent } from "@ag-ui/client";
-import { TranscriptionServiceOpenAI } from "@copilotkit/voice";
-import OpenAI from "openai";
 
 import { AGENT_URL } from "@/lib/agents";
 import { buildRuntime } from "@/lib/copilot-runtime";
+import { createTranscriptionService } from "@/lib/transcription-service";
 
 // The voice route, per https://docs.copilotkit.ai/google-adk/voice
 //
@@ -20,7 +15,9 @@ import { buildRuntime } from "@/lib/copilot-runtime";
 //     `createCopilotRuntimeHandler` from @copilotkit/runtime/v2 directly.
 //  2. Setting it is what makes the runtime advertise
 //     `audioFileTranscriptionEnabled: true` on /info — which is the only
-//     reason the chat composer renders a mic button at all.
+//     reason the chat composer renders a mic button at all. The doc's
+//     `createTranscriptionService()` returns `undefined` without
+//     `OPENAI_TRANSCRIPTION_API_KEY`, so with no key there is no mic.
 //  3. The `[[...slug]]` catch-all lets the v2 runtime own its own sub-routing
 //     (/info, /agent/:id/run, /transcribe) under this base path, so `basePath`
 //     below must match this file's directory.
@@ -30,39 +27,6 @@ import { buildRuntime } from "@/lib/copilot-runtime";
 // Python server's /voice endpoint.
 
 const voiceDemoAgent = new HttpAgent({ url: `${AGENT_URL}/voice` });
-
-/**
- * Transcription is the one thing in this repo that is not Google.
- *
- * Gemini answers the chat, but the mic round-trip goes through OpenAI Whisper,
- * so `GOOGLE_API_KEY` alone will not make it work. Rather than let the OpenAI
- * SDK fail deep inside a request with an opaque 500, this guard checks for the
- * key up front and throws something a developer can act on. Everything else on
- * the route — including the doc's sample-audio button, which injects text
- * directly — works without it.
- */
-class GuardedOpenAITranscriptionService extends TranscriptionService {
-  private delegate: TranscriptionServiceOpenAI | null;
-
-  constructor() {
-    super();
-    const apiKey = process.env.OPENAI_API_KEY;
-    this.delegate = apiKey
-      ? new TranscriptionServiceOpenAI({ openai: new OpenAI({ apiKey }) })
-      : null;
-  }
-
-  async transcribeFile(options: TranscribeFileOptions): Promise<string> {
-    if (!this.delegate) {
-      throw new Error(
-        "OPENAI_API_KEY is not set, so speech cannot be transcribed. " +
-          "Set it in frontend/.env.local and restart, or use the " +
-          "'Try a sample audio' button, which bypasses transcription.",
-      );
-    }
-    return this.delegate.transcribeFile(options);
-  }
-}
 
 let cachedHandler: ((req: Request) => Promise<Response>) | null = null;
 
@@ -76,7 +40,7 @@ function getHandler(): (req: Request) => Promise<Response> {
       "voice-demo": voiceDemoAgent,
       default: voiceDemoAgent,
     },
-    transcriptionService: new GuardedOpenAITranscriptionService(),
+    transcriptionService: createTranscriptionService(),
   });
 
   cachedHandler = createCopilotRuntimeHandler({

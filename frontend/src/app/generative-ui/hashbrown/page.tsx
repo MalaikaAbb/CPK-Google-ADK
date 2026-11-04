@@ -26,49 +26,19 @@ export default function Page() {
 
       <Panel title="What it demonstrates">
         <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
-          The page replaces the assistant message slot with a renderer that
-          feeds the streaming reply to Hashbrown&apos;s partial-JSON parser
-          and renders each finished node through a component catalog. The
-          code the page leaves out has been written in, but its hook calls
-          are kept exactly as published. The demo has two tabs:{" "}
-          <strong>as published</strong> shows what happens when you follow
-          the page, and <strong>fixed</strong> is a working version.
+          The assistant message slot is replaced with a renderer that feeds
+          the streaming reply to Hashbrown&apos;s partial-JSON parser and
+          renders each finished node through a component catalog. Only the
+          working version is on this route. The page&apos;s hook calls, as
+          published, throw against <code>@hashbrownai/react</code> 0.6.1 (see
+          below), so they were dropped.
         </p>
-        <div className="mt-4">
-          <TryIt
-            prompts={[
-              "(as published) Show me a sales dashboard.",
-              "(as published) Break down sales by region.",
-            ]}
-            expect={
-              <>
-                <strong>An error is expected</strong> as soon as the first
-                assistant message renders, even before any JSON arrives. A red
-                box inside the demo should read{" "}
-                <code>
-                  TypeError: Cannot read properties of undefined (reading
-                  &apos;forEach&apos;)
-                </code>
-                , from <code>useUiKit</code>, which received no{" "}
-                <code>components</code>. This is predicted from the library
-                source; record it if you see something else.
-              </>
-            }
-            fail={
-              <>
-                A reply renders with no error. That would mean the installed
-                Hashbrown accepts the page&apos;s calls, and this route needs
-                re-checking against the new version.
-              </>
-            }
-          />
-        </div>
       </Panel>
 
-      <Panel title="The fix — switch the demo to “fixed”">
+      <Panel title="The working version">
         <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
-          The working version keeps the page&apos;s components and suggestions
-          and changes the following:
+          It keeps the page&apos;s components and suggestions and changes the
+          following:
         </p>
         <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
           <li>
@@ -117,7 +87,7 @@ export default function Page() {
         </ol>
         <div className="mt-4">
           <TryIt
-            prompts={["(fixed) Show me a sales dashboard."]}
+            prompts={["Show me a sales dashboard.", "Break down sales by region."]}
             expect="Two suggestion pills above the input. The reply fills in progressively: an empty stack first, then each metric card and chart as its props finish streaming, with no error."
             fail={
               <>
@@ -151,44 +121,18 @@ export default function Page() {
         </div>
       </Panel>
 
-      <Panel title="Left as published — the hook calls">
-        <Callout tone="warn" title="Not fixed on purpose">
-          All three calls disagree with <code>@hashbrownai/react</code> 0.6.1:
-          <ul className="mt-1 list-disc space-y-1 pl-5">
-            <li>
-              <code>useJsonParser(json, schema)</code> needs a schema. The page
-              passes only the text.
-            </li>
-            <li>
-              <code>useUiKit</code> takes{" "}
-              <code>{"{ components: [exposeComponent(…)] }"}</code>, not{" "}
-              <code>{"{ catalog, value }"}</code>.
-            </li>
-            <li>
-              Its result is a kit object, drawn with{" "}
-              <code>ui.render(value)</code>, not placed straight into JSX.
-            </li>
-          </ul>
-          Each line has a <code>@ts-expect-error</code> so the build passes
-          and the failure happens at runtime.
-        </Callout>
-        <div className="mt-4">
-          <Callout tone="warn" title="Also from the page: the slot type">
-            <code>messageView.assistantMessage</code> is typed as{" "}
-            <code>typeof CopilotChatAssistantMessage</code> in CopilotKit
-            1.74.0 and 1.75.0. The page&apos;s plain component doesn&apos;t satisfy it,
-            so that line also has a <code>@ts-expect-error</code>.
-          </Callout>
-        </div>
-        <div className="mt-4">
-          <SourceCodeGroup
-            files={[
-              { file: `${DIR}/byoc-hashbrown-demo.tsx` },
-              { file: `${DIR}/hashbrown-renderer.tsx` },
-            ]}
-          />
-        </div>
-      </Panel>
+      <Callout tone="warn" title="Why the published version was removed">
+        All three of the page&apos;s hook calls disagree with{" "}
+        <code>@hashbrownai/react</code> 0.6.1. <code>useJsonParser</code>{" "}
+        needs a schema, <code>useUiKit</code> takes{" "}
+        <code>{"{ components }"}</code> built with{" "}
+        <code>exposeComponent</code> rather than{" "}
+        <code>{"{ catalog, value }"}</code>, and the kit is drawn with{" "}
+        <code>kit.render(value)</code>. As published, the first assistant
+        message threw{" "}
+        <code>Cannot read properties of undefined (reading &apos;forEach&apos;)</code>
+        . Details are in <code>HASHBROWN_FIX.md</code>.
+      </Callout>
 
       <Panel title="Written in — what the page leaves out">
         <ul className="mb-4 list-disc space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
@@ -215,13 +159,6 @@ export default function Page() {
         />
       </Panel>
 
-      <Panel title="Other things to know">
-        <p className="text-sm text-slate-700 dark:text-slate-300">
-          As on JSON Render, the page calls <code>useConfigureSuggestions</code>{" "}
-          outside its own <code>&lt;CopilotKit&gt;</code>, so its suggestions
-          don&apos;t reach its chat. The fixed tab moves the call inside.
-        </p>
-      </Panel>
     </>
   );
 }

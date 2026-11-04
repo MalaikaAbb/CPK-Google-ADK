@@ -55,7 +55,6 @@ canonical example.
 
     
 ~~~~python title="subagents_agent.py"
-# @region[supervisor-delegation-tools]
 from __future__ import annotations
 
 import functools
@@ -268,7 +267,6 @@ def critique_agent(tool_context: ToolContext, task: str) -> str:
     )
 
 
-# @endregion[supervisor-delegation-tools]
 
 
 _SUPERVISOR_INSTRUCTION = (
