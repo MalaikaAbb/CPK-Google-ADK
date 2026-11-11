@@ -491,6 +491,16 @@ export const NAV: NavGroup[] = [
         status: "working",
       },
       {
+        path: "/human-in-the-loop/useInterrupt",
+        title: "Pausing the Agent for Input",
+        docPath: "/google-adk/human-in-the-loop/useInterrupt",
+        summary:
+          "useInterrupt: render a component when a run pauses with an AG-UI interrupt, then resume with the user's answer.",
+        status: "broken",
+        statusNote:
+          "Reference only. The page itself says useInterrupt is not available on Google ADK (no interrupt primitive). Its Code tab demo is the useHumanInTheLoop fallback and imports unpublished modules (interrupt-fallback-slots, suggestions, card/button/badge, header-forwarding, get_model), so it is shown, not built (README §9 #32).",
+      },
+      {
         path: "/human-in-the-loop/governed-actions",
         hasDemo: true,
         agentId: "governed-actions",
