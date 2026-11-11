@@ -485,7 +485,7 @@ export const NAV: NavGroup[] = [
         hasDemo: true,
         agentId: "hitl-in-chat",
         title: "Human in the Loop",
-        docPath: "/google-adk/human-in-the-loop",
+        docPath: "/google-adk/human-in-the-loop/index",
         summary:
           "useHumanInTheLoop suspending the run behind a picker until the user answers.",
         status: "working",
