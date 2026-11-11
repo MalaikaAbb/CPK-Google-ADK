@@ -501,6 +501,16 @@ export const NAV: NavGroup[] = [
           "Reference only. The page itself says useInterrupt is not available on Google ADK (no interrupt primitive). Its Code tab demo is the useHumanInTheLoop fallback and imports unpublished modules (interrupt-fallback-slots, suggestions, card/button/badge, header-forwarding, get_model), so it is shown, not built (README §9 #32).",
       },
       {
+        path: "/human-in-the-loop/headless",
+        title: "Headless Interrupts",
+        docPath: "/google-adk/human-in-the-loop/headless",
+        summary:
+          "Resolving an interrupt from any UI without a chat: useInterrupt with renderInChat: false, or the raw subscribe/runAgent primitives.",
+        status: "broken",
+        statusNote:
+          "Reference only. The page shows a \"Not supported on Google ADK\" banner and prints no code for this framework, so there is nothing to build (README §9 #33).",
+      },
+      {
         path: "/human-in-the-loop/governed-actions",
         hasDemo: true,
         agentId: "governed-actions",

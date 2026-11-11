@@ -319,6 +319,8 @@ All three need `INTELLIGENCE_API_KEY` for real rows, and a licence for the drawe
 
 **`/human-in-the-loop/useInterrupt`** — Reference only. The page says `useInterrupt` isn't available on Google ADK; its snippets and Code tab (a `useHumanInTheLoop` fallback that imports unpublished modules) are shown as text. **Try:** nothing to run; use `/human-in-the-loop` for the working pattern. **Pass:** the "not available" callout, the gaps list, the three hook snippets and four Code-tab files are shown. **Fail:** a missing block, or the route claiming the hook runs.
 
+**`/human-in-the-loop/headless`** — Reference only. The page renders "Not supported on Google ADK" and no code. **Try:** nothing to run. **Pass:** the route says so and links the working `useHumanInTheLoop` route. **Fail:** the route claiming a headless resolver runs.
+
 **`/human-in-the-loop/governed-actions`** — `approve_governed_action`, a `useHumanInTheLoop` tool that shows the doc's approval card and acts on the action's verdict. **Try:** `Use approve_governed_action to apply a 30% discount to account NW-8812, verdict require_approval.` **Pass:** a card reading "User approval required" shows the summary, tool, reference and arguments. The run waits until you press Approve or Reject, then the agent replies. **Fail:** a prose reply with no card. The model decides when to call the tool, so name it explicitly.
 
 
@@ -406,6 +408,7 @@ All three need `INTELLIGENCE_API_KEY` for real rows, and a licence for the drawe
 | `/google-adk/webmcp` | `/webmcp` | ⚠️ Partial | Not yet checked in a browser. `searchOrders` is a labelled stub; WebMCP side needs Chrome 149+ with the flag. |
 | `/google-adk/human-in-the-loop/index` | `/human-in-the-loop` | ✅ Working | The sidebar links the overview as `/human-in-the-loop/index`; same content as `/google-adk/human-in-the-loop`. |
 | `/google-adk/human-in-the-loop/useInterrupt` | `/human-in-the-loop/useInterrupt` | ❌ Broken | Reference only. Page says not available on Google ADK; Code tab demo imports unpublished modules (§9 #32). |
+| `/google-adk/human-in-the-loop/headless` | `/human-in-the-loop/headless` | ❌ Broken | Reference only. Page shows "Not supported on Google ADK" and prints no code (§9 #33). |
 | `/google-adk/human-in-the-loop/governed-actions` | `/human-in-the-loop/governed-actions` | ⚠️ Partial | Not yet checked in a browser. Only the `useHumanInTheLoop` half runs; `useInterrupt` can't fire on ADK (§9 #23). |
 | `/google-adk/programmatic-control` | `/programmatic-control` | ⚠️ Partial | Runs the doc's `headless-complete` snippet; two of the three helpers it destructures are undefined in the docs and reconstructed here. Interrupt-resume half does not apply. |
 | `/google-adk/shared-state` | `/shared-state` | ✅ Working | |
@@ -545,6 +548,9 @@ With the [tool transport](https://docs.copilotkit.ai/google-adk/generative-ui/co
 
 **32. Pausing the Agent for Input: not available on ADK, and the Code tab can't be built**
 [The page](https://docs.copilotkit.ai/google-adk/human-in-the-loop/useInterrupt), rendered for Google ADK, says `useInterrupt` isn't available on this framework (no `interrupt(...)` primitive; `ag_ui_adk` never ends a run with an AG-UI interrupt) and points to `useHumanInTheLoop`. Its Code tab still ships an ADK demo, which is that `useHumanInTheLoop` fallback with a frontend `schedule_meeting` tool, not `useInterrupt`. It imports modules that aren't published: `../_shared/interrupt-fallback-slots` (`generateFallbackSlots`, `TimeSlot`), `./suggestions`, `./card`/`./button`/`./badge` in `time-picker-card.tsx`, `@/lib/header-forwarding` in `route.ts`, and `agents.shared_chat.get_model` in `interrupt_agent.py`. Nothing was filled in. The route shows the page's three hook snippets and the four Code-tab files as text (`frontend/src/app/human-in-the-loop/useInterrupt/doc-snippets.ts`).
+
+**33. Headless Interrupts: listed in the ADK sidebar, but not supported and no code**
+[The page](https://docs.copilotkit.ai/google-adk/human-in-the-loop/headless) is in the Google ADK sidebar, yet the rendered page opens with "Not supported on Google ADK" and leaves out every code block for this framework. The `.md` export still carries the default (LangGraph) code and an ADK `AGUIToolset()` agent snippet, but the rendered ADK page shows neither. With no ADK code and no interrupt for a headless resolver to catch, the route only says so.
 
 ---
 
@@ -712,7 +718,7 @@ google-adk/
 
 **Generative UI · Components** — [Surfaces](https://docs.copilotkit.ai/google-adk/generative-ui/components/surfaces) · [Catalogs](https://docs.copilotkit.ai/google-adk/generative-ui/components/catalogs) · [Standard catalog](https://docs.copilotkit.ai/generative-ui/components/standard-catalog) · [State and actions](https://docs.copilotkit.ai/google-adk/generative-ui/components/state-and-actions) · [Theming](https://docs.copilotkit.ai/google-adk/generative-ui/components/theming) · [Transports](https://docs.copilotkit.ai/google-adk/generative-ui/components/transports) · [Markdown mode](https://docs.copilotkit.ai/google-adk/generative-ui/components/markdown-mode) · [Adopt from A2UI](https://docs.copilotkit.ai/google-adk/generative-ui/components/from-a2ui)
 
-**App Control** — [Frontend Tools](https://docs.copilotkit.ai/google-adk/frontend-tools) · [WebMCP](https://docs.copilotkit.ai/google-adk/webmcp) · [Human in the Loop](https://docs.copilotkit.ai/google-adk/human-in-the-loop/index) · [Pausing the Agent for Input](https://docs.copilotkit.ai/google-adk/human-in-the-loop/useInterrupt) · [Governed Action Approval UI](https://docs.copilotkit.ai/google-adk/human-in-the-loop/governed-actions) · [Programmatic Control](https://docs.copilotkit.ai/google-adk/programmatic-control)
+**App Control** — [Frontend Tools](https://docs.copilotkit.ai/google-adk/frontend-tools) · [WebMCP](https://docs.copilotkit.ai/google-adk/webmcp) · [Human in the Loop](https://docs.copilotkit.ai/google-adk/human-in-the-loop/index) · [Pausing the Agent for Input](https://docs.copilotkit.ai/google-adk/human-in-the-loop/useInterrupt) · [Headless Interrupts](https://docs.copilotkit.ai/google-adk/human-in-the-loop/headless) · [Governed Action Approval UI](https://docs.copilotkit.ai/google-adk/human-in-the-loop/governed-actions) · [Programmatic Control](https://docs.copilotkit.ai/google-adk/programmatic-control)
 
 **Shared State** — [Overview](https://docs.copilotkit.ai/google-adk/shared-state) · [Render state in your app](https://docs.copilotkit.ai/google-adk/shared-state/rendering-in-app) · [State Streaming](https://docs.copilotkit.ai/google-adk/shared-state/streaming) · [Agent Read-Only Context](https://docs.copilotkit.ai/google-adk/shared-state/agent-readonly) · [Reading agent state](https://docs.copilotkit.ai/google-adk/shared-state/in-app-agent-read) · [Writing agent state](https://docs.copilotkit.ai/google-adk/shared-state/in-app-agent-write) · [Workflow Execution](https://docs.copilotkit.ai/google-adk/shared-state/workflow-execution) · [Predictive state updates](https://docs.copilotkit.ai/google-adk/shared-state/predictive-state-updates)
 
