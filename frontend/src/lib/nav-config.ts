@@ -346,6 +346,18 @@ export const NAV: NavGroup[] = [
           "Fixed version only. The doc's hook calls throw on 0.6.1 (useJsonParser needs a schema, useUiKit takes { components }), and its example output is the wrong shape, so the published version was removed.",
       },
       {
+        path: "/generative-ui/components",
+        hasDemo: true,
+        agentId: "components",
+        title: "Components and surfaces",
+        docPath: "/google-adk/generative-ui/components",
+        summary:
+          "The overview's Try-it setup: a plain runtime, standardUI on the provider, and an agent that passes on the run's render_ui tool and guide.",
+        status: "broken",
+        statusNote:
+          "Broken on Google ADK: render_ui operations come back malformed from Gemini and are rejected; nothing renders (README §9 #29). The page's TanStack BuiltInAgent is swapped for an ADK agent with the snippet's prompt (§9 #31). Not yet checked in a browser.",
+      },
+      {
         path: "/generative-ui/components/surfaces",
         hasDemo: true,
         agentId: "genui",

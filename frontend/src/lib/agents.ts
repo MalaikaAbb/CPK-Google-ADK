@@ -47,6 +47,7 @@ export const AGENT_IDS = [
   "agent-config",
   "agent-app-context",
   "genui",
+  "components",
   "mcp-apps",
 ] as const;
 
