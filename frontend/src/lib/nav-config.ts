@@ -646,6 +646,21 @@ export const NAV: NavGroup[] = [
     ],
   },
   {
+    title: "Agent Capabilities · Google ADK",
+    routes: [
+      {
+        path: "/deploy-langsmith",
+        title: "LangSmith Platform",
+        docPath: "/google-adk/deploy-langsmith",
+        summary:
+          "Hosting a wrapped ADK runner on a LangSmith deployment and pointing the runtime's LangGraphAgent at it.",
+        status: "reference",
+        statusNote:
+          "Needs a LangSmith account, langgraph deploy and deployments-wrap-sdk[google-adk] — not testable locally. Page code shown verbatim; route.ts asks for graphId \"agent\" while the ADK langgraph.json registers \"my_agent\" (README §9 #30).",
+      },
+    ],
+  },
+  {
     title: "Observe & Operate",
     routes: [
       {

@@ -350,6 +350,10 @@ All three need `INTELLIGENCE_API_KEY` for real rows, and a licence for the drawe
 
 **`/agent-app-context`** — `useAgentContext` sends three colleagues, and the doc's `InstructionProvider` renders them into the ADK prompt. **Try:** `Who are my colleagues?`, then `Draft an email to Alice in finance`. **Pass:** exactly John Doe, Jane Smith and Bob Wilson with their roles. Alice is reported as not in the list. **Fail:** invented colleagues, or "the page sent no colleagues".
 
+### Agent Capabilities · Google ADK
+
+**`/deploy-langsmith`** — Reference only: hosting the ADK agent on a LangSmith deployment behind a `LangGraphAgent`. **Try:** open the route and read the snippets; nothing runs. **Pass:** every block from the page is shown and the premium callout explains what's needed (LangSmith account, `langgraph deploy`, `deployments-wrap-sdk[google-adk]`). **Fail:** a missing block, or the route claiming to run something.
+
 ### Observe & Operate
 
 **`/inspector`** — The debugging overlay, mounted by the provider and therefore present on *every* route. **Try:** open it from the bottom-left button, then `highlight the churn panel`. **Pass:** AG-UI events stream, Frontend Tools already lists `highlight_panel` with its schema, Context shows the page's two entries, Agent State fills once the agent takes notes. **Fail:** no button at all — the provider is missing `showDevConsole`, or you are not on `localhost`/`127.0.0.1`.
@@ -416,6 +420,7 @@ All three need `INTELLIGENCE_API_KEY` for real rows, and a licence for the drawe
 | `/google-adk/multi-agent/subagents` | `/multi-agent/subagents` | ✅ Working | |
 | `/google-adk/agent-config` | `/agent-config` | ✅ Working | |
 | `/google-adk/agent-app-context` | `/agent-app-context` | ⚠️ Partial | Not yet checked in a browser. Frontend and agent are verbatim; the tool example is a stub (§9 #24). |
+| `/google-adk/deploy-langsmith` | `/deploy-langsmith` | 📖 Reference | Needs a LangSmith account and deployment — not testable locally. Snippets shown verbatim; `graphId` mismatch (§9 #30). |
 | `/google-adk/inspector` | `/inspector` | ✅ Working | Four of five tabs work locally. Threads is the default tab and needs an Intelligence Platform key. |
 | `/google-adk/backend/copilot-runtime` | `/backend/copilot-runtime` | ✅ Working | |
 
@@ -539,6 +544,9 @@ The eight [Components pages](https://docs.copilotkit.ai/google-adk/generative-ui
 
 **29. Components & surfaces: `render_ui` can't work on Google ADK + Gemini**
 With the [tool transport](https://docs.copilotkit.ai/google-adk/generative-ui/components/transports), the runtime adds a `render_ui` client tool whose `operations` parameter is `{"type": "array", "items": {"type": "object"}}`, an array of objects with no properties. `ag_ui_adk` passes client tools to Gemini through its generic conversion (`client_proxy_tool.py`, `types.Schema.model_validate`), which keeps that as an `OBJECT` with no properties. Gemini's function calling fills typed arguments strictly and can't generate free-form nested objects there. Observed in two runs: `"dataModel": null`, `"components": ["root"]`, `"components": [true, true, true, true]`, and `updateComponents` as a bare list. The runtime correctly rejects them (`createSurface.dataModel must be a JSON object`, `updateComponents.surfaceId is required`), and nothing renders. Prompt guidance doesn't help, because the argument decoding is constrained by the schema. `ag_ui_adk`'s own A2UI tool (`a2ui_tool.py`) documents the same Gemini limit and works around it by declaring its payload as a JSON string. No CopilotKit doc mentions this for Google ADK or publishes a workaround, and by decision none is applied here. The [markdown transport](https://docs.copilotkit.ai/google-adk/generative-ui/components/markdown-mode) avoids the tool call entirely, and is the path the Transports page recommends for agents that can't use client tools.
+
+**30. LangSmith Platform: the runtime asks for a graph the ADK path never registers, and there is no ADK self-host step**
+[The page](https://docs.copilotkit.ai/google-adk/deploy-langsmith) wraps the ADK runner with `saf_sdk.adk.wrap(...)` and registers it in its ADK `langgraph.json` as `my_agent`, but the runtime snippet still sets `graphId: "agent"`, the key from the LangGraph template's `langgraph.json`. Followed as printed, the runtime asks the deployment for a graph that doesn't exist. The self-host `server.py` is LangGraph code (`LangGraphAGUIAgent`, `add_langgraph_fastapi_endpoint`) with a `main()` that is never called and a `sample_agent.demo:app` path that isn't the snippet's file; no ADK equivalent is printed. The page's runtime uses a `LangGraphAgent` client, not an ADK agent. Nothing on this route runs: it needs a LangSmith account and the uninstalled `deployments-wrap-sdk[google-adk]`, so the snippets are shown only (`frontend/src/app/deploy-langsmith/doc-snippets.ts`).
 
 ---
 
@@ -713,6 +721,8 @@ google-adk/
 **Multi-Agent** — [Sub-Agents](https://docs.copilotkit.ai/google-adk/multi-agent/subagents)
 
 **Agent Config** — [Agent Config](https://docs.copilotkit.ai/google-adk/agent-config) · [Agent App Context](https://docs.copilotkit.ai/google-adk/agent-app-context)
+
+**Agent Capabilities · Google ADK** — [LangSmith Platform](https://docs.copilotkit.ai/google-adk/deploy-langsmith)
 
 **Observe & Operate** — [Inspector](https://docs.copilotkit.ai/google-adk/inspector)
 
