@@ -286,6 +286,16 @@ export const NAV: NavGroup[] = [
         status: "working",
       },
       {
+        path: "/generative-ui/a2ui",
+        title: "A2UI",
+        docPath: "/google-adk/generative-ui/a2ui",
+        summary:
+          "The A2UI overview: three operations, two approaches, two ways to switch it on, and the surface color variables.",
+        status: "reference",
+        statusNote:
+          "Overview page with no demo. Snippets shown verbatim (myCatalog, myAgent, children undefined on the page). The catalog-on-provider setup runs on Dynamic Schema; the runtime a2ui block is used for Fixed Schema; the Python SDK helpers and CSS variables are shown, not run.",
+      },
+      {
         path: "/generative-ui/a2ui/dynamic-schema",
         hasDemo: true,
         agentId: "declarative-gen-ui",
