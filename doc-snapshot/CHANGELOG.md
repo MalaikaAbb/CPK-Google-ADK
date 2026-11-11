@@ -8,6 +8,205 @@ Holds the 3 most recent dated entries. When a change lands on a fourth
 date, the oldest entry is dropped. Entries are counted, not aged, so a gap of
 weeks between changes does not expire anything.
 
+## 2026-11-11
+
+### 14:09 UTC — 13 pages, highest severity high
+
+**High — Components · Standard catalog**
+
+`/generative-ui/components/standard-catalog` · route `/generative-ui/components/standard-catalog` · under “What is this?” · in a `tsx` block
+
+93 code lines, 24 prose lines changed. The number of fenced code blocks changed.
+
+````diff
+- ```tsx
+- import { standardUI } from "@copilotkit/react-core/v2/generative-ui";
++ <Tabs groupId="frontend_framework" items={["React", "Angular"]} persist>
++ <Tab value="React">
++ ```tsx
++ import { standardUI } from "@copilotkit/react-core/v2/generative-ui";
+- <CopilotKitProvider runtimeUrl="/api/copilotkit" generativeUI={{ ui: standardUI }}>
+- ```
+````
+
+**High — Copilot Runtime**
+
+`/google-adk/backend/copilot-runtime` · route `/backend/copilot-runtime` · under “The default agent” · in a `ts` block
+
+2 code lines changed.
+
+````diff
+- default: new BuiltInAgent({ model: "openai:gpt-4.1" }),
++ default: new BuiltInAgent({ model: "openai:gpt-6-luna" }),
+````
+
+**High — A2UI · Dynamic Schema**
+
+`/google-adk/generative-ui/a2ui/dynamic-schema` · route `/generative-ui/a2ui/dynamic-schema` · under “The A2UI agent tool” · in a `python` block
+
+2 code lines changed.
+
+````diff
+- "model": ChatOpenAI(model="gpt-4o"),
++ "model": ChatOpenAI(model="gpt-6-luna", reasoning_effort="none"),
+````
+
+**High — Components · Catalogs**
+
+`/google-adk/generative-ui/components/catalogs` · route `/generative-ui/components/catalogs` · under “What is this?”
+
+85 code lines, 20 prose lines changed. The number of fenced code blocks changed.
+
+````diff
+- A **catalog** lists the components that the agent can use. For each component it holds the React component, a description, and a schema of its props. The agent gets the descriptions and the schemas. Your app gets typed props.
++ A **catalog** lists the components that the agent can use. For each component it holds the component, a description, and a schema of its props. The agent gets the descriptions and the schemas. Your app gets typed props.
+- ```tsx title="app/catalog.tsx"
+- import { z } from "zod";
+- import {
+- createGenerativeUI,
+- type GenerativeUIComponentProps,
+- } from "@copilotkit/react-core/v2/generative-ui";
+````
+
+**High — Components · Adopt from A2UI**
+
+`/google-adk/generative-ui/components/from-a2ui` · route `/generative-ui/components/from-a2ui` · under “What is this?”
+
+61 code lines, 21 prose lines changed. The number of fenced code blocks changed.
+
+````diff
+- The `a2ui` provider option and `@copilotkit/a2ui-renderer` render A2UI v0.9: you build a catalog with `createCatalog`, and the agent streams a fixed or a generated schema into it. Components and surfaces is the A2UI 1.0 engine. The idea is the same: the agent writes operations, and the browser renders your React components. The engine adds typed catalogs, the [standard catalog](/generative-ui/components/standard-catalog), areas of the page as targets, two transports, dynamic values that compute in the browser, and functions the agent can call. This page maps one to the other.
++ The `a2ui` provider option and `@copilotkit/a2ui-renderer` render A2UI v0.9: you build a catalog with `createCatalog`, and the agent streams a fixed or a generated schema into it. Components and surfaces is the A2UI 1.0 engine. The idea is the same: the agent writes operations, and the browser renders your components. The engine adds typed catalogs, the [standard catalog](/generative-ui/components/standard-catalog), areas of the page as targets, two transports, dynamic values that compute in the browser, and functions the agent can call. This page maps one to the other.
+- ```tsx title="Before"
+- <CopilotKit runtimeUrl="/api/copilotkit" a2ui={{ catalog: myCatalog }}>
+- ```
++ <Tabs groupId="frontend_framework" items={["React", "Angular"]} persist>
++ <Tab value="React">
++ ```tsx title="Before"
+````
+
+**High — Components · Markdown mode**
+
+`/google-adk/generative-ui/components/markdown-mode` · route `/generative-ui/components/markdown-mode` · under “What is this?” · in a `markdown` block
+
+45 code lines, 17 prose lines changed. The number of fenced code blocks changed.
+
+````diff
+- {"version":"v1.0","createSurface":{"surfaceId":"plan-estimator","dataModel":{"seats":10,"price":"$290 / month"},"components":[{"id":"root","component":"Card","children":["seats","price"]}]}}
+- {"version":"v1.0","updateComponents":{"surfaceId":"plan-estimator","components":[{"id":"seats","component":"Slider","label":"Seats","min":1,"max":50,"value":{"@path":"/seats"}},{"id":"price","component":"Text","text":{"@path":"/price"}}]}}
++ {"version":"1.0","createSurface":{"surfaceId":"plan-estimator","dataModel":{"seats":10,"price":"$290 / month"},"components":[{"id":"root","component":"Card","children":["seats","price"]}]}}
++ {"version":"1.0","updateComponents":{"surfaceId":"plan-estimator","components":[{"id":"seats","component":"Slider","label":"Seats","min":1,"max":50,"value":{"@path":"/seats"}},{"id":"price","component":"Text","text":{"@path":"/price"}}]}}
+- ```tsx title="app/providers.tsx"
+- import { CopilotKitProvider } from "@copilotkit/react-core/v2";
+- import { standardUI } from "@copilotkit/react-core/v2/generative-ui";
++ <Tabs groupId="frontend_framework" items={["React", "Angular"]} persist>
+````
+
+**High — Components · State and actions**
+
+`/google-adk/generative-ui/components/state-and-actions` · route `/generative-ui/components/state-and-actions` · under “Show live app state” · in a `tsx` block
+
+117 code lines, 18 prose lines changed. The number of fenced code blocks changed.
+
+````diff
+- ```tsx title="app/catalog.tsx"
+- const cartSchema = z.object({
+- items: z.array(z.object({ productId: z.string(), quantity: z.number() })),
+- });
++ <Tabs groupId="frontend_framework" items={["React", "Angular"]} persist>
++ <Tab value="React">
++ ```tsx title="app/catalog.tsx"
++ const cartSchema = z.object({
+````
+
+**High — Components · Surfaces**
+
+`/google-adk/generative-ui/components/surfaces` · route `/generative-ui/components/surfaces` · under “What is this?”
+
+102 code lines, 31 prose lines changed. The number of fenced code blocks changed.
+
+````diff
+- - **A page target.** An area of your page that you mark with `GenerativeUISurface`. The agent sees it only while it is on screen.
++ - **A page target.** An area of your page that you mark with `GenerativeUISurface`, or `<copilot-generative-ui-surface>` in Angular. The agent sees it only while it is on screen.
+- Wrap an area of your page in `GenerativeUISurface`. Give it an id, and tell the agent what the area is for:
++ Wrap an area of your page in a target. Give it an id, and tell the agent what the area is for:
+- ```tsx title="app/page.tsx"
+- import { GenerativeUISurface } from "@copilotkit/react-core/v2/generative-ui";
+- import { shopUI } from "./catalog";
++ <Tabs groupId="frontend_framework" items={["React", "Angular"]} persist>
+````
+
+**High — Components · Theming**
+
+`/google-adk/generative-ui/components/theming` · route `/generative-ui/components/theming` · under “What is this?” · in a `tsx` block
+
+82 code lines, 21 prose lines changed. The number of fenced code blocks changed.
+
+````diff
+- ```tsx
+- <CopilotKitProvider
+- runtimeUrl="/api/copilotkit"
+- generativeUI={{
+- ui: standardUI,
+- theme: {
+- "--a2ui-color-accent": "#d97706",
+- "--a2ui-font-family": "Inter, sans-serif",
+````
+
+**High — Components · Transports**
+
+`/google-adk/generative-ui/components/transports` · route `/generative-ui/components/transports` · under “Tool transport” · in a `tsx` block
+
+33 code lines, 18 prose lines changed. The number of fenced code blocks changed.
+
+````diff
+- ```tsx
+- <CopilotKitProvider runtimeUrl="/api/copilotkit" generativeUI={{ ui: standardUI }}>
+- ```
++ <Tabs groupId="frontend_framework" items={["React", "Angular"]} persist>
++ <Tab value="React">
++ ```tsx
++ <CopilotKitProvider runtimeUrl="/api/copilotkit" generativeUI={{ ui: standardUI }}>
++ ```
+````
+
+**High — MCP Apps**
+
+`/google-adk/generative-ui/mcp-apps` · route `/generative-ui/mcp-apps` · under “MCP Apps with Intelligence” · in a `typescript` block
+
+2 code lines changed.
+
+````diff
+- model: "openai/gpt-5.4",
++ model: "openai/gpt-6-luna",
+````
+
+**Low — Reasoning Messages**
+
+`/google-adk/custom-look-and-feel/reasoning-messages` · route `/custom-look-and-feel/reasoning-messages` · under “Reasoning Messages”
+
+4 prose lines changed.
+
+````diff
+- > Customize how reasoning (thinking) tokens from models like o1, o3, and o4-mini are displayed.
++ > Customize how reasoning (thinking) tokens from models like `gpt-6-luna` are displayed.
+- Some models (like OpenAI's o1, o3, and o4-mini) emit **reasoning tokens**: internal
++ Some models (like `gpt-6-luna`) emit **reasoning tokens**: internal
+````
+
+**Low — Reasoning**
+
+`/google-adk/generative-ui/reasoning` · route `/generative-ui/reasoning` · under “What is this?”
+
+2 prose lines changed.
+
+````diff
+- Some models (OpenAI's `o1`, `o3`, and `o4-mini`, Anthropic's thinking
++ Some models (`gpt-6-luna`, Anthropic's thinking
+````
+
+---
+
 ## 2026-11-03
 
 ### 15:33 UTC — 11 pages, highest severity high
@@ -82,6 +281,8 @@ Now tracked for the first time.
 `/google-adk/webmcp` · route `/webmcp`
 
 Now tracked for the first time.
+
+---
 
 ---
 
@@ -344,77 +545,6 @@ Now tracked for the first time.
 + on and a Trajectory started, the buttons appear without handlers in every chat
 + that renders messages with `CopilotChatMessageView` inside a
 + `CopilotChatConfigurationProvider`, as `CopilotChat`, `CopilotPopup`, and
-````
-
----
-
----
-
-## 2026-10-08
-
-### 11:27 UTC — 5 pages, highest severity high
-
-**High — Introduction**
-
-`/google-adk` · routes `/`, `/doc-sync` · under “Install CopilotKit packages” · in a `npm` block
-
-2 code lines changed.
-
-````diff
-- npm install @copilotkit/react-ui @copilotkit/react-core @copilotkit/runtime @ag-ui/client@1.0.1
-+ npm install @copilotkit/react-ui @copilotkit/react-core @copilotkit/runtime @ag-ui/client@1.0.2
-````
-
-**High — Quickstart**
-
-`/google-adk/quickstart` · route `/quickstart` · under “Install CopilotKit packages” · in a `npm` block
-
-2 code lines changed.
-
-````diff
-- npm install @copilotkit/react-ui @copilotkit/react-core @copilotkit/runtime @ag-ui/client@1.0.1
-+ npm install @copilotkit/react-ui @copilotkit/react-core @copilotkit/runtime @ag-ui/client@1.0.2
-````
-
-**Medium — Thread & History Lifecycle**
-
-`/google-adk/threads-lifecycle` · route `/threads-lifecycle` · under “Future runs can remain durable in both places”
-
-1 heading, 7 prose lines changed.
-
-````diff
-- After historical import, future conversations that run through CopilotKit are
-- written to CopilotKit Intelligence as threads. If your LangGraph agent
-+ Once Intelligence is connected, conversations that run through that runtime are
-+ recorded automatically in Intelligence. Historical import is optional. If your LangGraph agent
-+ 
-+ ## Example: keep an existing LangGraph conversation
-+ 
-+ Follow [Bring your own thread system](/google-adk/intelligence/bring-your-own-thread-system#example-keep-an-existing-langgraph-conversation) for an example that keeps native persistence and continues the same conversation.
-````
-
-**Low — Copilot Runtime**
-
-`/google-adk/backend/copilot-runtime` · route `/backend/copilot-runtime` · under “mcpApps”
-
-2 prose lines changed.
-
-````diff
-- Per-tool filtering belongs to `@ag-ui/mcp-apps-middleware`. The runtime currently pins version `0.0.3`, which does not support `includeTools` or `excludeTools`. Supplying either key raises a configuration error instead of silently ignoring it; use a compatible middleware release when that upstream policy contract is available.
-+ Per-tool filtering belongs to `@ag-ui/mcp-apps-middleware`. The release the runtime depends on does not support `includeTools` or `excludeTools`. Supplying either key raises a configuration error instead of silently ignoring it. A newer middleware release alone does not change this: the runtime has to adopt the policy first. Follow [#5930](https://github.com/CopilotKit/CopilotKit/issues/5930) for that work.
-````
-
-**Low — Programmatic Control**
-
-`/google-adk/programmatic-control` · route `/programmatic-control` · under “What is this?”
-
-4 prose lines changed.
-
-````diff
-- - `agent.subscribe(subscriber)` — low-level AG-UI event subscription (`onCustomEvent`, `onRunStartedEvent`, `onRunFinalized`, `onRunFailed`, …). Pairs with `copilotkit.runAgent({ agent, forwardedProps: { command: { resume, interruptEvent } } })` to drive interrupt resolution from arbitrary UI.
-+ - `agent.subscribe(subscriber)` — low-level AG-UI event subscription (`onCustomEvent`, `onRunStartedEvent`, `onRunFinalized`, `onRunFailed`, …). Pairs with `copilotkit.runAgent({ agent, resume })` for standard AG-UI interrupts, or `copilotkit.runAgent({ agent, forwardedProps: { command: { resume, interruptEvent } } })` for legacy `on_interrupt` custom events, to drive interrupt resolution from arbitrary UI.
-- - **`agent.runAgent(options)`** — low-level method on the agent instance. Sends the request to the runtime but does **not** execute frontend tools or chain follow-ups. Reach for this only when you need direct control. (For the interrupt-resume case, use `copilotkit.runAgent({ agent, forwardedProps: { command: { resume, interruptEvent } } })` — see the snippet below — so the subscriber lifecycle still wraps the resumed run.)
-+ - **`agent.runAgent(options)`** — low-level method on the agent instance. Sends the request to the runtime but does **not** execute frontend tools or chain follow-ups. Reach for this only when you need direct control. (For the interrupt-resume case, use `copilotkit.runAgent({ agent, resume })` for standard AG-UI interrupts, or `copilotkit.runAgent({ agent, forwardedProps: { command: { resume, interruptEvent } } })` for legacy `on_interrupt` custom events — the snippet below shows the legacy form — so the subscriber lifecycle still wraps the resumed run.)
 ````
 
 ---

@@ -1,19 +1,19 @@
 {
   "schema": 1,
   "docsRoot": "https://docs.copilotkit.ai/google-adk",
-  "syncedAt": "2026-11-03T15:33:54.214Z",
+  "syncedAt": "2026-11-11T14:09:53.925Z",
   "pages": {
     "/generative-ui/components/standard-catalog": {
       "file": "generative-ui__components__standard-catalog.md",
-      "sha256": "cc731460a4de7b9898576fc68fb242e2756a0b09c4f4a0ee16051f10c921fb28",
-      "bytes": 11267,
-      "lines": 111,
+      "sha256": "42fd29a3daa041eb9c0c3e5c4a659989bc81272b81e2919f48edf4a4a8c2012d",
+      "bytes": 13860,
+      "lines": 181,
       "routes": [
         "/generative-ui/components/standard-catalog"
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:54 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:54 GMT"
     },
     "/google-adk": {
       "file": "google-adk.md",
@@ -26,7 +26,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:54 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:54 GMT"
     },
     "/google-adk/agent-app-context": {
       "file": "google-adk__agent-app-context.md",
@@ -38,7 +38,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:55 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:54 GMT"
     },
     "/google-adk/agent-config": {
       "file": "google-adk__agent-config.md",
@@ -50,19 +50,19 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:54 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:54 GMT"
     },
     "/google-adk/backend/copilot-runtime": {
       "file": "google-adk__backend__copilot-runtime.md",
-      "sha256": "2cc9daed62d4f284e2835b269053cd19d522d70198be11a08308c01a3103d52c",
-      "bytes": 19746,
+      "sha256": "64d9a13016a5783be73b1b061eead587246d16ab2082b715939fd94896624a4e",
+      "bytes": 19749,
       "lines": 434,
       "routes": [
         "/backend/copilot-runtime"
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:54 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:54 GMT"
     },
     "/google-adk/custom-look-and-feel/css": {
       "file": "google-adk__custom-look-and-feel__css.md",
@@ -74,7 +74,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:55 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:54 GMT"
     },
     "/google-adk/custom-look-and-feel/headless-ui": {
       "file": "google-adk__custom-look-and-feel__headless-ui.md",
@@ -86,7 +86,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:55 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:55 GMT"
     },
     "/google-adk/custom-look-and-feel/markdown": {
       "file": "google-adk__custom-look-and-feel__markdown.md",
@@ -98,19 +98,19 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:55 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:54 GMT"
     },
     "/google-adk/custom-look-and-feel/reasoning-messages": {
       "file": "google-adk__custom-look-and-feel__reasoning-messages.md",
-      "sha256": "676c7c0af0af78fe36011a60d571d168e01a907705ce22f028761e71f83592c7",
-      "bytes": 7400,
+      "sha256": "43ea8cc3a3e8dcb599cfe13e16aed14c12bab3ea55deeedd312ff7bbbc12ae08",
+      "bytes": 7377,
       "lines": 262,
       "routes": [
         "/custom-look-and-feel/reasoning-messages"
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:55 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:54 GMT"
     },
     "/google-adk/custom-look-and-feel/slots": {
       "file": "google-adk__custom-look-and-feel__slots.md",
@@ -122,7 +122,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:55 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:54 GMT"
     },
     "/google-adk/frontend-tools": {
       "file": "google-adk__frontend-tools.md",
@@ -134,19 +134,19 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:55 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:55 GMT"
     },
     "/google-adk/generative-ui/a2ui/dynamic-schema": {
       "file": "google-adk__generative-ui__a2ui__dynamic-schema.md",
-      "sha256": "0fe51c0e39a90c0e1382df2ffcc44d9267bda5e51c5e88ea1696eb6b34e1900e",
-      "bytes": 22954,
+      "sha256": "706aaf55243fb3d837ee3628e759e2205cb024c5938004c08f48d0b5dea1eaf4",
+      "bytes": 22983,
       "lines": 688,
       "routes": [
         "/generative-ui/a2ui/dynamic-schema"
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:55 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:55 GMT"
     },
     "/google-adk/generative-ui/a2ui/fixed-schema": {
       "file": "google-adk__generative-ui__a2ui__fixed-schema.md",
@@ -158,91 +158,91 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:55 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:55 GMT"
     },
     "/google-adk/generative-ui/components/catalogs": {
       "file": "google-adk__generative-ui__components__catalogs.md",
-      "sha256": "864224b8e7e787e524e83dfe2f3ce06e62312c39bd56a079b01bde38f89240bb",
-      "bytes": 9158,
-      "lines": 178,
+      "sha256": "e6a9231568a7f6c7fee380a56df610e711d74d3cc3499e2957bdfd3482ceb287",
+      "bytes": 13638,
+      "lines": 304,
       "routes": [
         "/generative-ui/components/catalogs"
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:55 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:55 GMT"
     },
     "/google-adk/generative-ui/components/from-a2ui": {
       "file": "google-adk__generative-ui__components__from-a2ui.md",
-      "sha256": "83759c458ac9f2787a16f1cf068e12c6798d3066b9b6a925596dd19b6e27b4d4",
-      "bytes": 11153,
-      "lines": 146,
+      "sha256": "0f6e50d1bcce037fe70e628e5560eacd122e85a296e2ac4aeb6a936b26db9355",
+      "bytes": 13214,
+      "lines": 206,
       "routes": [
         "/generative-ui/components/from-a2ui"
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:55 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:55 GMT"
     },
     "/google-adk/generative-ui/components/markdown-mode": {
       "file": "google-adk__generative-ui__components__markdown-mode.md",
-      "sha256": "bf6bf7f15031cb17749e6427afa7a6a95354cbb27707f61df950b08316eedd7a",
-      "bytes": 6381,
-      "lines": 134,
+      "sha256": "7b9fe0e004a5a2d1e5992ce15a294ac7bfd7d65be5435d02c152be7883234ae1",
+      "bytes": 7431,
+      "lines": 160,
       "routes": [
         "/generative-ui/components/markdown-mode"
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:55 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:55 GMT"
     },
     "/google-adk/generative-ui/components/state-and-actions": {
       "file": "google-adk__generative-ui__components__state-and-actions.md",
-      "sha256": "297823087a8ff7b320f3d67111c882b933238c74dae47e458eb3f37dfeba032a",
-      "bytes": 8689,
-      "lines": 181,
+      "sha256": "58cd01d15c0c6bed1b7f35a39fea1421da930682ddea5460d567c275c1f88cd4",
+      "bytes": 13961,
+      "lines": 333,
       "routes": [
         "/generative-ui/components/state-and-actions"
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:56 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:55 GMT"
     },
     "/google-adk/generative-ui/components/surfaces": {
       "file": "google-adk__generative-ui__components__surfaces.md",
-      "sha256": "16887d810ed50bf491e220b351aa83f7346244299ffbbd6e627cc234905df7fc",
-      "bytes": 4662,
-      "lines": 115,
+      "sha256": "fcbb6b2b49efdc04f73ed7b10e324b9c3f259ddbdc3b0642adede4abeedd0683",
+      "bytes": 8450,
+      "lines": 210,
       "routes": [
         "/generative-ui/components/surfaces"
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:56 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:55 GMT"
     },
     "/google-adk/generative-ui/components/theming": {
       "file": "google-adk__generative-ui__components__theming.md",
-      "sha256": "ef167178eae88891e8d28649020cca059693ad102aa4c5862ca8aa3d2e8f35da",
-      "bytes": 3582,
-      "lines": 109,
+      "sha256": "9fd29e6c376088733371c5862401ba5faf8ed042dfd2ae15d2f70d844d316153",
+      "bytes": 4995,
+      "lines": 156,
       "routes": [
         "/generative-ui/components/theming"
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:56 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:55 GMT"
     },
     "/google-adk/generative-ui/components/transports": {
       "file": "google-adk__generative-ui__components__transports.md",
-      "sha256": "a696766b8dd0ec0c17f5af00dd2ec0b9f6e4d2348b1d73420c9e5da17eea8e07",
-      "bytes": 3226,
-      "lines": 79,
+      "sha256": "b06a1780d8cf4bdbd78347d834ed968b4c2d79750613ff1390d5f0cf0282f370",
+      "bytes": 3941,
+      "lines": 106,
       "routes": [
         "/generative-ui/components/transports"
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:56 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:55 GMT"
     },
     "/google-adk/generative-ui/hashbrown": {
       "file": "google-adk__generative-ui__hashbrown.md",
@@ -254,7 +254,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:56 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:55 GMT"
     },
     "/google-adk/generative-ui/json-render": {
       "file": "google-adk__generative-ui__json-render.md",
@@ -266,19 +266,19 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:56 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:55 GMT"
     },
     "/google-adk/generative-ui/mcp-apps": {
       "file": "google-adk__generative-ui__mcp-apps.md",
-      "sha256": "404bb662240057c9fc90efb1e4dbf2fb001b309aab8d38f8a3958e9350b5dec3",
-      "bytes": 8432,
+      "sha256": "3a4685ede68c788d93e754d33413f15308a0da23346d502cc8786469fb3f70a7",
+      "bytes": 8435,
       "lines": 237,
       "routes": [
         "/generative-ui/mcp-apps"
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:56 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:55 GMT"
     },
     "/google-adk/generative-ui/open-generative-ui": {
       "file": "google-adk__generative-ui__open-generative-ui.md",
@@ -290,19 +290,19 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:56 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:55 GMT"
     },
     "/google-adk/generative-ui/reasoning": {
       "file": "google-adk__generative-ui__reasoning.md",
-      "sha256": "6717c7ea6c98144d0bfa2c033d239087b3c646844d7be06f000d8ae0817c12c8",
-      "bytes": 5668,
+      "sha256": "ec267500ed7296682ba35af3cd436815faf742cb6df48c6c472d76d1d2359c5d",
+      "bytes": 5646,
       "lines": 180,
       "routes": [
         "/generative-ui/reasoning"
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:56 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:55 GMT"
     },
     "/google-adk/generative-ui/state-rendering": {
       "file": "google-adk__generative-ui__state-rendering.md",
@@ -314,7 +314,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:56 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:55 GMT"
     },
     "/google-adk/generative-ui/tool-based": {
       "file": "google-adk__generative-ui__tool-based.md",
@@ -326,7 +326,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:56 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:55 GMT"
     },
     "/google-adk/generative-ui/tool-rendering": {
       "file": "google-adk__generative-ui__tool-rendering.md",
@@ -338,7 +338,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:56 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:56 GMT"
     },
     "/google-adk/headless-threads": {
       "file": "google-adk__headless-threads.md",
@@ -350,7 +350,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:56 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:56 GMT"
     },
     "/google-adk/human-in-the-loop": {
       "file": "google-adk__human-in-the-loop.md",
@@ -362,7 +362,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:56 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:56 GMT"
     },
     "/google-adk/human-in-the-loop/governed-actions": {
       "file": "google-adk__human-in-the-loop__governed-actions.md",
@@ -374,7 +374,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:56 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:56 GMT"
     },
     "/google-adk/inspector": {
       "file": "google-adk__inspector.md",
@@ -386,7 +386,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:57 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:56 GMT"
     },
     "/google-adk/multi-agent/subagents": {
       "file": "google-adk__multi-agent__subagents.md",
@@ -398,7 +398,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:57 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:56 GMT"
     },
     "/google-adk/multimodal-attachments": {
       "file": "google-adk__multimodal-attachments.md",
@@ -410,7 +410,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:57 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:56 GMT"
     },
     "/google-adk/prebuilt-components/chat": {
       "file": "google-adk__prebuilt-components__chat.md",
@@ -422,7 +422,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:57 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:56 GMT"
     },
     "/google-adk/prebuilt-components/chat-controls": {
       "file": "google-adk__prebuilt-components__chat-controls.md",
@@ -434,7 +434,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:57 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:56 GMT"
     },
     "/google-adk/prebuilt-components/copilot-threads-drawer": {
       "file": "google-adk__prebuilt-components__copilot-threads-drawer.md",
@@ -446,7 +446,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:57 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:56 GMT"
     },
     "/google-adk/prebuilt-components/popup": {
       "file": "google-adk__prebuilt-components__popup.md",
@@ -458,7 +458,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:57 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:56 GMT"
     },
     "/google-adk/prebuilt-components/sidebar": {
       "file": "google-adk__prebuilt-components__sidebar.md",
@@ -470,7 +470,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:57 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:56 GMT"
     },
     "/google-adk/programmatic-control": {
       "file": "google-adk__programmatic-control.md",
@@ -482,7 +482,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:57 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:56 GMT"
     },
     "/google-adk/quickstart": {
       "file": "google-adk__quickstart.md",
@@ -494,7 +494,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:57 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:56 GMT"
     },
     "/google-adk/shared-state": {
       "file": "google-adk__shared-state.md",
@@ -506,7 +506,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:57 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:56 GMT"
     },
     "/google-adk/shared-state/agent-readonly": {
       "file": "google-adk__shared-state__agent-readonly.md",
@@ -518,7 +518,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:57 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:56 GMT"
     },
     "/google-adk/shared-state/in-app-agent-read": {
       "file": "google-adk__shared-state__in-app-agent-read.md",
@@ -530,7 +530,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:57 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:56 GMT"
     },
     "/google-adk/shared-state/in-app-agent-write": {
       "file": "google-adk__shared-state__in-app-agent-write.md",
@@ -542,7 +542,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:57 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:56 GMT"
     },
     "/google-adk/shared-state/predictive-state-updates": {
       "file": "google-adk__shared-state__predictive-state-updates.md",
@@ -554,7 +554,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:59 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:57 GMT"
     },
     "/google-adk/shared-state/rendering-in-app": {
       "file": "google-adk__shared-state__rendering-in-app.md",
@@ -566,7 +566,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:34:00 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:57 GMT"
     },
     "/google-adk/shared-state/streaming": {
       "file": "google-adk__shared-state__streaming.md",
@@ -578,7 +578,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:34:00 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:57 GMT"
     },
     "/google-adk/shared-state/workflow-execution": {
       "file": "google-adk__shared-state__workflow-execution.md",
@@ -590,7 +590,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:34:00 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:57 GMT"
     },
     "/google-adk/threads-lifecycle": {
       "file": "google-adk__threads-lifecycle.md",
@@ -602,7 +602,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:33:59 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:57 GMT"
     },
     "/google-adk/voice": {
       "file": "google-adk__voice.md",
@@ -614,7 +614,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:34:00 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:57 GMT"
     },
     "/google-adk/webmcp": {
       "file": "google-adk__webmcp.md",
@@ -626,11 +626,11 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 03 Nov 2026 15:34:00 GMT"
+      "date": "Wed, 11 Nov 2026 14:09:57 GMT"
     }
   },
   "sitemap": {
-    "fetchedAt": "2026-11-03T15:33:54.214Z",
+    "fetchedAt": "2026-11-11T14:09:53.925Z",
     "urlsUnderRoot": 168,
     "knownUnmapped": [
       "https://docs.copilotkit.ai/google-adk/AG-UI-Streams",
