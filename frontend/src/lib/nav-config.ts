@@ -386,7 +386,7 @@ export const NAV: NavGroup[] = [
         hasDemo: true,
         agentId: "genui",
         title: "Components \u00b7 Standard catalog",
-        docPath: "/generative-ui/components/standard-catalog",
+        docPath: "/google-adk/generative-ui/components/standard-catalog",
         summary:
           "The 69-component standardUI, as is and with extends, omit and overrides.",
         status: "broken",
