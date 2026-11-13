@@ -70,9 +70,9 @@ export default function Page() {
           <li>The runtime and the ADK agent (see Surfaces).</li>
         </ul>
         <p className="mt-2">
-          This page has no framework prefix in the link you were given (
-          <code>/generative-ui/components/standard-catalog</code>). The{" "}
-          <code>/google-adk/…</code> URL serves the same content.
+          The sidebar now links this page under <code>/google-adk/…</code>;
+          the unprefixed <code>/generative-ui/components/standard-catalog</code>{" "}
+          URL serves the same content.
         </p>
       </Callout>
     </>
