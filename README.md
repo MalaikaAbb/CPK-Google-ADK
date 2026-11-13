@@ -409,7 +409,7 @@ All three need `INTELLIGENCE_API_KEY` for real rows, and a licence for the drawe
 | `/google-adk/generative-ui/components/theming` | `/generative-ui/components/theming` | ❌ Broken | render_ui can't work on Google ADK + Gemini (§9 #29); nothing renders. mapStyle shown only (placeholder URLs, no maplibre-gl). |
 | `/google-adk/generative-ui/components/transports` | `/generative-ui/components/transports` | ⚠️ Partial | Tool mode broken (§9 #29); markdown and agentIds modes unaffected. Not yet checked in a browser. No ADK guidance for reading the run's context; the agent uses the Agent App Context pattern (§9 #28). |
 | `/google-adk/generative-ui/components/markdown-mode` | `/generative-ui/components/markdown-mode` | ⚠️ Partial | Not yet checked in a browser. sendContext: false backend prompt has no ADK code (§9 #28). |
-| `/google-adk/generative-ui/components/from-a2ui` | `/generative-ui/components/from-a2ui` | ❌ Broken | render_ui can't work on Google ADK + Gemini (§9 #29); nothing renders. Airport/Arrow harness-authored; Before snippets shown only. |
+| `/google-adk/generative-ui/components/from-a2ui` | `/generative-ui/components/from-a2ui` | ❌ Broken | render_ui can't work on Google ADK + Gemini (§9 #29); nothing renders. Airport/Arrow harness-authored; Before snippets and the 1.0 a2ui-renderer snippets shown only (§9 #37). |
 | `/google-adk/generative-ui/mcp-apps` | `/generative-ui/mcp-apps` | ⚠️ Partial | Not yet checked in a browser. Code tab verbatim with labelled stand-ins for ./chat, header-forwarding, get_model, and the headless-complete path. |
 | `/google-adk/frontend-tools` | `/frontend-tools` | ✅ Working | |
 | `/google-adk/webmcp` | `/webmcp` | ⚠️ Partial | Not yet checked in a browser. `searchOrders` is a labelled stub; WebMCP side needs Chrome 149+ with the flag. |
@@ -566,6 +566,9 @@ With the [tool transport](https://docs.copilotkit.ai/google-adk/generative-ui/co
 
 **36. A2UI Fixed Schema: the Express agent imports a module nobody publishes**
 [The page](https://docs.copilotkit.ai/google-adk/generative-ui/a2ui/fixed-schema)'s `src/agents/a2ui_fixed_agent.py` now has an A2UI Express branch: `_build_flight_operations(..., inference_format=...)` calls `validate_format(...)` and, for `"express"`, `compile_flight_template()`, which compiles `flight_schema.express` against `flight_catalog.generated.json`. `inference_format` and `validate_format` come from `agents.a2ui_format`, which neither the page nor its Code tab prints, and the JSON catalog is only produced by an `npm run export:a2ui-catalogs` step that isn't part of this repo. Importing the file as published would stop the whole backend from starting, so it is kept verbatim, unimported, at `frontend/src/app/generative-ui/a2ui/fixed-schema/_doc/a2ui_fixed_agent.py`, and the running agent stays the previously published Direct-JSON version. The page's new `dark:` classes (`text-foreground`, `text-muted-foreground`, `bg-border`) are applied but resolve to nothing here (no such theme colours).
+
+**37. Adopt from A2UI: the "1.0 with the React a2ui renderer" snippets need a newer CopilotKit**
+[The page](https://docs.copilotkit.ai/google-adk/generative-ui/components/from-a2ui) now shows keeping the `a2ui` provider option with `basicCatalogV1`, or a custom catalog built with `DynamicStringSchemaV1` and `protocolVersion: "1.0"`. `@copilotkit/a2ui-renderer` 1.84.0 (this repo's pin) exports neither, and the page names no version. It also says the agent must emit native 1.0 `a2ui_operations` but shows no ADK agent that does. Both snippets are shown as text on the route, not run.
 
 ---
 
