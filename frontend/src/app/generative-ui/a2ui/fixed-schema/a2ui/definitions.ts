@@ -5,7 +5,9 @@ import type { CatalogDefinitions } from "@copilotkit/a2ui-renderer";
  * Dynamic string: literal OR a data-model path binding. The GenericBinder
  * resolves path bindings to the actual value at render time.
  */
-const DynString = z.union([z.string(), z.object({ path: z.string() })]);
+const DynString = z
+  .union([z.string(), z.object({ path: z.string() })])
+  .describe("REF:common_types.json#/$defs/DynamicString");
 
 export const definitions = {
   /**
@@ -17,7 +19,7 @@ export const definitions = {
   Card: {
     description: "A container card with a single child.",
     props: z.object({
-      child: z.string(),
+      child: z.string().describe("REF:common_types.json#/$defs/ComponentId"),
     }),
   },
   Title: {
@@ -60,7 +62,7 @@ export const definitions = {
       child: z
         .string()
         .describe(
-          "The ID of the child component (e.g. a Text component for the label).",
+          "REF:common_types.json#/$defs/ComponentId|The ID of the child component for the label.",
         ),
       variant: z.enum(["primary", "secondary", "ghost"]).optional(),
       // Union with { event } so GenericBinder resolves this as ACTION → callable () => void.
@@ -74,7 +76,8 @@ export const definitions = {
           }),
           z.null(),
         ])
-        .optional(),
+        .optional()
+        .describe("REF:common_types.json#/$defs/Action"),
     }),
   },
 } satisfies CatalogDefinitions;

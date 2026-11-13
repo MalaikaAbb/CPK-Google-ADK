@@ -60,6 +60,14 @@ export default function Page() {
           two duplicated copies into one helper — same behaviour, including the{" "}
           <code>console.warn</code> rather than a silent zero.
         </p>
+        <p className="mt-2">
+          Two more pieces come from the page&apos;s demo Code tab, not its
+          snippets: the <code>tooltipStyle</code> / <code>barCursor</code>{" "}
+          constants the chart renderers use, and the <code>A2UIFormat</code>{" "}
+          wrapper (<code>src/_shared/ts/a2ui-format.tsx</code>) whose selector
+          picks the A2UI inference format (Express or Direct JSON) sent to the
+          agent as <code>properties.a2ui.inferenceFormat</code>.
+        </p>
       </Callout>
 
       <Panel title="The three-file split">
