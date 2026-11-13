@@ -54,6 +54,11 @@ export const myDefinitions = {
     description:
       "Horizontal layout container. Children share the width evenly. Use `gap` (px) to space dashboard tiles.",
     props: z.object({
+      // Keep `children` first. A2UI Express maps positional arguments in
+      // property order, so `Row([...], gap=16)` must bind the list to it.
+      children: z
+        .array(z.string())
+        .describe("REF:common_types.json#/$defs/ChildList"),
       gap: z.number().optional(),
       // Enum mirrors the keys the renderer actually maps to CSS. Anything
       // outside this set silently falls back at render time, so we reject
@@ -62,7 +67,6 @@ export const myDefinitions = {
         .enum(["start", "center", "end", "stretch", "baseline"])
         .optional(),
       justify: z.enum(["start", "center", "end", "spaceBetween"]).optional(),
-      children: z.array(z.string()),
     }),
   },
 
@@ -70,11 +74,15 @@ export const myDefinitions = {
     description:
       "Vertical layout container. Use `gap` (px) to space stacked sections.",
     props: z.object({
+      // Keep `children` first. A2UI Express maps positional arguments in
+      // property order, so `Column([...], gap=16)` must bind the list to it.
+      children: z
+        .array(z.string())
+        .describe("REF:common_types.json#/$defs/ChildList"),
       gap: z.number().optional(),
       align: z
         .enum(["start", "center", "end", "stretch", "baseline"])
         .optional(),
-      children: z.array(z.string()),
     }),
   },
 
@@ -93,7 +101,10 @@ export const myDefinitions = {
     props: z.object({
       title: z.string(),
       subtitle: z.string().optional(),
-      child: z.string().optional(),
+      child: z
+        .string()
+        .describe("REF:common_types.json#/$defs/ComponentId")
+        .optional(),
     }),
   },
 
@@ -297,8 +308,8 @@ export const myRenderers: CatalogRenderers<MyDefinitions> = {
 
   Metric: ({ props }) => {
     const trendColors: Record<string, string> = {
-      up: "#059669",
-      down: "#dc2626",
+      up: "light-dark(#059669, #34d399)",
+      down: "light-dark(#dc2626, #f87171)",
       neutral: c.muted,
     };
     const trendIcons: Record<string, string> = {
@@ -480,6 +491,7 @@ export const myRenderers: CatalogRenderers<MyDefinitions> = {
                   innerRadius={40}
                   outerRadius={80}
                   paddingAngle={2}
+                  stroke="var(--card)"
                 >
                   {data.map((_, i) => (
                     <Cell
@@ -488,7 +500,7 @@ export const myRenderers: CatalogRenderers<MyDefinitions> = {
                     />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip contentStyle={tooltipStyle} />
               </RechartsPieChart>
             </ResponsiveContainer>
           </div>
@@ -537,7 +549,7 @@ export const myRenderers: CatalogRenderers<MyDefinitions> = {
                 <CartesianGrid strokeDasharray="3 3" stroke={c.divider} />
                 <XAxis dataKey="label" tick={{ fontSize: 11, fill: c.muted }} />
                 <YAxis tick={{ fontSize: 11, fill: c.muted }} />
-                <Tooltip />
+                <Tooltip contentStyle={tooltipStyle} cursor={barCursor} />
                 <Bar dataKey="value" fill="#3b82f6" radius={[4, 4, 0, 0]} />
               </RechartsBarChart>
             </ResponsiveContainer>
@@ -582,6 +594,7 @@ activity-message renderer:
 ```typescript
 // src/app/demos/declarative-gen-ui/page.tsx
 import React from "react";
+import { A2UIFormat } from "../../../../_shared/ts/a2ui-format";
 import { CopilotKit } from "@copilotkit/react-core/v2";
 
 import { myCatalog } from "./a2ui/catalog";
@@ -589,17 +602,22 @@ import { Chat } from "./chat";
 
 export default function DeclarativeGenUIDemo() {
   return (
-    <CopilotKit
-      runtimeUrl="/api/copilotkit-declarative-gen-ui"
-      agent="declarative-gen-ui"
-      a2ui={{ catalog: myCatalog }}
-    >
-      <div className="flex justify-center items-center h-screen w-full">
-        <div className="h-full w-full max-w-4xl">
-          <Chat />
-        </div>
-      </div>
-    </CopilotKit>
+    <A2UIFormat>
+      {(inferenceFormat) => (
+        <CopilotKit
+          properties={{ a2ui: { inferenceFormat } }}
+          runtimeUrl="/api/copilotkit-declarative-gen-ui"
+          agent="declarative-gen-ui"
+          a2ui={{ catalog: myCatalog }}
+        >
+          <div className="flex justify-center items-center h-full w-full">
+            <div className="h-full w-full max-w-4xl">
+              <Chat />
+            </div>
+          </div>
+        </CopilotKit>
+      )}
+    </A2UIFormat>
 ```
 
 That is all the default path needs. The catalog auto-enables A2UI and
