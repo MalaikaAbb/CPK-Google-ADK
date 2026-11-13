@@ -8,6 +8,252 @@ Holds the 3 most recent dated entries. When a change lands on a fourth
 date, the oldest entry is dropped. Entries are counted, not aged, so a gap of
 weeks between changes does not expire anything.
 
+## 2026-11-13
+
+### 11:10 UTC — 18 pages, highest severity high
+
+**High — A2UI · Dynamic Schema**
+
+`/google-adk/generative-ui/a2ui/dynamic-schema` · route `/generative-ui/a2ui/dynamic-schema` · under “Declare your custom component definitions” · in a `typescript` block
+
+54 code lines changed.
+
+````diff
++ // Keep `children` first. A2UI Express maps positional arguments in
++ // property order, so `Row([...], gap=16)` must bind the list to it.
++ children: z
++ .array(z.string())
++ .describe("REF:common_types.json#/$defs/ChildList"),
+- children: z.array(z.string()),
++ // Keep `children` first. A2UI Express maps positional arguments in
++ // property order, so `Column([...], gap=16)` must bind the list to it.
+````
+
+**High — A2UI · Fixed Schema**
+
+`/google-adk/generative-ui/a2ui/fixed-schema` · route `/generative-ui/a2ui/fixed-schema` · under “Declare the component definitions” · in a `typescript` block
+
+83 code lines changed.
+
+````diff
+- const DynString = z.union([z.string(), z.object({ path: z.string() })]);
++ const DynString = z
++ .union([z.string(), z.object({ path: z.string() })])
++ .describe("REF:common_types.json#/$defs/DynamicString");
+- child: z.string(),
++ child: z.string().describe("REF:common_types.json#/$defs/ComponentId"),
+- "The ID of the child component (e.g. a Text component for the label).",
++ "REF:common_types.json#/$defs/ComponentId|The ID of the child component for the label.",
+````
+
+**High — Components · Catalogs**
+
+`/google-adk/generative-ui/components/catalogs` · route `/generative-ui/components/catalogs` · under “Create a catalog”
+
+128 code lines, 43 prose lines changed. The number of fenced code blocks changed.
+
+````diff
+- <Tabs groupId="frontend_framework" items={["React", "Angular"]} persist>
++ <Tabs groupId="frontend_framework" items={["React", "Angular", "React Native", "Vue"]} persist>
++ <Tab value="React Native">
++ A component of the catalog is a React Native component. It renders native views, and a slot arrives as React nodes:
++ 
++ ```tsx title="src/shopUI.tsx"
++ import { Image, StyleSheet, Text, View } from "react-native";
++ import { z } from "zod";
+````
+
+**High — Components · Adopt from A2UI**
+
+`/google-adk/generative-ui/components/from-a2ui` · route `/generative-ui/components/from-a2ui` · under “Adopt from A2UI”
+
+49 code lines, 1 heading, 35 prose lines changed. The number of fenced code blocks changed.
+
+````diff
+- > Move an app from the a2ui renderer (A2UI v0.9) to components and surfaces (A2UI 1.0): the provider, the catalog, the operations, and what the agent receives.
++ > Move an app from the a2ui renderer to components and surfaces: the provider, the catalog, the operations, and what the agent receives.
+- The `a2ui` provider option and `@copilotkit/a2ui-renderer` render A2UI v0.9: you build a catalog with `createCatalog`, and the agent streams a fixed or a generated schema into it. Components and surfaces is the A2UI 1.0 engine. The idea is the same: the agent writes operations, and the browser renders your components. The engine adds typed catalogs, the [standard catalog](/generative-ui/components/standard-catalog), areas of the page as targets, two transports, dynamic values that compute in the browser, and functions the agent can call. This page maps one to the other.
++ The `a2ui` provider option and `@copilotkit/a2ui-renderer` render A2UI v0.9 by default, with explicit A2UI 1.0 support in React: you build a catalog with `createCatalog`, and the agent streams a fixed or a generated schema into it. Components and surfaces is a separate A2UI 1.0 engine. The idea is the same: the agent writes operations, and the browser renders your components. The engine adds typed catalogs, the [standard catalog](/generative-ui/components/standard-catalog), areas of the page as targets, two transports, dynamic values that compute in the browser, and functions the agent can call. This page maps one to the other.
++ ## Use 1.0 with the React a2ui renderer
++ 
++ You can keep the `a2ui` provider option and opt into the native 1.0 basic catalog:
++ 
+````
+
+**High — Components · Markdown mode**
+
+`/google-adk/generative-ui/components/markdown-mode` · route `/generative-ui/components/markdown-mode` · under “What is this?”
+
+18 code lines, 14 prose lines changed. The number of fenced code blocks changed.
+
+````diff
++ <Callout type="info" title="React Native">
++ Markdown mode is not available on React Native yet. `GenerativeUIProvider` from `@copilotkit/react-native/generative-ui` uses the [tool transport](/google-adk/generative-ui/components/transports#tool-transport) only: `transport: "markdown"` is a type error, and passed from JavaScript it is dropped, with a warning in development.
++ </Callout>
++ 
+- <Tabs groupId="frontend_framework" items={["React", "Angular"]} persist>
++ <Tabs groupId="frontend_framework" items={["React", "Angular", "Vue"]} persist>
++ <Tab value="Vue">
++ ```vue title="src/App.vue"
+````
+
+**High — Components · State and actions**
+
+`/google-adk/generative-ui/components/state-and-actions` · route `/generative-ui/components/state-and-actions` · under “Show live app state”
+
+175 code lines, 52 prose lines changed. The number of fenced code blocks changed.
+
+````diff
+- <Tabs groupId="frontend_framework" items={["React", "Angular"]} persist>
++ <Tabs groupId="frontend_framework" items={["React", "Angular", "React Native", "Vue"]} persist>
++ <Tab value="React Native">
++ ```tsx title="src/shopUI.tsx"
++ const cartSchema = z.object({
++ items: z.array(z.object({ productId: z.string(), quantity: z.number() })),
++ });
++ 
+````
+
+**High — Components · Surfaces**
+
+`/google-adk/generative-ui/components/surfaces` · route `/generative-ui/components/surfaces` · under “What is this?”
+
+149 code lines, 59 prose lines changed. The number of fenced code blocks changed.
+
+````diff
+- - **The chat.** Always there. The agent can use every component of the catalog.
+- - **A page target.** An area of your page that you mark with `GenerativeUISurface`, or `<copilot-generative-ui-surface>` in Angular. The agent sees it only while it is on screen.
++ - **The chat.** Always there. The agent can use every component of the catalog. On React Native, you draw chat surfaces yourself, with `GenerativeUIActivity`; see [Chat surfaces on React Native](#chat-surfaces-on-react-native). The agent is offered the chat target even when the app shows no chat, so a React Native app that renders only `GenerativeUISurface` targets, or only the prebuilt `CopilotChat` (which does not draw surfaces yet), never shows a surface aimed at the chat.
++ - **A page target.** An area of your page that you mark with `GenerativeUISurface`, or `<copilot-generative-ui-surface>` in Angular. The agent sees it only while it is mounted.
+- <Tabs groupId="frontend_framework" items={["React", "Angular"]} persist>
++ <Tabs groupId="frontend_framework" items={["React", "Angular", "React Native", "Vue"]} persist>
++ <Tab value="React Native">
++ ```tsx title="src/FeaturedProducts.tsx"
+````
+
+**High — Components · Theming**
+
+`/google-adk/generative-ui/components/theming` · route `/generative-ui/components/theming` · under “What is this?”
+
+35 code lines, 18 prose lines changed. The number of fenced code blocks changed.
+
+````diff
+- <Tabs groupId="frontend_framework" items={["React", "Angular"]} persist>
++ <Tabs groupId="frontend_framework" items={["React", "Angular", "Vue"]} persist>
++ <Tab value="Vue">
++ ```vue
++ <script setup lang="ts">
++ import { CopilotKitProvider } from "@copilotkit/vue/v2";
++ import { standardUI, type GenerativeUITheme } from "@copilotkit/vue/v2/generative-ui";
++ 
+````
+
+**High — Components · Transports**
+
+`/google-adk/generative-ui/components/transports` · route `/generative-ui/components/transports` · under “What is this?”
+
+18 code lines, 29 prose lines changed. The number of fenced code blocks changed.
+
+````diff
+- The agent must send the UI to the browser somehow. Some agents are good at tool calls. Others only stream text, or you build their prompt yourself. A **transport** is the way the UI travels:
++ The agent must send the UI to the app somehow: the browser, or a React Native app. Some agents are good at tool calls. Others only stream text, or you build their prompt yourself. A **transport** is the way the UI travels:
+- Both transports use the same catalogs, surfaces, and components. Only the path between the agent and the browser changes.
++ Both transports use the same catalogs, surfaces, and components. Only the path between the agent and the app changes.
+- | Checked before the browser gets it | yes, by the runtime, and again in the browser | in the browser |
++ | Checked before the app gets it | yes, by the runtime, and again in the app | in the app |
+- <Tabs groupId="frontend_framework" items={["React", "Angular"]} persist>
++ <Tabs groupId="frontend_framework" items={["React", "Angular", "React Native", "Vue"]} persist>
+````
+
+**High — Reasoning**
+
+`/google-adk/generative-ui/reasoning` · route `/generative-ui/reasoning` · under “Custom reasoning rendering” · in a `typescript` block
+
+10 code lines changed.
+
+````diff
+- className="my-2 rounded-xl border border-[#DBDBE5] bg-[#BEC2FF1A] px-3.5 py-2.5 text-sm"
++ className="my-2 rounded-xl border border-[#DBDBE5] bg-[#BEC2FF1A] px-3.5 py-2.5 text-sm dark:border-border"
+- <div className="flex items-center gap-2 font-medium text-[#010507]">
+- <span className="inline-block rounded-full border border-[#BEC2FF] bg-white px-2 py-0.5 text-[10px] uppercase tracking-[0.14em] text-[#57575B]">
++ <div className="flex items-center gap-2 font-medium text-[#010507] dark:text-foreground">
++ <span className="inline-block rounded-full border border-[#BEC2FF] bg-white px-2 py-0.5 text-[10px] uppercase tracking-[0.14em] text-[#57575B] dark:bg-card dark:text-muted-foreground">
+- <span className="text-[#57575B]">
++ <span className="text-[#57575B] dark:text-muted-foreground">
+````
+
+**High — Sub-Agents**
+
+`/google-adk/multi-agent/subagents` · route `/multi-agent/subagents` · under “Rendering a live delegation log” · in a `typescript` block
+
+30 code lines changed.
+
+````diff
+- className="w-full h-full flex flex-col bg-white rounded-2xl shadow-sm border border-[#DBDBE5] overflow-hidden"
++ className="w-full h-full flex flex-col bg-white rounded-2xl shadow-sm border border-[#DBDBE5] overflow-hidden dark:bg-card dark:border-border"
+- <div className="flex items-center justify-between px-6 py-3 border-b border-[#E9E9EF] bg-[#FAFAFC]">
++ <div className="flex items-center justify-between px-6 py-3 border-b border-[#E9E9EF] bg-[#FAFAFC] dark:border-border dark:bg-muted">
+- <span className="text-lg font-semibold text-[#010507]">
++ <span className="text-lg font-semibold text-[#010507] dark:text-foreground">
+- className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border border-[#BEC2FF] bg-[#BEC2FF1A] text-[#010507] text-[10px] font-semibold uppercase tracking-[0.12em]"
++ className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border border-[#BEC2FF] bg-[#BEC2FF1A] text-[#010507] text-[10px] font-semibold uppercase tracking-[0.12em] dark:text-foreground"
+````
+
+**High — Shared State**
+
+`/google-adk/shared-state` · route `/shared-state` · under “Rendering shared state in the UI” · in a `typescript` block
+
+10 code lines changed.
+
+````diff
+- <code className="font-mono text-[11px] text-[#010507]">
++ <code className="font-mono text-[11px] text-[#010507] dark:text-foreground">
+- className="text-sm text-[#838389] italic min-h-[160px] flex items-center justify-center text-center px-4 border border-dashed border-[#E9E9EF] rounded-xl bg-[#FAFAFC]"
++ className="text-sm text-[#838389] italic min-h-[160px] flex items-center justify-center text-center px-4 border border-dashed border-[#E9E9EF] rounded-xl bg-[#FAFAFC] dark:text-muted-foreground dark:border-border dark:bg-muted"
+- className="space-y-2 text-sm text-[#010507]"
++ className="space-y-2 text-sm text-[#010507] dark:text-foreground"
+- className="flex gap-2 rounded-lg border border-[#E9E9EF] bg-[#FAFAFC] px-3 py-2"
++ className="flex gap-2 rounded-lg border border-[#E9E9EF] bg-[#FAFAFC] px-3 py-2 dark:border-border dark:bg-muted"
+````
+
+**Info — A2UI**
+
+`/google-adk/generative-ui/a2ui` · route `/generative-ui/a2ui`
+
+Now tracked for the first time.
+
+**Info — Components and surfaces**
+
+`/google-adk/generative-ui/components` · route `/generative-ui/components`
+
+Now tracked for the first time.
+
+**Info — Components · Standard catalog**
+
+`/google-adk/generative-ui/components/standard-catalog` · route `/generative-ui/components/standard-catalog`
+
+Now tracked for the first time.
+
+**Info — Headless Interrupts**
+
+`/google-adk/human-in-the-loop/headless` · route `/human-in-the-loop/headless`
+
+Now tracked for the first time.
+
+**Info — Human in the Loop**
+
+`/google-adk/human-in-the-loop/index` · route `/human-in-the-loop`
+
+Now tracked for the first time.
+
+**Info — Pausing the Agent for Input**
+
+`/google-adk/human-in-the-loop/useInterrupt` · route `/human-in-the-loop/useInterrupt`
+
+Now tracked for the first time.
+
+---
+
 ## 2026-11-11
 
 ### 14:09 UTC — 13 pages, highest severity high
@@ -207,6 +453,8 @@ weeks between changes does not expire anything.
 
 ---
 
+---
+
 ## 2026-11-03
 
 ### 15:33 UTC — 11 pages, highest severity high
@@ -281,271 +529,6 @@ Now tracked for the first time.
 `/google-adk/webmcp` · route `/webmcp`
 
 Now tracked for the first time.
-
----
-
----
-
-## 2026-11-02
-
-### 12:43 UTC — 18 pages, highest severity high
-
-**High — Introduction**
-
-`/google-adk` · routes `/`, `/doc-sync` · under “Configure your environment”
-
-2 code lines, 2 prose lines changed.
-
-````diff
-- This example uses Gemini 2.5 Flash, but you can modify it to use any language model supported by ADK.
-+ This example uses Gemini 3.8 Flash, but you can modify it to use any language model supported by ADK.
-- model="gemini-2.5-flash",
-+ model="gemini-3.8-flash",
-````
-
-**High — Agent App Context**
-
-`/google-adk/agent-app-context` · route `/agent-app-context` · under “Read the context in your ADK agent” · in a `python` block
-
-2 code lines changed.
-
-````diff
-- model="gemini-2.5-flash",
-+ model="gemini-3.8-flash",
-````
-
-**High — Slots**
-
-`/google-adk/custom-look-and-feel/slots` · route `/custom-look-and-feel/slots` · under “Tool calls”
-
-23 code lines, 1 heading, 15 prose lines changed. The number of fenced code blocks changed.
-
-````diff
-+ ### Tool calls
-+ 
-+ The `assistantMessage` slot holds `toolCallsView`, which renders the tool calls
-+ of one assistant message. Wrap the default `CopilotChatToolCallsView` to change
-+ the container while keeping your registered tool renderers:
-+ 
-+ ```tsx title="page.tsx"
-+ import {
-````
-
-**High — Hashbrown**
-
-`/google-adk/generative-ui/hashbrown` · route `/generative-ui/hashbrown` · under “Hashbrown”
-
-36 code lines, 2 headings, 11 prose lines changed. The number of fenced code blocks changed.
-
-````diff
-- > Bring your own component library. Have the agent stream structured output and let Hashbrown's progressive JSON parser render it as React components in real time.
-+ > Stream a structured sales dashboard through Hashbrown's UI kit and progressive JSON parser.
-- 
-- You have a chat surface and you want the agent to draw a dashboard, not just describe one in prose. By the end of this guide, the agent will stream a structured output object, [`@hashbrownai/react`](https://www.npmjs.com/package/@hashbrownai/react)'s progressive JSON parser will hand each finished slice to your renderer as it arrives, and the user sees the dashboard fill in live.
-- 
-- ## When to use this
-- 
-- - **Streaming dashboards** where partial state should render before the full payload arrives.
-````
-
-**High — JSON Render**
-
-`/google-adk/generative-ui/json-render` · route `/generative-ui/json-render` · under “JSON Render”
-
-53 code lines, 2 headings, 11 prose lines changed. The number of fenced code blocks changed.
-
-````diff
-- > Bring your own component library. Have the agent emit a JSON spec and let json-render render it against a Zod-validated catalog of React components.
-+ > Bring your own component library. Have the agent emit a JSON spec and render allowed component types through a typed React registry.
-- 
-- You have a chat surface and you want the agent to draw a dashboard from a typed JSON spec. By the end of this guide, the agent will emit a `{ root, elements }` object, [`@json-render/react`](https://www.npmjs.com/package/@json-render/react) will validate it against a Zod-described catalog, and the user sees the dashboard render as a single React tree.
-+ ```typescript
-+ // src/app/demos/declarative-json-render/chat.tsx
-+ "use client";
-- ## When to use this
-````
-
-**High — Tool Call Rendering**
-
-`/google-adk/generative-ui/tool-rendering` · route `/generative-ui/tool-rendering` · under “Default tool rendering (zero-config)”
-
-15 code lines, 1 heading, 35 prose lines changed. The number of fenced code blocks changed.
-
-````diff
-- any UI.
-+ any UI. Calls the agent makes in a row are grouped into one card; see
-+ [Grouping tool calls](#grouping-tool-calls).
-+ 
-+ ## Grouping tool calls
-+ 
-+ Agents often call several tools in a row. By default, CopilotKit collapses
-+ each run of calls drawn by the built-in card from `useDefaultRenderTool()` into
-````
-
-**High — Threads Drawer**
-
-`/google-adk/prebuilt-components/copilot-threads-drawer` · route `/prebuilt-components/copilot-threads-drawer` · under “Add your own "New conversation" button”
-
-41 code lines, 1 heading, 19 prose lines changed. The number of fenced code blocks changed.
-
-````diff
-+ ## Add your own "New conversation" button
-+ 
-+ The Drawer has its own "New Conversation" row. Your app can also keep its own
-+ button, for example in a toolbar or a page header. To start a new conversation
-+ from that button, call `startNewThread()` from
-+ [`useCopilotChatConfiguration`](/reference/hooks/useCopilotChatConfiguration).
-+ This is the same function the Drawer calls for its own row.
-+ 
-````
-
-**High — Quickstart**
-
-`/google-adk/quickstart` · route `/quickstart` · under “Configure your environment”
-
-2 code lines, 2 prose lines changed.
-
-````diff
-- This example uses Gemini 2.5 Flash, but you can modify it to use any language model supported by ADK.
-+ This example uses Gemini 3.8 Flash, but you can modify it to use any language model supported by ADK.
-- model="gemini-2.5-flash",
-+ model="gemini-3.8-flash",
-````
-
-**High — Reading agent state**
-
-`/google-adk/shared-state/in-app-agent-read` · route `/shared-state/in-app-agent-read` · under “Define the Agent State” · in a `python` block
-
-2 code lines changed.
-
-````diff
-- model="gemini-2.5-flash",
-+ model="gemini-3.8-flash",
-````
-
-**High — Writing agent state**
-
-`/google-adk/shared-state/in-app-agent-write` · route `/shared-state/in-app-agent-write` · under “Define the Agent State” · in a `python` block
-
-2 code lines changed.
-
-````diff
-- model="gemini-2.5-flash",
-+ model="gemini-3.8-flash",
-````
-
-**High — Predictive state updates**
-
-`/google-adk/shared-state/predictive-state-updates` · route `/shared-state/predictive-state-updates` · under “Emit the intermediate state” · in a `python` block
-
-2 code lines changed.
-
-````diff
-- model="gemini-2.5-flash",
-+ model="gemini-3.8-flash",
-````
-
-**High — Workflow Execution**
-
-`/google-adk/shared-state/workflow-execution` · route `/shared-state/workflow-execution` · under “Organize state by purpose” · in a `python` block
-
-2 code lines changed.
-
-````diff
-- model="gemini-2.5-flash",
-+ model="gemini-3.8-flash",
-````
-
-**High — Voice**
-
-`/google-adk/voice` · route `/voice` · under “Next.js API route” · in a `typescript` block
-
-101 code lines, 18 prose lines changed.
-
-````diff
-- TranscriptionService,
-- import type { TranscribeFileOptions } from "@copilotkit/runtime/v2";
-- import { TranscriptionServiceOpenAI } from "@copilotkit/voice";
-- import OpenAI from "openai";
-+ import { createTranscriptionService } from "@/lib/transcription-service";
-- /**
-- * Transcription service wrapper that pins `baseURL` to real OpenAI (or
-- * `OPENAI_TRANSCRIPTION_BASE_URL` when explicitly set) instead of falling
-````
-
-**Low — Copilot Runtime**
-
-`/google-adk/backend/copilot-runtime` · route `/backend/copilot-runtime` · under “CopilotKit Intelligence”
-
-2 prose lines changed.
-
-````diff
-- [Threads](/google-adk/threads), the [inspector](/google-adk/inspector), and other CopilotKit Intelligence capabilities are provided through the runtime. These give you conversation persistence and debugging without extra setup.
-+ [Threads](/google-adk/AG-UI-Streams), the [inspector](/google-adk/inspector), and other CopilotKit Intelligence capabilities are provided through the runtime. These give you conversation persistence and debugging without extra setup.
-````
-
-**Low — Reasoning Messages**
-
-`/google-adk/custom-look-and-feel/reasoning-messages` · route `/custom-look-and-feel/reasoning-messages` · under “Custom Header”
-
-3 prose lines changed.
-
-````diff
-- | `label` | `string` | `"Thinking…"` while streaming, `"Thought for X seconds"` after |
-+ | `label` | `string` | `labels.reasoningMessageThinkingLabel` (`"Thinking…"`) while streaming, `"Thought for X seconds"` after |
-+ | `elapsedSeconds` | `number` | Seconds spent reasoning, for building a localized label |
-````
-
-**Low — Open Generative UI**
-
-`/google-adk/generative-ui/open-generative-ui` · route `/generative-ui/open-generative-ui` · under “Minimal setup”
-
-24 prose lines changed.
-
-````diff
-- auto-registered by `CopilotKit`, so no extra wiring is needed.
-+ auto-registered by `CopilotKit`, so no extra frontend wiring is needed. Your
-+ agent must still give the run's frontend tools to its model (see the warning
-+ below).
-+ 
-+ <Callout type="warn" title="Your agent must pass frontend tools to its model">
-+ `generateSandboxedUi` reaches the agent as a frontend tool in the run input.
-+ The agent calls it only if it gives the run's frontend tools to its model.
-````
-
-**Low — Inspector**
-
-`/google-adk/inspector` · route `/inspector` · under “Follow a run from input to result”
-
-34 prose lines changed.
-
-````diff
-- | Question                                      | Open                                                                | Related guide                                              |
-- | --------------------------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------- |
-- | Which agent ran, and what did it do?          | **Agent**                                                           | [Agent configuration](/google-adk/agent-config)                       |
-- | Which events crossed the AG-UI connection?    | **AG-UI Events**                                                    | [AG-UI protocol](/google-adk/agentic-protocols/ag-ui)                 |
-- | Which browser-side tools are registered?      | **Frontend Tools**                                                  | [Frontend Tools](/google-adk/frontend-tools)                          |
-- | What readable or document context was shared? | **Context**                                                         | [Agent read-only context](/google-adk/shared-state/agent-readonly)    |
-- | What did a saved conversation contain?        | **Rich Threads** → **Conversation**, **AG-UI Events**, or **State** | [AG-UI Streams](/google-adk/threads) and [Shared State](/google-adk/shared-state) |
-+ | Question                                                    | Open                                                                | Related guide                                               |
-````
-
-**Low — Open, close, and feedback**
-
-`/google-adk/prebuilt-components/chat-controls` · route `/prebuilt-components/chat-controls` · under “Capture message feedback (thumbs up / down)”
-
-12 prose lines changed.
-
-````diff
-- slot**. The buttons only render when a handler is provided:
-+ slot**. Without Automatic Learning capture, the buttons only render when a
-+ handler or a custom thumb slot is provided:
-+ 
-+ With [Automatic Learning capture](/google-adk/intelligence/capture-interactions#collect-reply-ratings)
-+ on and a Trajectory started, the buttons appear without handlers in every chat
-+ that renders messages with `CopilotChatMessageView` inside a
-+ `CopilotChatConfigurationProvider`, as `CopilotChat`, `CopilotPopup`, and
-````
 
 ---
 

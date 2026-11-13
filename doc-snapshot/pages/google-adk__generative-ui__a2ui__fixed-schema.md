@@ -149,7 +149,9 @@ import type { CatalogDefinitions } from "@copilotkit/a2ui-renderer";
  * Dynamic string: literal OR a data-model path binding. The GenericBinder
  * resolves path bindings to the actual value at render time.
  */
-const DynString = z.union([z.string(), z.object({ path: z.string() })]);
+const DynString = z
+  .union([z.string(), z.object({ path: z.string() })])
+  .describe("REF:common_types.json#/$defs/DynamicString");
 
 export const definitions = {
   /**
@@ -161,7 +163,7 @@ export const definitions = {
   Card: {
     description: "A container card with a single child.",
     props: z.object({
-      child: z.string(),
+      child: z.string().describe("REF:common_types.json#/$defs/ComponentId"),
     }),
   },
   Title: {
@@ -207,7 +209,7 @@ export const definitions = {
       child: z
         .string()
         .describe(
-          "The ID of the child component (e.g. a Text component for the label).",
+          "REF:common_types.json#/$defs/ComponentId|The ID of the child component for the label.",
         ),
       variant: z.enum(["primary", "secondary", "ghost"]).optional(),
       // Union with { event } so GenericBinder resolves this as ACTION → callable () => void.
@@ -221,7 +223,8 @@ export const definitions = {
           }),
           z.null(),
         ])
-        .optional(),
+        .optional()
+        .describe("REF:common_types.json#/$defs/Action"),
     }),
   },
 } satisfies CatalogDefinitions;
@@ -251,10 +254,10 @@ export const renderers: CatalogRenderers<Definitions> = {
   Title: ({ props }) => (
     <div className="flex items-center justify-between">
       <div className="space-y-1">
-        <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-neutral-500">
+        <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-neutral-500 dark:text-muted-foreground">
           Itinerary
         </p>
-        <h3 className="text-base font-semibold leading-none tracking-tight text-neutral-900">
+        <h3 className="text-base font-semibold leading-none tracking-tight text-neutral-900 dark:text-foreground">
           {s(props.text)}
         </h3>
       </div>
@@ -265,14 +268,14 @@ export const renderers: CatalogRenderers<Definitions> = {
   ),
   Airport: ({ props }) => (
     <div className="flex flex-col items-center">
-      <span className="font-mono text-2xl font-semibold tracking-wider text-neutral-900">
+      <span className="font-mono text-2xl font-semibold tracking-wider text-neutral-900 dark:text-foreground">
         {s(props.code)}
       </span>
     </div>
   ),
   Arrow: () => (
     <div className="flex flex-1 items-center px-3">
-      <Separator className="flex-1 bg-neutral-200" />
+      <Separator className="flex-1 bg-neutral-200 dark:bg-border" />
       <svg
         width="16"
         height="16"
@@ -282,13 +285,13 @@ export const renderers: CatalogRenderers<Definitions> = {
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="mx-1 text-neutral-400"
+        className="mx-1 text-neutral-400 dark:text-muted-foreground"
         aria-hidden
       >
         <line x1="5" y1="12" x2="19" y2="12" />
         <polyline points="12 5 19 12 12 19" />
       </svg>
-      <Separator className="flex-1 bg-neutral-200" />
+      <Separator className="flex-1 bg-neutral-200 dark:bg-border" />
     </div>
   ),
   AirlineBadge: ({ props }) => (
@@ -298,10 +301,10 @@ export const renderers: CatalogRenderers<Definitions> = {
   ),
   PriceTag: ({ props }) => (
     <div className="flex items-baseline gap-1">
-      <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-neutral-500">
+      <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-neutral-500 dark:text-muted-foreground">
         Total
       </span>
-      <span className="font-mono text-base font-semibold text-neutral-900">
+      <span className="font-mono text-base font-semibold text-neutral-900 dark:text-foreground">
         {s(props.amount)}
       </span>
     </div>
@@ -355,7 +358,9 @@ The agent then reuses that component tree for every tool call:
 # src/agents/a2ui_fixed_agent.py
 from __future__ import annotations
 
+import copy
 import json
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -364,6 +369,7 @@ from google.adk.agents import LlmAgent
 from google.adk.tools import ToolContext
 
 from agents.shared_chat import get_model, stop_on_terminal_text
+from agents.a2ui_format import inference_format, validate_format
 
 CATALOG_ID = "copilotkit://flight-fixed-catalog"
 SURFACE_ID = "flight-fixed-schema"
@@ -398,7 +404,9 @@ The LLM only supplies the four data fields (`origin`, `destination`,
 # src/agents/a2ui_fixed_agent.py
 from __future__ import annotations
 
+import copy
 import json
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -407,6 +415,7 @@ from google.adk.agents import LlmAgent
 from google.adk.tools import ToolContext
 
 from agents.shared_chat import get_model, stop_on_terminal_text
+from agents.a2ui_format import inference_format, validate_format
 
 CATALOG_ID = "copilotkit://flight-fixed-catalog"
 SURFACE_ID = "flight-fixed-schema"
@@ -428,8 +437,32 @@ FLIGHT_SCHEMA = _load_schema("flight_schema.json")
 BOOKED_SCHEMA = _load_schema("booked_schema.json")  # noqa: F841
 
 
+@lru_cache(maxsize=1)
+def compile_flight_template() -> list[dict[str, Any]]:
+    """Compile the authored tree with the build-exported frontend catalog."""
+    from ag_ui_adk import compile_a2ui_express
+
+    catalog_path = _SCHEMAS_DIR / "flight_catalog.generated.json"
+    if not catalog_path.exists():
+        raise RuntimeError(
+            "Run npm run export:a2ui-catalogs before using Express flight templates"
+        )
+    catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+    return compile_a2ui_express(
+        (_SCHEMAS_DIR / "flight_schema.express").read_text(encoding="utf-8"),
+        catalog=catalog,
+        surface_id=SURFACE_ID,
+        default_catalog_id=CATALOG_ID,
+    )
+
+
 def _build_flight_operations(
-    *, origin: str, destination: str, airline: str, price: str
+    *,
+    origin: str,
+    destination: str,
+    airline: str,
+    price: str,
+    inference_format: str = "direct_json",
 ) -> dict[str, Any]:
     """Build the v0.9 a2ui_operations container the runtime detects.
 
@@ -442,7 +475,29 @@ def _build_flight_operations(
     `update_components` / `update_data_model` from the langgraph-python
     north-star.
     """
+    validate_format(inference_format)
+    if inference_format == "express":
+        return {
+            "inferenceFormat": "express",
+            "a2ui_operations": [
+                *copy.deepcopy(compile_flight_template()),
+                {
+                    "version": "v0.9",
+                    "updateDataModel": {
+                        "surfaceId": SURFACE_ID,
+                        "path": "/",
+                        "value": {
+                            "origin": origin,
+                            "destination": destination,
+                            "airline": airline,
+                            "price": price,
+                        },
+                    },
+                },
+            ],
+        }
     return {
+        "inferenceFormat": "direct_json",
         "a2ui_operations": [
             {
                 "version": "v0.9",
@@ -471,7 +526,7 @@ def _build_flight_operations(
                     },
                 },
             },
-        ]
+        ],
     }
 
 
