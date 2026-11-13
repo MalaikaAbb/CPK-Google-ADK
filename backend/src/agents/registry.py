@@ -22,6 +22,7 @@ from agents import chat_agents
 from agents.a2ui_fixed_agent import a2ui_fixed_agent
 from agents.agent_config_agent import agent_config_agent
 from agents.declarative_gen_ui_agent import declarative_gen_ui_agent
+from agents.components_agent import components_agent
 from agents.genui_agent import genui_agent
 from agents.mcp_apps_agent import mcp_apps_agent
 from agents.agent_app_context_agent import colleagues_agent
@@ -195,6 +196,11 @@ REGISTRY: dict[str, RegisteredAgent] = {
     # agent, so this one is harness-authored)
     "genui": RegisteredAgent(
         genui_agent, "/google-adk/generative-ui/components/surfaces"
+    ),
+    # Components and surfaces overview — the page's TanStack BuiltInAgent,
+    # swapped for an ADK agent with the snippet's prompt and no tools of its own
+    "components": RegisteredAgent(
+        components_agent, "/google-adk/generative-ui/components"
     ),
     # MCP Apps — the Code tab mounts it at `/mcp-apps`
     "mcp-apps": RegisteredAgent(
