@@ -561,6 +561,9 @@ With the [tool transport](https://docs.copilotkit.ai/google-adk/generative-ui/co
 **31. Components and surfaces overview: the only agent shown is a TanStack `BuiltInAgent`**
 [The page](https://docs.copilotkit.ai/google-adk/generative-ui/components)'s "Try it" runtime builds a `BuiltInAgent` in TanStack factory mode on OpenAI, even on the Google ADK page, and passes the run's tools and context on with `convertInputToTanStackAI`. No ADK agent is shown. Here it is swapped for the ADK `components` agent (`backend/src/agents/components_agent.py`): the snippet's system prompt word for word, `AGUIToolset()` for the run's tools, and the Agent App Context page's instruction-provider pattern for the run's context, since `ag_ui_adk` keeps context in session state. The provider's `runtimeUrl` points at `/api/copilotkit-components` instead of `/api/copilotkit`. The page's claim that the runtime needs no generative-UI option holds in 1.84: a tool-transport catalog from the provider is enough to attach the middleware.
 
+**34. Reasoning: the dark-mode classes use theme colours the page never defines**
+[Reasoning](https://docs.copilotkit.ai/google-adk/generative-ui/reasoning)'s `reasoning-block.tsx` now styles dark mode with `dark:text-foreground`, `dark:text-muted-foreground`, `dark:bg-card` and `dark:border-border`. Those are shadcn-style theme colours; the page doesn't define them and this harness has none, so Tailwind emits nothing for them and in dark mode the block keeps its light text colours (dark text on a dark background). The classes are kept as published (they replace this repo's own `dark:text-slate-*` variants).
+
 ---
 
 ## 10. Troubleshooting
