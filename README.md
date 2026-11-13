@@ -5,12 +5,12 @@ A navigable, working test harness for the CopilotKit Google ADK integration — 
 | | |
 |---|---|
 | **Doc sync date** | Machine-maintained — `doc-snapshot/manifest.json` → `syncedAt`, rewritten on every sync |
-| **CopilotKit packages** | `@copilotkit/react-core` 1.83.0 · `@copilotkit/runtime` 1.83.0 · `@copilotkit/a2ui-renderer` 1.83.0 · `@copilotkit/voice` 1.83.0 |
-| **AG-UI packages** | `@ag-ui/client` 0.0.57 · `ag-ui-adk` 0.7.0 |
+| **CopilotKit packages** | `@copilotkit/react-core` 1.84.0 · `@copilotkit/runtime` 1.84.0 · `@copilotkit/a2ui-renderer` 1.84.0 · `@copilotkit/voice` 1.84.0 |
+| **AG-UI packages** | `@ag-ui/client`/`core`/`encoder`/`proto` 1.0.2 (exact pin + npm `overrides`, matching `@copilotkit/*`; `@hashbrownai/core` keeps its own 0.0.59 via a nested override) · `ag-ui-adk` 0.7.0 |
 | **ADK packages** | `google-adk` 2.6.2 · `google-genai` 2.16.0 |
 | **Frontend** | Next.js 16.3.0 (App Router) · React 19.2 · TypeScript · Tailwind 4 |
 | **Backend** | Python 3.10+ · FastAPI 0.141 · Uvicorn 0.52 |
-| **Build status** | No CI. `tsc` ❌ · `next build` ❌ — both red by design: `/shared-state/predictive-state-updates` ships the doc's non-compiling sample verbatim (§8, §9 item 9). Every other route typechecks and lints ✅; agent server boots with all 28 agents mounted ✅ |
+| **Build status** | No CI. `tsc` ❌ · `next build` ❌ — both red by design: `/shared-state/predictive-state-updates` ships the doc's non-compiling sample verbatim (§8, §9 item 9), and `/shared-state/rendering-in-app` keeps the doc's untyped `toggleItem` snippet (implicit-`any` `it`; runs fine). Every other route typechecks and lints ✅; agent server boots with all 28 agents mounted ✅ |
 
 ---
 
@@ -419,7 +419,7 @@ All three need `INTELLIGENCE_API_KEY` for real rows, and a licence for the drawe
 | `/google-adk/human-in-the-loop/governed-actions` | `/human-in-the-loop/governed-actions` | ⚠️ Partial | Not yet checked in a browser. Only the `useHumanInTheLoop` half runs; `useInterrupt` can't fire on ADK (§9 #23). |
 | `/google-adk/programmatic-control` | `/programmatic-control` | ⚠️ Partial | Runs the doc's `headless-complete` snippet; two of the three helpers it destructures are undefined in the docs and reconstructed here. Interrupt-resume half does not apply. |
 | `/google-adk/shared-state` | `/shared-state` | ✅ Working | |
-| `/google-adk/shared-state/rendering-in-app` | `/shared-state/rendering-in-app` | ✅ Working | |
+| `/google-adk/shared-state/rendering-in-app` | `/shared-state/rendering-in-app` | ✅ Working | The doc's `toggleItem` snippet is kept verbatim; its untyped `.map((it) => …)` is a `tsc` implicit-`any` error only — no runtime effect. |
 | `/google-adk/shared-state/streaming` | `/shared-state/streaming` | ✅ Working | |
 | `/google-adk/shared-state/agent-readonly` | `/shared-state/agent-readonly` | ✅ Working | |
 | `/google-adk/shared-state/in-app-agent-read` | `/shared-state/in-app-agent-read` | ✅ Working | |
