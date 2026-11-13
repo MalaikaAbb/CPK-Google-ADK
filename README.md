@@ -569,6 +569,8 @@ With the [tool transport](https://docs.copilotkit.ai/google-adk/generative-ui/co
 
 **37. Adopt from A2UI: the "1.0 with the React a2ui renderer" snippets need a newer CopilotKit**
 [The page](https://docs.copilotkit.ai/google-adk/generative-ui/components/from-a2ui) now shows keeping the `a2ui` provider option with `basicCatalogV1`, or a custom catalog built with `DynamicStringSchemaV1` and `protocolVersion: "1.0"`. `@copilotkit/a2ui-renderer` 1.84.0 (this repo's pin) exports neither, and the page names no version. It also says the agent must emit native 1.0 `a2ui_operations` but shows no ADK agent that does. Both snippets are shown as text on the route, not run.
+**34. Reasoning: the dark-mode classes use theme colours the page never defines**
+[Reasoning](https://docs.copilotkit.ai/google-adk/generative-ui/reasoning)'s `reasoning-block.tsx` now styles dark mode with `dark:text-foreground`, `dark:text-muted-foreground`, `dark:bg-card` and `dark:border-border`. Those are shadcn-style theme colours; the page doesn't define them and this harness has none, so Tailwind emits nothing for them and in dark mode the block keeps its light text colours (dark text on a dark background). The classes are kept as published (they replace this repo's own `dark:text-slate-*` variants).
 
 ---
 
