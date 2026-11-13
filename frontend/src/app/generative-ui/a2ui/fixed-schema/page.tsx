@@ -104,6 +104,26 @@ export default function Page() {
         />
       </Panel>
 
+      <Callout tone="warn" title="The page's A2UI Express agent can't run — the live agent is the previous version">
+        <p>
+          The page&apos;s <code>a2ui_fixed_agent.py</code> now also compiles the
+          flight tree from <code>flight_schema.express</code> when the run asks
+          for the Express inference format. It imports{" "}
+          <code>inference_format, validate_format</code> from{" "}
+          <code>agents.a2ui_format</code>, a module neither the page nor its
+          Code tab publishes, and reads{" "}
+          <code>flight_catalog.generated.json</code>, which only an{" "}
+          <code>npm run export:a2ui-catalogs</code> script would produce. Nothing
+          was filled in: the published file is kept verbatim below (not
+          imported), and the running agent is still the previously published
+          Direct-JSON version, so only the Direct-JSON path is tested here.
+        </p>
+      </Callout>
+
+      <Panel title="As published now (not run)">
+        <SourceCode file="frontend/src/app/generative-ui/a2ui/fixed-schema/_doc/a2ui_fixed_agent.py" />
+      </Panel>
+
       <Callout tone="warn" title="The Book button does nothing">
         <p>
           That is not a bug in this repo. The canonical pattern pairs a fixed

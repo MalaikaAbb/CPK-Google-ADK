@@ -397,7 +397,7 @@ All three need `INTELLIGENCE_API_KEY` for real rows, and a licence for the drawe
 | `/google-adk/generative-ui/state-rendering` | `/generative-ui/state-rendering` | ✅ Working | Shares the streaming agent, as the docs do. |
 | `/google-adk/generative-ui/a2ui` | `/generative-ui/a2ui` | 📖 Reference | Overview, no demo. Setup runs on the two schema routes; the `copilotkit` Python SDK helpers and the CSS variables are shown only. |
 | `/google-adk/generative-ui/a2ui/dynamic-schema` | `/generative-ui/a2ui/dynamic-schema` | ✅ Working | Catalog is the doc's; leaf UI primitives are this repo's. |
-| `/google-adk/generative-ui/a2ui/fixed-schema` | `/generative-ui/a2ui/fixed-schema` | ✅ Working | Book button inert — Python SDK has no `action_handlers`. |
+| `/google-adk/generative-ui/a2ui/fixed-schema` | `/generative-ui/a2ui/fixed-schema` | ⚠️ Partial | Runs the previously published Direct-JSON agent; the page's Express path needs the unpublished `agents.a2ui_format` (see Known issues #36). Book button inert — Python SDK has no `action_handlers`. |
 | `/google-adk/generative-ui/open-generative-ui` | `/generative-ui/open-generative-ui` | ⚠️ Partial | Not yet checked in a browser. Page publishes no agent, leaves `headers`/`Chat`/`VISUALIZATION_DESIGN_SKILL`/`./suggestions` undefined, and cuts off the advanced snippet (§9 #22). |
 | `/google-adk/generative-ui/json-render` | `/generative-ui/json-render` | ✅ Working | Fixed version only; the published renderer call throws (§9 #25) and was removed. |
 | `/google-adk/generative-ui/hashbrown` | `/generative-ui/hashbrown` | ✅ Working | Fixed version only; the published hook calls throw and the example output is the wrong shape (§9 #26). Published version removed. |
@@ -563,6 +563,9 @@ With the [tool transport](https://docs.copilotkit.ai/google-adk/generative-ui/co
 
 **35. A2UI Dynamic Schema: chart helpers and the format selector come only from the Code tab**
 [The page](https://docs.copilotkit.ai/google-adk/generative-ui/a2ui/dynamic-schema)'s renderers pass `contentStyle={tooltipStyle}` and `cursor={barCursor}` to Recharts' `Tooltip`, and its provider is wrapped in `<A2UIFormat>` imported from `../../../../_shared/ts/a2ui-format`. The snippets define neither; both are copied verbatim from the page's demo Code tab (`renderers.tsx`, `_shared/ts/a2ui-format.tsx`, here `frontend/src/_shared/ts/a2ui-format.tsx`). The new `light-dark(...)` colours, `stroke="var(--card)"` and the tooltip styles use `--card` / `--border` / `--accent`, which this repo's theme doesn't define, so in dark mode the tooltip and pie stroke fall back to the browser default. Kept as published.
+
+**36. A2UI Fixed Schema: the Express agent imports a module nobody publishes**
+[The page](https://docs.copilotkit.ai/google-adk/generative-ui/a2ui/fixed-schema)'s `src/agents/a2ui_fixed_agent.py` now has an A2UI Express branch: `_build_flight_operations(..., inference_format=...)` calls `validate_format(...)` and, for `"express"`, `compile_flight_template()`, which compiles `flight_schema.express` against `flight_catalog.generated.json`. `inference_format` and `validate_format` come from `agents.a2ui_format`, which neither the page nor its Code tab prints, and the JSON catalog is only produced by an `npm run export:a2ui-catalogs` step that isn't part of this repo. Importing the file as published would stop the whole backend from starting, so it is kept verbatim, unimported, at `frontend/src/app/generative-ui/a2ui/fixed-schema/_doc/a2ui_fixed_agent.py`, and the running agent stays the previously published Direct-JSON version. The page's new `dark:` classes (`text-foreground`, `text-muted-foreground`, `bg-border`) are applied but resolve to nothing here (no such theme colours).
 
 ---
 

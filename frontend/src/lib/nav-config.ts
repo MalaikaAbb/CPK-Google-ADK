@@ -315,9 +315,9 @@ export const NAV: NavGroup[] = [
         docPath: "/google-adk/generative-ui/a2ui/fixed-schema",
         summary:
           "A flight card whose component tree is authored as JSON up front; the tool supplies only the data.",
-        status: "working",
+        status: "partial",
         statusNote:
-          "The Book button is inert: a2ui.render in the Python SDK does not yet accept action_handlers.",
+          "Runs the previously published Direct-JSON agent: the page's new A2UI Express path imports an unpublished agents.a2ui_format module and a generated flight_catalog.generated.json, kept verbatim in _doc/ (not run). The Book button is inert: a2ui.render in the Python SDK does not yet accept action_handlers.",
       },
       {
         path: "/generative-ui/open-generative-ui",
